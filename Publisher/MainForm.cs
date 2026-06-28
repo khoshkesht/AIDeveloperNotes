@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace Publisher;
 
@@ -139,7 +140,7 @@ public sealed partial class MainForm : Form
 
         try
         {
-            var text = File.ReadAllText(item.Path, Encoding.UTF8);
+            var text = ReadPostContent(item.Path);
             _previewBox.Text = text;
             _postTextBox.Text = text;
             SetStatus($"انتخاب شد: {item.Name}");
@@ -149,6 +150,27 @@ public sealed partial class MainForm : Form
             SetStatus("خطا در خواندن فایل");
             MessageBox.Show(ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+    }
+
+    private static string ReadPostContent(string path)
+    {
+        var lines = File.ReadAllLines(path, Encoding.UTF8);
+        if (lines.Length > 0 && IsPostHeaderLine(lines[0]))
+        {
+            return string.Join(Environment.NewLine, lines.Skip(1));
+        }
+
+        return File.ReadAllText(path, Encoding.UTF8);
+    }
+
+    private static bool IsPostHeaderLine(string? line)
+    {
+        if (string.IsNullOrWhiteSpace(line))
+        {
+            return false;
+        }
+
+        return Regex.IsMatch(line.Trim(), "^#Post_\\d+$", RegexOptions.CultureInvariant);
     }
 
     private async void SendButton_Click(object? sender, EventArgs e)

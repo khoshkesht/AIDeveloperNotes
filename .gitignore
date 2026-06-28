@@ -1,0 +1,16 @@
+# Visual Studio / .NET build artifacts
+.vs/
+.vscode/
+**/bin/
+**/obj/
+**/Debug/
+**/Release/
+**/out/
+**/packages/
+*.user
+*.suo
+*.cache
+*.dll
+*.exe
+*.pdb
+*.log

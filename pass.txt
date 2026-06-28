@@ -2,7 +2,7 @@ https://t.me/AIDeveloperNotesContentBot
 8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM
 
 
-https://api.telegram.org/bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM/sendMessag
+https://api.telegram.org/bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM/sendMessage
 
 
 

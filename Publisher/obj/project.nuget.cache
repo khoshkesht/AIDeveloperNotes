@@ -1,53 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "OLX24bcrquQ=",
-  "success": false,
-  "projectFilePath": "E:\\Projects\\AIDeveloperNotes\\Publisher\\Publisher.csproj",
+  "dgSpecHash": "35M6aRgTmM8=",
+  "success": true,
+  "projectFilePath": "E:\\Projects\\AIDeveloperNotes\\publisher\\Publisher.csproj",
   "expectedPackageFiles": [],
-  "logs": [
-    {
-      "code": "NU1100",
-      "level": "Error",
-      "message": "Unable to resolve 'Microsoft.NETCore.App.Ref (= 9.0.16)' for 'net9.0-windows7.0'.",
-      "projectPath": "E:\\Projects\\AIDeveloperNotes\\Publisher\\Publisher.csproj",
-      "filePath": "E:\\Projects\\AIDeveloperNotes\\Publisher\\Publisher.csproj",
-      "libraryId": "Microsoft.NETCore.App.Ref",
-      "targetGraphs": [
-        "net9.0-windows7.0"
-      ]
-    },
-    {
-      "code": "NU1100",
-      "level": "Error",
-      "message": "Unable to resolve 'Microsoft.WindowsDesktop.App.Ref (= 9.0.16)' for 'net9.0-windows7.0'.",
-      "projectPath": "E:\\Projects\\AIDeveloperNotes\\Publisher\\Publisher.csproj",
-      "filePath": "E:\\Projects\\AIDeveloperNotes\\Publisher\\Publisher.csproj",
-      "libraryId": "Microsoft.WindowsDesktop.App.Ref",
-      "targetGraphs": [
-        "net9.0-windows7.0"
-      ]
-    },
-    {
-      "code": "NU1100",
-      "level": "Error",
-      "message": "Unable to resolve 'Microsoft.AspNetCore.App.Ref (= 9.0.16)' for 'net9.0-windows7.0'.",
-      "projectPath": "E:\\Projects\\AIDeveloperNotes\\Publisher\\Publisher.csproj",
-      "filePath": "E:\\Projects\\AIDeveloperNotes\\Publisher\\Publisher.csproj",
-      "libraryId": "Microsoft.AspNetCore.App.Ref",
-      "targetGraphs": [
-        "net9.0-windows7.0"
-      ]
-    },
-    {
-      "code": "NU1100",
-      "level": "Error",
-      "message": "Unable to resolve 'Microsoft.NETCore.App.Host.win-x64 (= 9.0.16)' for 'net9.0-windows7.0'.",
-      "projectPath": "E:\\Projects\\AIDeveloperNotes\\Publisher\\Publisher.csproj",
-      "filePath": "E:\\Projects\\AIDeveloperNotes\\Publisher\\Publisher.csproj",
-      "libraryId": "Microsoft.NETCore.App.Host.win-x64",
-      "targetGraphs": [
-        "net9.0-windows7.0"
-      ]
-    }
-  ]
+  "logs": []
 }

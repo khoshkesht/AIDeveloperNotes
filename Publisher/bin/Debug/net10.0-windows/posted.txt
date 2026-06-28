@@ -1,3 +1,0 @@
-﻿2026-06-28 20:26:44 +03:30	E:\Projects\AIDeveloperNotes\publisher\bin\Debug\net10.0-windows\Posts\Post_1.txt
-2026-06-28 20:30:56 +03:30	E:\Projects\AIDeveloperNotes\publisher\bin\Debug\net10.0-windows\Posts\Post_2.txt
-2026-06-28 20:32:26 +03:30	E:\Projects\AIDeveloperNotes\publisher\bin\Debug\net10.0-windows\Posts\Post_3.txt

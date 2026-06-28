@@ -1,0 +1,10 @@
+﻿#Post_14
+
+<b>نقشه سیستم با Open Knowledge Format</b>
+
+Open Knowledge Format با مجموعه‌ای از markdown fileها کار می‌کند که هر کدام نماینده یک چیز در سیستم هستند؛ مثل service، database یا contract. این فایل‌ها به یکدیگر link می‌شوند و هم انسان می‌تواند آن‌ها را بخواند، هم Agent می‌تواند آن‌ها را بخواند و edit کند. ترکیب این ساختار با Graph RAG می‌تواند به Agent کمک کند قبل از نوشتن code، ارتباط entityها را ببیند و اثر تغییر یک بخش را روی کل سیستم بفهمد.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+

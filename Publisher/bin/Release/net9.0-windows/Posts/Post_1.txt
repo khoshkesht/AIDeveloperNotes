@@ -1,0 +1,10 @@
+﻿#Post_1
+
+<b>عامل فراتر از Model</b>
+
+ساختن Agent قابل‌اعتماد فقط به انتخاب Model وابسته نیست. در این نگاه، Agent از ترکیب Model و Harness شکل می‌گیرد؛ Model تنها بخش کوچکی از معادله است و سهم اصلی به Harness مربوط می‌شود. Harness همان لایه‌ای است که Sandbox، Tool، Orchestration و Guardrails را کنار هم قرار می‌دهد تا سیستم Agentic Coding بتواند قابل‌اتکا کار کند. بدون این لایه، خروجی Model به‌تنهایی برای ساخت یک سیستم پایدار کافی نیست.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+

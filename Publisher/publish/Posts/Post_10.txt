@@ -1,0 +1,10 @@
+﻿#Post_10
+
+<b>Verification Loop انسانی و خودکار</b>
+
+Verification Loop فقط به test خودکار محدود نمی‌شود. یک sub-agent می‌تواند خروجی Agent را بررسی کند، روی آن iterate کند و کیفیت را بالا ببرد؛ اما بعضی شرایط باید human in the loop verification یا review را فعال کنند. داده‌هایی که از این reviewها ساخته می‌شوند، می‌توانند به golden data set تبدیل شوند و مسیر self-improvement را باز کنند. ترکیب automated verification و بررسی انسانی، پایه‌ای برای قابل‌اعتماد شدن autonomous systems در production است.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+

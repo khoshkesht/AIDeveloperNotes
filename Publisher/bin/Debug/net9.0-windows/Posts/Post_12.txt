@@ -1,0 +1,10 @@
+﻿#Post_12
+
+<b>پاسخگویی در AI-driven SDLC</b>
+
+وقتی AI بخش بزرگی از code base را تولید، مدیریت و اصلاح می‌کند، مسئله accountability جدی‌تر می‌شود. اگر issue رخ دهد، باید روشن باشد responsibility با کدام engineer، architect یا employee است. کاهش تسلط انسانی بر code base می‌تواند این مرز را مبهم کند. در کنار آن، فرصت‌های improvement نیز ممکن است از دست بروند، چون بسیاری از innovationهای مهندسی از فهم عمیق product و code base به‌وجود می‌آیند.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+

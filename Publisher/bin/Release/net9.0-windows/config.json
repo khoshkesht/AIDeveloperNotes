@@ -1,0 +1,18 @@
+{
+  "bots": [
+    {
+      "name": "بات1",
+      "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM"
+    }
+  ],
+  "channels": [
+    {
+      "title": "کانال AIDevelopertNotes",
+      "chatId": "-1003968454810"
+    },
+    {
+      "title": "کانال تهیه کننده محتوا",
+      "chatId": "-1003968454810"
+    }
+  ]
+}

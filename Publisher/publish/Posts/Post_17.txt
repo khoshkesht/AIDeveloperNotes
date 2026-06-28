@@ -1,0 +1,10 @@
+﻿#Post_17
+
+<b>گلوگاه Tool در Agentهای طولانی</b>
+
+هرچه Agentها طولانی‌تر اجرا شوند، bottleneckهای تازه‌ای ظاهر می‌شود. بخش قابل‌توجهی از زمان در long agent trace صرف خود Model نمی‌شود، بلکه صرف استفاده از external tools می‌شود. مشکل اینجاست که بسیاری از این Toolها برای چنین ظرفیتی ساخته نشده‌اند و فرض طراحی آن‌ها حضور انسان، latency قابل‌قبول و parallelism محدود بوده است. با رشد Long-running Agent، همین Toolها می‌توانند به نقطه فشار اصلی سیستم تبدیل شوند.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+

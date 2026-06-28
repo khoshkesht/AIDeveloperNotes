@@ -1,0 +1,11 @@
+https://t.me/AIDeveloperNotesContentBot
+8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM
+
+
+https://api.telegram.org/bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM/sendMessag
+
+
+
+curl -X POST "https://api.telegram.org/bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM/sendMessage" 
+  -d "chat_id=-1004320100300"
+  -d "text=Content Producer test"

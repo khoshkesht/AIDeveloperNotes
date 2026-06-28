@@ -1,0 +1,10 @@
+﻿#Post_16
+
+<b>کاربردهای Long-running Agent</b>
+
+Long-running Agent زمانی ارزشمند است که کار به زمان، iteration و پوشش گسترده context نیاز دارد. Deep Research یک نمونه موفق است، چون answer فقط یک پاسخ کوتاه نیست و معمولاً contextual scaffolding لازم دارد. AI coding هم نمونه مهم دیگری است، چون Agent می‌تواند مرتب code را اجرا کند و مطمئن شود تغییرات جدید مسیر را خراب نمی‌کنند. نکته اصلی این است که اجرای طولانی بدون verification می‌تواند زمان و هزینه را هدر بدهد.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+

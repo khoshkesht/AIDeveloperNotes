@@ -1,0 +1,10 @@
+﻿#Post_19
+
+<b>مهاجرت سریع‌تر با Agentic Engineering</b>
+
+یکی از کاربردهای عملی AI در engineering، migrationهای دشوار و زمان‌بر است. مهاجرت از TensorFlow به JAX نمونه‌ای است که با رویکرد Agentic انجام شده و در مورد YouTube سرعت کار را 6 تا 8 برابر بیشتر کرده است. این نوع مسئله فقط نوشتن code جدید نیست؛ نیاز به فهم سیستم، تغییرات سازگار و مدیریت مسیر انتقال دارد. چنین use caseهایی نشان می‌دهند AI می‌تواند در system development، performance، efficiency، reliability و operations نقش عملی داشته باشد.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+

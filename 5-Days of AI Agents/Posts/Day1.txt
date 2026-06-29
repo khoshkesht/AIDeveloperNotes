@@ -1,0 +1,200 @@
+#Post_1
+
+<b>عامل فراتر از Model</b>
+
+ساختن Agent قابل‌اعتماد فقط به انتخاب Model وابسته نیست. در این نگاه، Agent از ترکیب Model و Harness شکل می‌گیرد؛ Model تنها بخش کوچکی از معادله است و سهم اصلی به Harness مربوط می‌شود. Harness همان لایه‌ای است که Sandbox، Tool، Orchestration و Guardrails را کنار هم قرار می‌دهد تا سیستم Agentic Coding بتواند قابل‌اتکا کار کند. بدون این لایه، خروجی Model به‌تنهایی برای ساخت یک سیستم پایدار کافی نیست.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+
+
+#Post_2
+
+<b>نقش تازه توسعه‌دهنده</b>
+
+توسعه‌دهنده در فضای Agentic Engineering فقط نویسنده کد نیست. نقش او بین دو حالت اصلی جابه‌جا می‌شود: در conductor mode، تغییرات لحظه‌ای را داخل IDE هدایت می‌کند و مسیر کار را به Agent نشان می‌دهد؛ در orchestration mode، وظایف پیچیده را به‌صورت asynchronous به شبکه‌ای از autonomous agents یا swarms واگذار می‌کند. این تغییر نقش باعث می‌شود قضاوت معماری، تشخیص مسئله و توانایی هدایت سیستم از تسلط صرف بر syntax مهم‌تر شود.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+
+#Post_3
+
+<b>آموزش کامپیوتر و تفکر معماری</b>
+
+آموزش computer science همیشه فقط درباره تایپ‌کردن کد نبوده است. بخش مهم آن یاد گرفتن نحوه فکر کردن، درک algorithms، منطق، تصمیم‌های معماری و روش بیان ایده‌ها در عمل است. حتی وقتی AI بتواند حجم زیادی از کد را تولید کند، فهم فنی همچنان اهمیت دارد؛ همان‌طور که وجود calculator یادگیری math را بی‌ارزش نکرده است. خروجی ارزشمند آینده می‌تواند proof of work واقعی باشد؛ مثل یک سیستم، محصول یا حتی business ساخته‌شده در مسیر یادگیری.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+
+#Post_4
+
+<b>مسیر Prompt تا کسب‌وکار</b>
+
+مسیر ساخت نرم‌افزار از prompt to prototype عبور کرده و به prompt to production رسیده است؛ جایی که می‌توان با یک یا چند prompt یک website کاربردی ساخت، deploy کرد و با دیگران به اشتراک گذاشت. قدم بعدی فقط ساختن محصول نیست، بلکه رسیدن به prompt to profitable company است. این مسیر شامل پیدا کردن user، رسیدن به product market fit و تبدیل نرم‌افزار به business واقعی می‌شود؛ مشابه تغییری که YouTube برای creatorها ایجاد کرد.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+
+#Post_5
+
+<b>قدرت بهینه‌سازی Alpha Evolve</b>
+
+Alpha Evolve یک evolutionary algorithmic agent است که از Gemini یا large language model همراه با evaluator function استفاده می‌کند تا الگوریتم‌های بهینه‌تر پیدا کند. این رویکرد برای مسئله‌هایی مثل matrix multiply، large-scale schedulers، طراحی hardware، DNA sequencing، molecular simulations، cloud، infrastructure، financial و retail به‌کار رفته است. در مسیر Agentic Engineering، چنین سیستمی مثل یک expert optimizing agent عمل می‌کند و می‌تواند performance را در use caseهای مختلف به سطح بالاتری برساند.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+
+#Post_6
+
+<b>عبور از بیست درصد سخت</b>
+
+رسیدن از بخش اولیه Vibe Coding به خروجی production-ready معمولاً در همان 20 درصد پایانی سخت می‌شود. برای عبور از این بخش، سه مهارت اصلی مهم است: فهم core problem، انتقال درست آن به LLM یا Agent، و توانایی verify کردن خروجی. این مسیر با حلقه scaffold، build، observe و optimize قابل مدیریت می‌شود. وقتی traceها، evaluation و deployment کنار هم قرار بگیرند، Agent به‌جای تولید خروجی مقطعی، وارد چرخه بهبود قابل‌اتکا می‌شود.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+
+#Post_7
+
+<b>Context پویا با Agent Skills</b>
+
+وقتی context سنگین می‌شود، بارگذاری کامل اطلاعات همیشه راه‌حل خوبی نیست. Agent Skills کمک می‌کند context فقط در زمان نیاز به‌صورت dynamic وارد کار شود، نه اینکه Agent از ابتدا همه اطلاعات را همراه داشته باشد. این روش برای code baseهای بزرگ اهمیت زیادی دارد، چون Agent می‌تواند در لحظه به بخش مناسب context دسترسی پیدا کند. نتیجه، کاهش فشار context و افزایش شانس رسیدن به خروجی قابل‌اعتماد در وظایف پیچیده‌تر است.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+
+#Post_8
+
+<b>کیفیت پایدار در Last Mile</b>
+
+آخرین مرحله از prompt to production معمولاً با مسئله کیفیت، error caseها و انجام consistent taskها گره می‌خورد. برای عبور از این مرحله، فقط prompt بهتر کافی نیست؛ Eval، verification tests، long-term memory across sessions و امکان optimize کردن در production لازم می‌شود. وقتی سیستم بتواند از اجرای واقعی یاد بگیرد و کیفیت خود را در طول زمان بهتر کند، فاصله بین demo جذاب و ابزار قابل‌اتکا کمتر می‌شود.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+
+#Post_9
+
+<b>Sandbox برای Agentهای کدنویس</b>
+
+Agent موفق فقط مجموعه‌ای از LLM callها با prompt و context نیست. الگوی قوی‌تر زمانی شکل می‌گیرد که Agent داخل Sandbox بتواند code بنویسد، Toolهای خودش را در لحظه بسازد و حتی sub-agentهایی ایجاد کند که کار او را evaluate کنند. این ساختار باعث می‌شود Agent به‌جای پاسخ متنی محدود، وارد محیط عملی شود و خروجی خود را بسازد، بررسی کند و تکرار کند. چنین مدلی برای بستن فاصله آخر در کارهای پیچیده موفق‌تر است.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+
+#Post_10
+
+<b>Verification Loop انسانی و خودکار</b>
+
+Verification Loop فقط به test خودکار محدود نمی‌شود. یک sub-agent می‌تواند خروجی Agent را بررسی کند، روی آن iterate کند و کیفیت را بالا ببرد؛ اما بعضی شرایط باید human in the loop verification یا review را فعال کنند. داده‌هایی که از این reviewها ساخته می‌شوند، می‌توانند به golden data set تبدیل شوند و مسیر self-improvement را باز کنند. ترکیب automated verification و بررسی انسانی، پایه‌ای برای قابل‌اعتماد شدن autonomous systems در production است.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+
+#Post_11
+
+<b>ریسک فرسایش تخصص انسانی</b>
+
+AI-driven SDLC می‌تواند کدنویسی، testing، evaluation و حتی fixing issueها را بیشتر به AI بسپارد؛ اما یک ریسک مهم، کم‌رنگ شدن expertise انسان نسبت به code base است. هرچه بخش بیشتری از code base توسط AI نوشته و مدیریت شود، developer یا architect ممکن است درک عمیق خود را از ساختار سیستم از دست بدهد. این فاصله روی توانایی orchestration، تصمیم‌گیری معماری و هدایت درست AI اثر می‌گذارد.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+
+#Post_12
+
+<b>پاسخگویی در AI-driven SDLC</b>
+
+وقتی AI بخش بزرگی از code base را تولید، مدیریت و اصلاح می‌کند، مسئله accountability جدی‌تر می‌شود. اگر issue رخ دهد، باید روشن باشد responsibility با کدام engineer، architect یا employee است. کاهش تسلط انسانی بر code base می‌تواند این مرز را مبهم کند. در کنار آن، فرصت‌های improvement نیز ممکن است از دست بروند، چون بسیاری از innovationهای مهندسی از فهم عمیق product و code base به‌وجود می‌آیند.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+
+#Post_13
+
+<b>امنیت و حفظ دانش Code Base</b>
+
+فرسایش technical expertise فقط یک مسئله آموزشی یا معماری نیست؛ می‌تواند security gapها را هم پررنگ‌تر کند. وقتی team کنترل شناختی خوبی روی code base نداشته باشد، تشخیص riskها، review تغییرات و مدیریت issueها دشوارتر می‌شود. AI می‌تواند در نوشتن، testing و fixing موفق باشد، اما انسان همچنان باید فهم کافی از مسیر سیستم داشته باشد. حفظ دانش code base بخشی از کنترل کیفیت و امنیت در AI-driven SDLC است.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+
+#Post_14
+
+<b>نقشه سیستم با Open Knowledge Format</b>
+
+Open Knowledge Format با مجموعه‌ای از markdown fileها کار می‌کند که هر کدام نماینده یک چیز در سیستم هستند؛ مثل service، database یا contract. این فایل‌ها به یکدیگر link می‌شوند و هم انسان می‌تواند آن‌ها را بخواند، هم Agent می‌تواند آن‌ها را بخواند و edit کند. ترکیب این ساختار با Graph RAG می‌تواند به Agent کمک کند قبل از نوشتن code، ارتباط entityها را ببیند و اثر تغییر یک بخش را روی کل سیستم بفهمد.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+
+#Post_15
+
+<b>Context Engineering به جای Dump کردن Repository</b>
+
+Context Engineering یعنی Agent فقط با انباشتن کل repository در context window جلو نرود. برای code baseهای بزرگ، representation ساختاریافته از سیستم می‌تواند مفیدتر باشد؛ مخصوصاً وقتی Agent باید بفهمد اگر X تغییر کند، چه بخش‌هایی affected می‌شوند. Graph RAG با دنبال‌کردن connectionها میان markdown fileها، رابطه بین بخش‌های code base را روشن می‌کند. این نگاه به Agent کمک می‌کند مثل engineer یا architect فقط یک file را تغییر ندهد، بلکه impact آن را هم بسنجد.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+
+#Post_16
+
+<b>کاربردهای Long-running Agent</b>
+
+Long-running Agent زمانی ارزشمند است که کار به زمان، iteration و پوشش گسترده context نیاز دارد. Deep Research یک نمونه موفق است، چون answer فقط یک پاسخ کوتاه نیست و معمولاً contextual scaffolding لازم دارد. AI coding هم نمونه مهم دیگری است، چون Agent می‌تواند مرتب code را اجرا کند و مطمئن شود تغییرات جدید مسیر را خراب نمی‌کنند. نکته اصلی این است که اجرای طولانی بدون verification می‌تواند زمان و هزینه را هدر بدهد.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+
+#Post_17
+
+<b>گلوگاه Tool در Agentهای طولانی</b>
+
+هرچه Agentها طولانی‌تر اجرا شوند، bottleneckهای تازه‌ای ظاهر می‌شود. بخش قابل‌توجهی از زمان در long agent trace صرف خود Model نمی‌شود، بلکه صرف استفاده از external tools می‌شود. مشکل اینجاست که بسیاری از این Toolها برای چنین ظرفیتی ساخته نشده‌اند و فرض طراحی آن‌ها حضور انسان، latency قابل‌قبول و parallelism محدود بوده است. با رشد Long-running Agent، همین Toolها می‌توانند به نقطه فشار اصلی سیستم تبدیل شوند.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+
+#Post_18
+
+<b>محیط‌های پویا برای Agentهای طولانی</b>
+
+Long-running Agent در محیطی که inputها مدام تغییر می‌کنند می‌تواند مناسب باشد. فرایند loan در bank ممکن است هفته‌ها یا یک ماه طول بکشد و Agent باید در طول مسیر اطلاعات تازه بگیرد و تصمیم‌ها را با شرایط جدید تطبیق دهد. insurance claims و legal agent برای court case هم از همین جنس هستند، چون داده‌ها ثابت نمی‌مانند. ارزش چنین Agentهایی در توانایی ادامه دادن، سازگار شدن و پاسخ به تغییرات تدریجی فرایند است.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+
+#Post_19
+
+<b>مهاجرت سریع‌تر با Agentic Engineering</b>
+
+یکی از کاربردهای عملی AI در engineering، migrationهای دشوار و زمان‌بر است. مهاجرت از TensorFlow به JAX نمونه‌ای است که با رویکرد Agentic انجام شده و در مورد YouTube سرعت کار را 6 تا 8 برابر بیشتر کرده است. این نوع مسئله فقط نوشتن code جدید نیست؛ نیاز به فهم سیستم، تغییرات سازگار و مدیریت مسیر انتقال دارد. چنین use caseهایی نشان می‌دهند AI می‌تواند در system development، performance، efficiency، reliability و operations نقش عملی داشته باشد.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes
+
+#Post_20
+
+<b>مسیر Impressive تا Sustainable</b>
+
+کار با Vibe Coding و Agentic Engineering معمولاً از مرحله impressive شروع می‌شود؛ جایی که demo اولیه جذاب و چشمگیر است. مرحله بعد useful است، یعنی چیزی که فقط برای یک use case خاص جواب نداده، بلکه برای دیگران هم قابل‌استفاده باشد. مرحله پایانی sustainable است؛ یعنی راه‌حل scalable، secure و از نظر هزینه قابل‌دفاع باشد. اگر AI use case سه برابر روش فعلی هزینه داشته باشد، فقط AI بودن آن برای موفقیت کافی نیست.
+
+#5_Day_AI_Agents #Day_1
+ℹ️ kaggle
+➡️@AIDeveloperNotes

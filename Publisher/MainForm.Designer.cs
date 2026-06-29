@@ -17,6 +17,7 @@ partial class MainForm
     private TextBox _previewBox = null!;
     private ComboBox _botCombo = null!;
     private ComboBox _channelCombo = null!;
+    private CheckBox _useProxyCheckBox = null!;
     private TextBox _postTextBox = null!;
     private TextBox _imagePathBox = null!;
     private Button _selectImageButton = null!;
@@ -30,7 +31,6 @@ partial class MainForm
     {
         if (disposing)
         {
-            _httpClient.Dispose();
             components?.Dispose();
         }
 
@@ -46,6 +46,7 @@ partial class MainForm
         _botCombo = new ComboBox();
         _channelLabel = new Label();
         _channelCombo = new ComboBox();
+        _useProxyCheckBox = new CheckBox();
         _imageLabel = new Label();
         _imagePathBox = new TextBox();
         _selectImageButton = new Button();
@@ -97,16 +98,18 @@ partial class MainForm
         // _selectorsLayout
         // 
         _selectorsLayout.AutoSize = true;
-        _selectorsLayout.ColumnCount = 4;
+        _selectorsLayout.ColumnCount = 5;
         _rootLayout.SetColumnSpan(_selectorsLayout, 2);
         _selectorsLayout.ColumnStyles.Add(new ColumnStyle());
         _selectorsLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
         _selectorsLayout.ColumnStyles.Add(new ColumnStyle());
         _selectorsLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+        _selectorsLayout.ColumnStyles.Add(new ColumnStyle());
         _selectorsLayout.Controls.Add(_botLabel, 0, 0);
         _selectorsLayout.Controls.Add(_botCombo, 1, 0);
         _selectorsLayout.Controls.Add(_channelLabel, 2, 0);
         _selectorsLayout.Controls.Add(_channelCombo, 3, 0);
+        _selectorsLayout.Controls.Add(_useProxyCheckBox, 4, 0);
         _selectorsLayout.Dock = DockStyle.Fill;
         _selectorsLayout.Location = new Point(3, 3);
         _selectorsLayout.Name = "_selectorsLayout";
@@ -222,6 +225,17 @@ partial class MainForm
         _channelCombo.Size = new Size(453, 25);
         _channelCombo.TabIndex = 3;
         _channelCombo.ValueMember = "ChatId";
+        //
+        // _useProxyCheckBox
+        //
+        _useProxyCheckBox.Anchor = AnchorStyles.Right;
+        _useProxyCheckBox.AutoSize = true;
+        _useProxyCheckBox.Location = new Point(3, 4);
+        _useProxyCheckBox.Name = "_useProxyCheckBox";
+        _useProxyCheckBox.Size = new Size(113, 23);
+        _useProxyCheckBox.TabIndex = 4;
+        _useProxyCheckBox.Text = "استفاده از پروکسی";
+        _useProxyCheckBox.UseVisualStyleBackColor = true;
         // 
         // _postsGroup
         // 

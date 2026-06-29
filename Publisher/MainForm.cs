@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
@@ -11,7 +12,6 @@ public sealed partial class MainForm : Form
     private readonly string _basePath = AppContext.BaseDirectory;
     private readonly string _postsPath;
     private readonly string _postedFilePath;
-    private readonly HttpClient _httpClient = new();
 
     private AppConfig _config = new();
     private readonly Dictionary<string, PostedEntry> _postedFiles = new(StringComparer.OrdinalIgnoreCase);
@@ -57,6 +57,11 @@ public sealed partial class MainForm : Form
                   "botId": "bot_token_here"
                 }
               ],
+              "proxy": {
+                "address": "socks5://127.0.0.1:1080",
+                "username": "",
+                "password": ""
+              },
               "channels": [
                 {
                   "title": "کانال پیش فرض",
@@ -81,6 +86,7 @@ public sealed partial class MainForm : Form
         {
             PropertyNameCaseInsensitive = true
         }) ?? new AppConfig();
+        _config.Proxy ??= new ProxyConfig();
 
         if (_config.Bots.Count == 0)
         {
@@ -212,9 +218,10 @@ public sealed partial class MainForm : Form
                 return;
             }
 
+            using var httpClient = CreateTelegramHttpClient();
             var result = string.IsNullOrWhiteSpace(imagePath)
-                ? await SendTelegramMessageAsync(bot.BotId, channel.ChatId, postText)
-                : await SendTelegramPhotoPostAsync(bot.BotId, channel.ChatId, postText, imagePath);
+                ? await SendTelegramMessageAsync(httpClient, bot.BotId, channel.ChatId, postText)
+                : await SendTelegramPhotoPostAsync(httpClient, bot.BotId, channel.ChatId, postText, imagePath);
             if (!result.Success)
             {
                 MessageBox.Show(result.ErrorMessage, "خطا در ارسال", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -257,7 +264,54 @@ public sealed partial class MainForm : Form
         _imagePathBox.Clear();
     }
 
-    private async Task<TelegramSendResult> SendTelegramMessageAsync(string botId, string chatId, string text)
+    private HttpClient CreateTelegramHttpClient()
+    {
+        if (!_useProxyCheckBox.Checked)
+        {
+            return new HttpClient();
+        }
+
+        var proxyAddress = _config.Proxy.Address.Trim();
+        if (string.IsNullOrWhiteSpace(proxyAddress))
+        {
+            throw new InvalidOperationException("پروکسی فعال است، اما مقدار proxy.address در config.json خالی است.");
+        }
+
+        if (!Uri.TryCreate(proxyAddress, UriKind.Absolute, out var proxyUri))
+        {
+            throw new InvalidOperationException("آدرس پروکسی در config.json باید کامل باشد، مثلا socks5://127.0.0.1:4567.");
+        }
+
+        if (!IsSupportedProxyScheme(proxyUri.Scheme))
+        {
+            throw new InvalidOperationException("نوع پروکسی پشتیبانی نمی‌شود. از http، https، socks4، socks4a یا socks5 استفاده کنید.");
+        }
+
+        var proxy = new WebProxy(proxyUri);
+        if (!string.IsNullOrWhiteSpace(_config.Proxy.Username))
+        {
+            proxy.Credentials = new NetworkCredential(_config.Proxy.Username, _config.Proxy.Password);
+        }
+
+        var handler = new HttpClientHandler
+        {
+            Proxy = proxy,
+            UseProxy = true
+        };
+
+        return new HttpClient(handler, disposeHandler: true);
+    }
+
+    private static bool IsSupportedProxyScheme(string scheme)
+    {
+        return scheme.Equals("http", StringComparison.OrdinalIgnoreCase)
+            || scheme.Equals("https", StringComparison.OrdinalIgnoreCase)
+            || scheme.Equals("socks4", StringComparison.OrdinalIgnoreCase)
+            || scheme.Equals("socks4a", StringComparison.OrdinalIgnoreCase)
+            || scheme.Equals("socks5", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private async Task<TelegramSendResult> SendTelegramMessageAsync(HttpClient httpClient, string botId, string chatId, string text)
     {
         var url = $"https://api.telegram.org/{botId}/sendMessage";
         using var content = new FormUrlEncodedContent(new Dictionary<string, string>
@@ -267,7 +321,7 @@ public sealed partial class MainForm : Form
             ["text"] = text
         });
 
-        using var response = await _httpClient.PostAsync(url, content);
+        using var response = await httpClient.PostAsync(url, content);
         var responseBody = await response.Content.ReadAsStringAsync();
 
         if (response.IsSuccessStatusCode)
@@ -279,23 +333,23 @@ public sealed partial class MainForm : Form
         return TelegramSendResult.Fail($"تلگرام خطا برگرداند ({(int)response.StatusCode} {response.ReasonPhrase}): {error}");
     }
 
-    private async Task<TelegramSendResult> SendTelegramPhotoPostAsync(string botId, string chatId, string text, string imagePath)
+    private async Task<TelegramSendResult> SendTelegramPhotoPostAsync(HttpClient httpClient, string botId, string chatId, string text, string imagePath)
     {
         if (text.Length <= 1024)
         {
-            return await SendTelegramPhotoAsync(botId, chatId, imagePath, text);
+            return await SendTelegramPhotoAsync(httpClient, botId, chatId, imagePath, text);
         }
 
-        var photoResult = await SendTelegramPhotoAsync(botId, chatId, imagePath, null);
+        var photoResult = await SendTelegramPhotoAsync(httpClient, botId, chatId, imagePath, null);
         if (!photoResult.Success)
         {
             return photoResult;
         }
 
-        return await SendTelegramMessageAsync(botId, chatId, text);
+        return await SendTelegramMessageAsync(httpClient, botId, chatId, text);
     }
 
-    private async Task<TelegramSendResult> SendTelegramPhotoAsync(string botId, string chatId, string imagePath, string? caption)
+    private async Task<TelegramSendResult> SendTelegramPhotoAsync(HttpClient httpClient, string botId, string chatId, string imagePath, string? caption)
     {
         var url = $"https://api.telegram.org/{botId}/sendPhoto";
         await using var imageStream = File.OpenRead(imagePath);
@@ -314,7 +368,7 @@ public sealed partial class MainForm : Form
         imageContent.Headers.ContentType = new MediaTypeHeaderValue(GetImageContentType(imagePath));
         content.Add(imageContent, "photo", Path.GetFileName(imagePath));
 
-        using var response = await _httpClient.PostAsync(url, content);
+        using var response = await httpClient.PostAsync(url, content);
         var responseBody = await response.Content.ReadAsStringAsync();
 
         if (response.IsSuccessStatusCode)
@@ -378,6 +432,7 @@ public sealed partial class MainForm : Form
         _postsList.Enabled = !busy;
         _botCombo.Enabled = !busy;
         _channelCombo.Enabled = !busy;
+        _useProxyCheckBox.Enabled = !busy;
 
         if (!string.IsNullOrWhiteSpace(status))
         {
@@ -395,6 +450,14 @@ public sealed class AppConfig
 {
     public List<BotConfig> Bots { get; set; } = [];
     public List<ChannelConfig> Channels { get; set; } = [];
+    public ProxyConfig Proxy { get; set; } = new();
+}
+
+public sealed class ProxyConfig
+{
+    public string Address { get; set; } = string.Empty;
+    public string Username { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
 }
 
 public sealed class BotConfig

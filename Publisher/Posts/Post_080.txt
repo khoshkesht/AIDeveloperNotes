@@ -1,0 +1,9 @@
+#Post_080
+
+<b>امنیت در Deployment با Policy Server</b>
+
+در معماری Agentهای سازمانی، policy server نقش کنترل مرکزی امنیت را دارد. این سیستم قبل از اجرای هر tool call، بررسی‌های ساختاری و semantic انجام می‌دهد تا از اجرای دستورات مخرب جلوگیری شود. در صورت تشخیص رفتار غیرمجاز مانند نشت PII یا prompt injection، اجرای Agent متوقف یا محدود می‌شود. این لایه یکی از عناصر کلیدی trust در سیستم است.
+
+#5_Day_AI_Agents #Day_5
+ℹ️ kaggle
+➡️@AIDeveloperNotes

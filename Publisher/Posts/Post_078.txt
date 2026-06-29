@@ -1,0 +1,9 @@
+#Post_078
+
+<b>Observability با Trace و Log Analysis</b>
+
+برای درک رفتار Agent در محیط production، از ابزارهای observability مانند trace و log analysis استفاده می‌شود. این داده‌ها امکان بررسی دقیق مسیر اجرای تصمیم‌ها را فراهم می‌کنند. توسعه‌دهندگان می‌توانند با استفاده از SQL یا query ابزارهای تحلیلی، علت خطاها و الگوهای رفتاری سیستم را شناسایی کنند. این بخش برای debugging در مقیاس بزرگ ضروری است.
+
+#5_Day_AI_Agents #Day_5
+ℹ️ kaggle
+➡️@AIDeveloperNotes

@@ -19,10 +19,26 @@ public sealed partial class MainForm : Form
     public MainForm()
     {
         _postsPath = Path.Combine(_basePath, "Posts");
-        _postedFilePath = Path.Combine(_basePath, "posted.txt");
+        _postedFilePath = Path.Combine(FindProjectRoot(_basePath), "posted.txt");
 
         InitializeComponent();
         Load += MainForm_Load;
+    }
+
+    private static string FindProjectRoot(string startPath)
+    {
+        var directory = new DirectoryInfo(startPath);
+        while (directory is not null)
+        {
+            if (File.Exists(Path.Combine(directory.FullName, "Publisher.csproj")))
+            {
+                return directory.FullName;
+            }
+
+            directory = directory.Parent;
+        }
+
+        return startPath;
     }
 
     private void MainForm_Load(object? sender, EventArgs e)
@@ -116,7 +132,13 @@ public sealed partial class MainForm : Form
                 continue;
             }
 
-            _postedFiles[parts[1]] = new PostedEntry(parts[1], parts[0]);
+            var fileName = Path.GetFileName(parts[1].Trim());
+            if (string.IsNullOrWhiteSpace(fileName))
+            {
+                continue;
+            }
+
+            _postedFiles[fileName] = new PostedEntry(fileName, parts[0]);
         }
     }
 
@@ -129,8 +151,9 @@ public sealed partial class MainForm : Form
 
         var files = Directory.EnumerateFiles(_postsPath, "*.txt", SearchOption.TopDirectoryOnly)
             .Select(path => new FileInfo(path))
-            .Where(file => !_postedFiles.ContainsKey(NormalizePath(file.FullName)))
-            .OrderByDescending(file => file.LastWriteTimeUtc)
+            .Where(file => !_postedFiles.ContainsKey(file.Name))
+            .OrderBy(file => GetPostSortKey(file.Name))
+            .ThenBy(file => file.Name, StringComparer.OrdinalIgnoreCase)
             .Select(file => new PostFileItem(file.FullName, file.Name, file.LastWriteTime))
             .ToArray();
 
@@ -167,6 +190,17 @@ public sealed partial class MainForm : Form
         }
 
         return File.ReadAllText(path, Encoding.UTF8);
+    }
+
+    private static int GetPostSortKey(string fileName)
+    {
+        var match = Regex.Match(fileName, @"(?i)^Post_(\d+)");
+        if (match.Success && int.TryParse(match.Groups[1].Value, out var number))
+        {
+            return number;
+        }
+
+        return int.MaxValue;
     }
 
     private static bool IsPostHeaderLine(string? line)
@@ -417,11 +451,9 @@ public sealed partial class MainForm : Form
 
     private void MarkAsPosted(string filePath)
     {
-        var line = $"{DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss zzz}\t{NormalizePath(filePath)}{Environment.NewLine}";
+        var line = $"{DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss zzz}\t{Path.GetFileName(filePath)}{Environment.NewLine}";
         File.AppendAllText(_postedFilePath, line, Encoding.UTF8);
     }
-
-    private static string NormalizePath(string path) => Path.GetFullPath(path).Trim();
 
     private void SetBusy(bool busy, string? status = null)
     {
@@ -481,7 +513,7 @@ public sealed record PostFileItem(string Path, string Name, DateTime LastWriteTi
     public string DisplayName => Name;
 }
 
-public sealed record PostedEntry(string Path, string PostedAt);
+public sealed record PostedEntry(string FileName, string PostedAt);
 
 public sealed record TelegramSendResult(bool Success, string ErrorMessage)
 {

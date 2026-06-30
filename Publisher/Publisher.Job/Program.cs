@@ -87,10 +87,21 @@ internal sealed class DailyPostJobRunner
     private AppConfig LoadConfig()
     {
         var json = File.ReadAllText(_configPath, Encoding.UTF8);
-        var config = JsonSerializer.Deserialize<AppConfig>(json, new JsonSerializerOptions
+        AppConfig config;
+        try
         {
-            PropertyNameCaseInsensitive = true
-        }) ?? new AppConfig();
+            config = JsonSerializer.Deserialize<AppConfig>(json, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            }) ?? new AppConfig();
+        }
+        catch (JsonException ex)
+        {
+            var firstCharacters = json.Length <= 40 ? json : json[..40];
+            throw new InvalidOperationException(
+                $"Invalid JSON in config file '{_configPath}'. The file must start with '{{'. Current first characters: '{firstCharacters}'",
+                ex);
+        }
 
         config.Proxy ??= new ProxyConfig();
         config.DailyJob ??= new DailyJobConfig();

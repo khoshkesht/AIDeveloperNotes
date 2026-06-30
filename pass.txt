@@ -9,3 +9,6 @@ https://api.telegram.org/bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM/sendM
 curl -X POST "https://api.telegram.org/bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM/sendMessage" 
   -d "chat_id=-1004320100300"
   -d "text=Content Producer test"
+
+
+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

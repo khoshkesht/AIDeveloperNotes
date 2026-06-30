@@ -1,0 +1,9 @@
+#Post_038
+
+<b>تفکیک State از Context در اجرای Skills</b>
+
+در طراحی سیستم‌های مبتنی بر skills، state به‌جای نگهداری در context window به یک لایه خارجی منتقل می‌شود. این state از طریق file bus یا message bus بین گره‌ها جابه‌جا می‌شود و مدل تنها reference یا pointer دریافت می‌کند. این کار از رشد بی‌رویه prompt جلوگیری می‌کند و باعث می‌شود هر مرحله فقط روی داده‌های ضروری تمرکز کند، نه کل تاریخچه اجرا.
+
+#5_Day_AI_Agents #Day_3
+ℹ️ kaggle
+➡️@AIDeveloperNotes

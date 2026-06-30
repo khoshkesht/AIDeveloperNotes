@@ -1,0 +1,9 @@
+#Post_046
+
+<b>تفکیک Memory و Skill در Agentها</b>
+
+حافظه و skill در سیستم‌های Agent دو چرخه متفاوت دارند. memory شامل رویدادهای گذشته و تجربه‌های episodic است، در حالی که skill نماینده رفتار فعلی و procedural logic محسوب می‌شود. استفاده اشتباه از memory به‌عنوان دستور اجرایی باعث خطا و ناسازگاری می‌شود. به همین دلیل نسخه‌بندی skills و جداسازی lifecycle آن‌ها از memory برای جلوگیری از رفتارهای ناسازگار ضروری است.
+
+#5_Day_AI_Agents #Day_3
+ℹ️ kaggle
+➡️@AIDeveloperNotes

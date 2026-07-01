@@ -10,6 +10,13 @@ if (args.Any(arg => arg.Equals("--help", StringComparison.OrdinalIgnoreCase) || 
     Console.WriteLine("Usage:");
     Console.WriteLine("  Publisher.Job                 Run as a long-running daily job process.");
     Console.WriteLine("  Publisher.Job --run-once      Run the job immediately, ignoring enabled/time/state.");
+    Console.WriteLine("  Publisher.Job --status        Print config/state diagnostics and exit.");
+    return;
+}
+
+if (args.Any(arg => arg.Equals("--status", StringComparison.OrdinalIgnoreCase)))
+{
+    runner.PrintStatus();
     return;
 }
 
@@ -30,6 +37,7 @@ internal sealed class DailyPostJobRunner
     private readonly string _picsPath;
     private readonly string _postedFilePath;
     private readonly string _stateFilePath;
+    private readonly string _lockFilePath;
 
     public DailyPostJobRunner(string basePath)
     {
@@ -39,12 +47,14 @@ internal sealed class DailyPostJobRunner
         _picsPath = Path.Combine(_basePath, "Pics");
         _postedFilePath = Path.Combine(_basePath, "posted.txt");
         _stateFilePath = Path.Combine(_basePath, "daily-job-state.json");
+        _lockFilePath = Path.Combine(_basePath, "daily-job.lock");
     }
 
     public async Task RunAsync()
     {
         EnsureDefaultFiles();
         Console.WriteLine("Publisher daily job started.");
+        PrintStatus();
 
         while (true)
         {
@@ -71,6 +81,32 @@ internal sealed class DailyPostJobRunner
         var config = LoadConfig();
         Console.WriteLine("Publisher daily job manual run started.");
         await RunOnceAsync(config, updateDailyState: false);
+    }
+
+    public void PrintStatus()
+    {
+        EnsureDefaultFiles();
+        var config = LoadConfig();
+        var state = LoadState();
+        var dailyJob = config.DailyJob;
+        var postedFiles = LoadPostedFiles();
+
+        Console.WriteLine("Publisher daily job status:");
+        Console.WriteLine($"  Base path: {_basePath}");
+        Console.WriteLine($"  Config path: {_configPath}");
+        Console.WriteLine($"  Server now: {DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss zzz}");
+        Console.WriteLine($"  Enabled: {dailyJob.Enabled}");
+        Console.WriteLine($"  Scheduled time: {dailyJob.Time}");
+        Console.WriteLine($"  Last run date: {state.LastRunDate?.ToString() ?? "(never)"}");
+        Console.WriteLine($"  Last attempt started at: {state.LastAttemptStartedAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "(never)"}");
+        Console.WriteLine($"  Last attempt finished at: {state.LastAttemptFinishedAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "(never)"}");
+        Console.WriteLine($"  Last sent count: {state.LastSentCount}");
+        Console.WriteLine($"  Post count: {dailyJob.PostCount}");
+        Console.WriteLine($"  Use proxy: {dailyJob.UseProxy}");
+        Console.WriteLine($"  Posts folder exists: {Directory.Exists(_postsPath)}");
+        Console.WriteLine($"  Pics folder exists: {Directory.Exists(_picsPath)}");
+        Console.WriteLine($"  Unposted posts: {GetUnpostedPostFiles(postedFiles).Count()}");
+        Console.WriteLine($"  Should run now: {ShouldRunNow(config)}");
     }
 
     private void EnsureDefaultFiles()
@@ -146,6 +182,26 @@ internal sealed class DailyPostJobRunner
 
         Console.WriteLine($"[{DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss zzz}] Running daily job.");
 
+        using var runLock = TryAcquireRunLock();
+        if (runLock is null)
+        {
+            Console.WriteLine("Another daily job instance is already running. Skipping this attempt.");
+            return;
+        }
+
+        EnsurePersistenceFilesWritable();
+
+        if (updateDailyState)
+        {
+            SaveState(new DailyJobState
+            {
+                LastRunDate = DateOnly.FromDateTime(DateTime.Now),
+                LastAttemptStartedAt = DateTimeOffset.Now,
+                LastAttemptFinishedAt = null,
+                LastSentCount = 0
+            });
+        }
+
         foreach (var post in GetUnpostedPostFiles(postedFiles))
         {
             if (sentCount >= targetCount)
@@ -182,10 +238,40 @@ internal sealed class DailyPostJobRunner
 
         if (updateDailyState)
         {
-            SaveState(new DailyJobState(DateOnly.FromDateTime(DateTime.Now)));
+            SaveState(new DailyJobState
+            {
+                LastRunDate = DateOnly.FromDateTime(DateTime.Now),
+                LastAttemptStartedAt = LoadState().LastAttemptStartedAt,
+                LastAttemptFinishedAt = DateTimeOffset.Now,
+                LastSentCount = sentCount
+            });
         }
 
         Console.WriteLine($"Daily job finished. Sent {sentCount} post(s).");
+    }
+
+    private FileStream? TryAcquireRunLock()
+    {
+        try
+        {
+            return new FileStream(_lockFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+        }
+        catch (IOException)
+        {
+            return null;
+        }
+    }
+
+    private void EnsurePersistenceFilesWritable()
+    {
+        using (File.Open(_postedFilePath, FileMode.Append, FileAccess.Write, FileShare.Read))
+        {
+        }
+
+        var stateDirectory = Path.GetDirectoryName(_stateFilePath) ?? _basePath;
+        var testFile = Path.Combine(stateDirectory, $".publisher-job-write-test-{Guid.NewGuid():N}.tmp");
+        File.WriteAllText(testFile, "write-test", Encoding.UTF8);
+        File.Delete(testFile);
     }
 
     private HashSet<string> LoadPostedFiles()
@@ -457,11 +543,11 @@ internal sealed class DailyPostJobRunner
     {
         if (!File.Exists(_stateFilePath))
         {
-            return new DailyJobState(null);
+            return new DailyJobState();
         }
 
         var json = File.ReadAllText(_stateFilePath, Encoding.UTF8);
-        return JsonSerializer.Deserialize<DailyJobState>(json) ?? new DailyJobState(null);
+        return JsonSerializer.Deserialize<DailyJobState>(json) ?? new DailyJobState();
     }
 
     private void SaveState(DailyJobState state)
@@ -510,7 +596,13 @@ internal sealed class ChannelConfig
     public string ChatId { get; set; } = string.Empty;
 }
 
-internal sealed record DailyJobState(DateOnly? LastRunDate);
+internal sealed class DailyJobState
+{
+    public DateOnly? LastRunDate { get; set; }
+    public DateTimeOffset? LastAttemptStartedAt { get; set; }
+    public DateTimeOffset? LastAttemptFinishedAt { get; set; }
+    public int LastSentCount { get; set; }
+}
 
 internal sealed record PostFileItem(string Path, string Name);
 

@@ -22,7 +22,7 @@
   ],
   "dailyJob": {
     "enabled": false,
-    "time": "09:00",
+    "time": "06:00",
     "postCount": 2,
     "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
     "chatId": "-1004320100300",

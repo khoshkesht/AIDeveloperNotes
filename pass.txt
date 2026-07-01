@@ -19,5 +19,8 @@ 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
 
 dotnet publish Publisher/Publisher.Job/Publisher.Job.csproj -c Release -o /opt/publisher-job
 
+
 cd /opt/publisher-job
+
+nano /opt/publisher-job/config.json
 dotnet Publisher.Job.dll --run-once

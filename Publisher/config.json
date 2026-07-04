@@ -21,11 +21,29 @@
     }
   ],
   "dailyJob": {
-    "enabled": false,
+    "enabled": true,
     "time": "06:00",
     "postCount": 2,
     "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
     "chatId": "-1004320100300",
     "useProxy": false
+  },
+  "groqArticleJob": {
+    "enabled": false,
+    "time": "09:30",
+    "promptPath": "Promp/Groq-MakeArticle.md",
+    "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
+    "chatId": "-1003968454810",
+    "useProxy": false
+  },
+  "groq": {
+    "baseUrl": "https://api.groq.com/openai/v1",
+    "apiKey": "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",
+    "apiKeyEnvironmentVariable": "GROQ_API_KEY",
+    "model": "llama-3.3-70b-versatile",
+    "maxCompletionTokens": 2048,
+    "temperature": 0.7,
+    "timeoutSeconds": 300,
+    "systemPrompt": "You generate Telegram-ready Persian posts. Return only the final Telegram post text. Use Telegram-compatible HTML only when formatting is needed."
   }
 }

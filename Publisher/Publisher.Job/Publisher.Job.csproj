@@ -17,6 +17,9 @@
     <Content Include="..\Pics\*.*" LinkBase="Pics">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\Promp\*.md" LinkBase="Promp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\posted.txt" Link="posted.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -403,3 +403,82 @@ cat config.json
 cd /opt/publisher-job
 dotnet Publisher.Job.dll --run-once
 ```
+
+## 12. تنظیم و تست Groq Article Job
+
+این job مستقل از job ارسال پست‌های `Posts` است و state/lock جدا دارد:
+
+```text
+/opt/publisher-job/groq-article-job-state.json
+/opt/publisher-job/groq-article-job.lock
+```
+
+فایل prompt باید در خروجی publish وجود داشته باشد:
+
+```bash
+ls -la /opt/publisher-job/Promp/Groq-MakeArticle.md
+cat /opt/publisher-job/Promp/Groq-MakeArticle.md
+```
+
+در `config.json` بخش‌های زیر را تنظیم کنید:
+
+```json
+"groqArticleJob": {
+  "enabled": true,
+  "time": "09:30",
+  "promptPath": "Promp/Groq-MakeArticle.md",
+  "botId": "YOUR_TELEGRAM_BOT_TOKEN",
+  "chatId": "-1000000000000",
+  "useProxy": false
+},
+"groq": {
+  "baseUrl": "https://api.groq.com/openai/v1",
+  "apiKey": "",
+  "apiKeyEnvironmentVariable": "GROQ_API_KEY",
+  "model": "llama-3.3-70b-versatile",
+  "maxCompletionTokens": 2048,
+  "temperature": 0.7,
+  "timeoutSeconds": 300
+}
+```
+
+بهتر است Groq API key را داخل config ننویسید و به صورت environment variable به سرویس بدهید.
+
+فایل سرویس را باز کنید:
+
+```bash
+sudo nano /etc/systemd/system/publisher-job.service
+```
+
+داخل بخش `[Service]` این خط را اضافه کنید:
+
+```ini
+Environment=GROQ_API_KEY=YOUR_GROQ_API_KEY
+```
+
+بعد سرویس را reload و restart کنید:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart publisher-job
+```
+
+تست دستی job دوم:
+
+```bash
+cd /opt/publisher-job
+dotnet Publisher.Job.dll --run-groq-once
+```
+
+دیدن وضعیت هر دو job:
+
+```bash
+cd /opt/publisher-job
+dotnet Publisher.Job.dll --status
+```
+
+اگر فقط job دوم خطا بدهد، job اول تحت تاثیر قرار نمی‌گیرد. لاگ‌ها:
+
+```bash
+journalctl -u publisher-job --since today
+```

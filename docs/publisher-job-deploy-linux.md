@@ -338,6 +338,16 @@ cd /opt/AIDeveloperNotes
 git pull
 ```
 
+حذف فولدر اضافه:
+
+```bash
+rm -rf '5-Days of AI Agents'/
+rm pass.txt
+rm curl.txt
+rm -rf 'docs'/
+
+```
+
 publish مجدد:
 
 ```bash

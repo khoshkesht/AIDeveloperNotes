@@ -29,9 +29,21 @@
     "useProxy": false
   },
   "groqArticleJob": {
-    "enabled": false,
-    "time": "09:30",
+    "enabled": true,
+    "time": "06:30",
     "promptPath": "Promp/Groq-MakeArticle.md",
+    "downloadImages": false,
+    "feeds": [
+      {
+        "url": "https://blog.google/innovation-and-ai/technology/ai/rss/"
+      },
+      {
+        "url": "https://news.microsoft.com/source/topics/ai/feed/"
+      },
+      {
+        "url": "https://rss.beehiiv.com/feeds/2R3C6Bt5wj.xml"
+      }
+    ],
     "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
     "chatId": "-1003968454810",
     "useProxy": false

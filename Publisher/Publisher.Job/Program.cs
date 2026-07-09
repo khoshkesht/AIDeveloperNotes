@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 var runner = new PublisherJobRunner(AppContext.BaseDirectory);
 if (args.Any(arg => arg.Equals("--help", StringComparison.OrdinalIgnoreCase) || arg.Equals("-h", StringComparison.OrdinalIgnoreCase)))
@@ -45,6 +46,7 @@ internal sealed class PublisherJobRunner
     private readonly string _configPath;
     private readonly string _postsPath;
     private readonly string _picsPath;
+    private readonly string _newsPicsPath;
     private readonly string _promptPath;
     private readonly string _postedFilePath;
     private readonly JobStateStore _postsState;
@@ -56,6 +58,7 @@ internal sealed class PublisherJobRunner
         _configPath = Path.Combine(_basePath, "config.json");
         _postsPath = Path.Combine(_basePath, "Posts");
         _picsPath = Path.Combine(_basePath, "Pics");
+        _newsPicsPath = Path.Combine(_picsPath, "news");
         _promptPath = Path.Combine(_basePath, "Promp", "Groq-MakeArticle.md");
         _postedFilePath = Path.Combine(_basePath, "posted.txt");
         _postsState = new JobStateStore(
@@ -174,6 +177,7 @@ internal sealed class PublisherJobRunner
     {
         Directory.CreateDirectory(_postsPath);
         Directory.CreateDirectory(_picsPath);
+        Directory.CreateDirectory(_newsPicsPath);
         Directory.CreateDirectory(Path.GetDirectoryName(_promptPath) ?? _basePath);
 
         if (!File.Exists(_postedFilePath))
@@ -333,26 +337,82 @@ internal sealed class PublisherJobRunner
             throw new InvalidOperationException($"Groq prompt file is empty: {promptPath}");
         }
 
-        var groq = new GroqArticleGenerator(config.Groq, config.Proxy);
-        var generatedPost = await groq.GenerateTelegramPostAsync(prompt, groqJob.UseProxy);
-        if (string.IsNullOrWhiteSpace(generatedPost))
+        if (groqJob.Feeds.Count == 0)
         {
-            throw new InvalidOperationException("Groq returned an empty article.");
+            throw new InvalidOperationException("groqArticleJob.feeds is empty. Add at least one RSS feed URL.");
         }
 
+        var groq = new GroqArticleGenerator(config.Groq, config.Proxy);
+        var rssReader = new RssFeedReader(config.Proxy);
+        var imageDownloader = new NewsImageDownloader(config.Proxy, _newsPicsPath);
         var telegram = new TelegramPublisher(config.Proxy);
-        var result = await telegram.SendPostAsync(bot, channel, generatedPost.Trim(), imagePath: null, groqJob.UseProxy);
-        if (!result.Success)
+        var targetCount = groqJob.Feeds.Count;
+        var sentCount = 0;
+
+        foreach (var feed in groqJob.Feeds)
         {
-            throw new InvalidOperationException($"Telegram send failed for Groq article: {result.ErrorMessage}");
+            var feedUrl = feed.Url.Trim();
+            if (string.IsNullOrWhiteSpace(feedUrl))
+            {
+                Console.WriteLine("Skipped empty RSS feed URL.");
+                continue;
+            }
+
+            var latestItem = await rssReader.GetLatestItemAsync(feedUrl, groqJob.UseProxy);
+            if (latestItem is null)
+            {
+                Console.WriteLine($"Skipped RSS feed because no item was found: {feedUrl}");
+                continue;
+            }
+
+            if (sentCount > 0)
+            {
+                await Task.Delay(TimeSpan.FromMinutes(2));
+            }
+
+            var generatedPost = await groq.GenerateTelegramPostAsync(BuildRssSummaryPrompt(prompt, latestItem), groqJob.UseProxy);
+            if (string.IsNullOrWhiteSpace(generatedPost))
+            {
+                throw new InvalidOperationException($"Groq returned an empty article for RSS item: {latestItem.Link}");
+            }
+
+            var imagePath = groqJob.DownloadImages
+                ? await imageDownloader.DownloadAsync(latestItem.ImageUrl, groqJob.UseProxy)
+                : null;
+            var result = await telegram.SendPostAsync(bot, channel, generatedPost.Trim(), imagePath, groqJob.UseProxy);
+            if (!result.Success)
+            {
+                throw new InvalidOperationException($"Telegram send failed for Groq article: {result.ErrorMessage}");
+            }
+
+            sentCount++;
+            Console.WriteLine($"Sent Groq RSS article {sentCount}/{targetCount}: {latestItem.Title}");
         }
 
         if (updateDailyState)
         {
-            _groqState.SaveFinished(sentCount: 1);
+            _groqState.SaveFinished(sentCount);
         }
 
-        Console.WriteLine("Groq article job finished. Sent 1 post.");
+        Console.WriteLine($"Groq article job finished. Sent {sentCount} post(s).");
+    }
+
+    private static string BuildRssSummaryPrompt(string promptTemplate, RssFeedItem item)
+    {
+        var publishedAt = item.PublishedAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "Unknown";
+        return $"""
+{promptTemplate}
+
+RSS item to summarize:
+Title: {item.Title}
+Source: {item.SourceTitle}
+PublishedAt: {publishedAt}
+Link: {item.Link}
+ImageUrl: {item.ImageUrl ?? "None"}
+
+Content:
+{item.Summary}
+""";
     }
 
     private void EnsurePersistenceFilesWritable(JobStateStore stateStore)
@@ -841,6 +901,249 @@ internal sealed class GroqArticleGenerator
     }
 }
 
+internal sealed class RssFeedReader
+{
+    private readonly ProxyConfig _proxyConfig;
+
+    public RssFeedReader(ProxyConfig proxyConfig)
+    {
+        _proxyConfig = proxyConfig;
+    }
+
+    public async Task<RssFeedItem?> GetLatestItemAsync(string feedUrl, bool useProxy)
+    {
+        using var httpClient = HttpClientFactory.Create(_proxyConfig, useProxy);
+        httpClient.Timeout = TimeSpan.FromSeconds(60);
+        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("AIDeveloperNotesPublisher/1.0");
+
+        string xml;
+        try
+        {
+            xml = await httpClient.GetStringAsync(feedUrl);
+        }
+        catch (HttpRequestException ex)
+        {
+            throw new InvalidOperationException($"RSS feed request failed: {feedUrl}", ex);
+        }
+
+        var document = XDocument.Parse(xml);
+        return ParseRss(document, feedUrl) ?? ParseAtom(document, feedUrl);
+    }
+
+    private static RssFeedItem? ParseRss(XDocument document, string feedUrl)
+    {
+        var channel = document.Descendants().FirstOrDefault(element => element.Name.LocalName.Equals("channel", StringComparison.OrdinalIgnoreCase));
+        var sourceTitle = GetChildValue(channel, "title");
+        var items = document.Descendants()
+            .Where(element => element.Name.LocalName.Equals("item", StringComparison.OrdinalIgnoreCase))
+            .Select(item => new RssFeedItem(
+                SourceTitle: FirstNonEmpty(sourceTitle, feedUrl),
+                Title: FirstNonEmpty(GetChildValue(item, "title"), "(untitled)"),
+                Link: FirstNonEmpty(GetChildValue(item, "link"), GetChildValue(item, "guid"), feedUrl),
+                ImageUrl: GetImageUrl(item),
+                Summary: CleanFeedText(FirstNonEmpty(
+                    GetChildValue(item, "encoded"),
+                    GetChildValue(item, "description"),
+                    GetChildValue(item, "summary"),
+                    GetChildValue(item, "title"))),
+                PublishedAt: ParseDate(FirstNonEmpty(
+                    GetChildValue(item, "pubDate"),
+                    GetChildValue(item, "published"),
+                    GetChildValue(item, "updated")))))
+            .Where(item => !string.IsNullOrWhiteSpace(item.Title))
+            .ToList();
+
+        return PickLatest(items);
+    }
+
+    private static RssFeedItem? ParseAtom(XDocument document, string feedUrl)
+    {
+        var sourceTitle = GetChildValue(document.Root, "title");
+        var items = document.Descendants()
+            .Where(element => element.Name.LocalName.Equals("entry", StringComparison.OrdinalIgnoreCase))
+            .Select(entry => new RssFeedItem(
+                SourceTitle: FirstNonEmpty(sourceTitle, feedUrl),
+                Title: FirstNonEmpty(GetChildValue(entry, "title"), "(untitled)"),
+                Link: FirstNonEmpty(GetAtomLink(entry), feedUrl),
+                ImageUrl: GetImageUrl(entry),
+                Summary: CleanFeedText(FirstNonEmpty(
+                    GetChildValue(entry, "content"),
+                    GetChildValue(entry, "summary"),
+                    GetChildValue(entry, "title"))),
+                PublishedAt: ParseDate(FirstNonEmpty(
+                    GetChildValue(entry, "published"),
+                    GetChildValue(entry, "updated")))))
+            .Where(item => !string.IsNullOrWhiteSpace(item.Title))
+            .ToList();
+
+        return PickLatest(items);
+    }
+
+    private static RssFeedItem? PickLatest(List<RssFeedItem> items)
+    {
+        if (items.Count == 0)
+        {
+            return null;
+        }
+
+        return items
+            .OrderByDescending(item => item.PublishedAt ?? DateTimeOffset.MinValue)
+            .First();
+    }
+
+    private static string? GetChildValue(XElement? element, string localName)
+    {
+        return element?.Elements()
+            .FirstOrDefault(child => child.Name.LocalName.Equals(localName, StringComparison.OrdinalIgnoreCase))
+            ?.Value
+            ?.Trim();
+    }
+
+    private static string? GetAtomLink(XElement entry)
+    {
+        return entry.Elements()
+            .Where(child => child.Name.LocalName.Equals("link", StringComparison.OrdinalIgnoreCase))
+            .Select(child => child.Attribute("href")?.Value)
+            .FirstOrDefault(value => !string.IsNullOrWhiteSpace(value));
+    }
+
+    private static string? GetImageUrl(XElement item)
+    {
+        var mediaUrl = item.Elements()
+            .Where(child =>
+                child.Name.LocalName.Equals("content", StringComparison.OrdinalIgnoreCase) ||
+                child.Name.LocalName.Equals("thumbnail", StringComparison.OrdinalIgnoreCase))
+            .Select(child => child.Attribute("url")?.Value)
+            .FirstOrDefault(value => IsLikelyImageUrl(value));
+
+        if (!string.IsNullOrWhiteSpace(mediaUrl))
+        {
+            return mediaUrl;
+        }
+
+        var enclosureUrl = item.Elements()
+            .Where(child => child.Name.LocalName.Equals("enclosure", StringComparison.OrdinalIgnoreCase))
+            .Where(child => IsImageContentType(child.Attribute("type")?.Value))
+            .Select(child => child.Attribute("url")?.Value)
+            .FirstOrDefault(value => !string.IsNullOrWhiteSpace(value));
+
+        if (!string.IsNullOrWhiteSpace(enclosureUrl))
+        {
+            return enclosureUrl;
+        }
+
+        var imageElementUrl = item.Descendants()
+            .Where(child => child.Name.LocalName.Equals("url", StringComparison.OrdinalIgnoreCase))
+            .Select(child => child.Value)
+            .FirstOrDefault(value => IsLikelyImageUrl(value));
+
+        return string.IsNullOrWhiteSpace(imageElementUrl) ? null : imageElementUrl.Trim();
+    }
+
+    private static DateTimeOffset? ParseDate(string? value)
+    {
+        return DateTimeOffset.TryParse(value, out var parsed) ? parsed : null;
+    }
+
+    private static string FirstNonEmpty(params string?[] values)
+    {
+        return values.FirstOrDefault(value => !string.IsNullOrWhiteSpace(value))?.Trim() ?? string.Empty;
+    }
+
+    private static string CleanFeedText(string value)
+    {
+        var decoded = WebUtility.HtmlDecode(value);
+        var withoutTags = Regex.Replace(decoded, "<.*?>", " ", RegexOptions.Singleline);
+        var collapsedWhitespace = Regex.Replace(withoutTags, "\\s+", " ");
+        return collapsedWhitespace.Trim();
+    }
+
+    private static bool IsImageContentType(string? value)
+    {
+        return value?.StartsWith("image/", StringComparison.OrdinalIgnoreCase) == true;
+    }
+
+    private static bool IsLikelyImageUrl(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return false;
+        }
+
+        return Uri.TryCreate(value.Trim(), UriKind.Absolute, out var uri) &&
+            Regex.IsMatch(uri.AbsolutePath, "\\.(png|jpe?g|webp|gif)$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    }
+}
+
+internal sealed class NewsImageDownloader
+{
+    private readonly ProxyConfig _proxyConfig;
+    private readonly string _outputPath;
+
+    public NewsImageDownloader(ProxyConfig proxyConfig, string outputPath)
+    {
+        _proxyConfig = proxyConfig;
+        _outputPath = outputPath;
+    }
+
+    public async Task<string?> DownloadAsync(string? imageUrl, bool useProxy)
+    {
+        if (string.IsNullOrWhiteSpace(imageUrl))
+        {
+            return null;
+        }
+
+        using var httpClient = HttpClientFactory.Create(_proxyConfig, useProxy);
+        httpClient.Timeout = TimeSpan.FromSeconds(60);
+        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("AIDeveloperNotesPublisher/1.0");
+
+        using var response = await httpClient.GetAsync(imageUrl);
+        if (!response.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"Skipped RSS image because download failed with {(int)response.StatusCode}: {imageUrl}");
+            return null;
+        }
+
+        var contentType = response.Content.Headers.ContentType?.MediaType;
+        if (contentType?.StartsWith("image/", StringComparison.OrdinalIgnoreCase) != true)
+        {
+            Console.WriteLine($"Skipped RSS image because content type is not image: {contentType ?? "(none)"}");
+            return null;
+        }
+
+        Directory.CreateDirectory(_outputPath);
+        var extension = GetImageExtension(imageUrl, contentType);
+        var imagePath = Path.Combine(_outputPath, $"{Guid.NewGuid():N}{extension}");
+
+        await using var imageStream = await response.Content.ReadAsStreamAsync();
+        await using var fileStream = File.Create(imagePath);
+        await imageStream.CopyToAsync(fileStream);
+
+        return imagePath;
+    }
+
+    private static string GetImageExtension(string imageUrl, string contentType)
+    {
+        if (Uri.TryCreate(imageUrl, UriKind.Absolute, out var uri))
+        {
+            var extension = Path.GetExtension(uri.AbsolutePath).ToLowerInvariant();
+            if (extension is ".png" or ".jpg" or ".jpeg" or ".webp" or ".gif")
+            {
+                return extension;
+            }
+        }
+
+        return contentType.ToLowerInvariant() switch
+        {
+            "image/png" => ".png",
+            "image/jpeg" => ".jpg",
+            "image/webp" => ".webp",
+            "image/gif" => ".gif",
+            _ => ".jpg"
+        };
+    }
+}
+
 internal static class HttpClientFactory
 {
     public static HttpClient Create(ProxyConfig proxyConfig, bool useProxy)
@@ -908,6 +1211,13 @@ internal sealed class DailyJobConfig : ScheduledJobConfig
 internal sealed class GroqArticleJobConfig : ScheduledJobConfig
 {
     public string PromptPath { get; set; } = Path.Combine("Promp", "Groq-MakeArticle.md");
+    public bool DownloadImages { get; set; } = true;
+    public List<RssFeedConfig> Feeds { get; set; } = [];
+}
+
+internal sealed class RssFeedConfig
+{
+    public string Url { get; set; } = string.Empty;
 }
 
 internal sealed class GroqConfig
@@ -951,6 +1261,14 @@ internal sealed class DailyJobState
 }
 
 internal sealed record PostFileItem(string Path, string Name);
+
+internal sealed record RssFeedItem(
+    string SourceTitle,
+    string Title,
+    string Link,
+    string? ImageUrl,
+    string Summary,
+    DateTimeOffset? PublishedAt);
 
 internal sealed record TelegramSendResult(bool Success, string ErrorMessage)
 {

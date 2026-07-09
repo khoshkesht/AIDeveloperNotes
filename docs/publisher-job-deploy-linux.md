@@ -437,6 +437,15 @@ cat /opt/publisher-job/Promp/Groq-MakeArticle.md
   "enabled": true,
   "time": "09:30",
   "promptPath": "Promp/Groq-MakeArticle.md",
+  "downloadImages": true,
+  "feeds": [
+    {
+      "url": "https://techcrunch.com/category/artificial-intelligence/feed/"
+    },
+    {
+      "url": "https://blog.google/rss/"
+    }
+  ],
   "botId": "YOUR_TELEGRAM_BOT_TOKEN",
   "chatId": "-1000000000000",
   "useProxy": false

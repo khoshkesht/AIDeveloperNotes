@@ -23,7 +23,7 @@
   "dailyJob": {
     "enabled": true,
     "time": "06:00",
-    "postCount": 2,
+    "postCount": 3,
     "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
     "chatId": "-1004320100300",
     "useProxy": false
@@ -35,10 +35,10 @@
     "downloadImages": false,
     "feeds": [
       {
-        "url": "https://blog.google/innovation-and-ai/technology/ai/rss/"
+        "url": "https://aijourn.com/feed/"
       },
       {
-        "url": "https://news.microsoft.com/source/topics/ai/feed/"
+        "url": "https://github.blog/ai-and-ml/feed/"
       },
       {
         "url": "https://rss.beehiiv.com/feeds/2R3C6Bt5wj.xml"

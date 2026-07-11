@@ -24,3 +24,31 @@ cd /opt/publisher-job
 
 nano /opt/publisher-job/config.json
 dotnet Publisher.Job.dll --run-once
+
+
+
+
+-------------------------update
+
+sudo systemctl stop publisher-job 
+cp /opt/publisher-job/posted.txt /tmp/publisher-job-posted.txt
+
+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
+
+cd /opt/AIDeveloperNotes
+git pull
+
+
+rm -rf '5-Days of AI Agents'/
+rm pass.txt
+rm curl.txt
+rm -rf 'docs'/
+
+
+dotnet publish Publisher/Publisher.Job/Publisher.Job.csproj -c Release -o /opt/publisher-job
+ 
+cp /tmp/publisher-job-posted.txt /opt/publisher-job/posted.txt
+sudo chown -R www-data:www-data /opt/publisher-job
+
+sudo systemctl start publisher-job
+sudo systemctl status publisher-job

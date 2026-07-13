@@ -21,12 +21,16 @@
     }
   ],
   "telegramDataProvider": {
-    "postLimit": 10,
     "useProxy": false,
     "channels": [
       {
         "url": "https://t.me/khabarfouri",
-        "promptPath": "Promp/TelegramNews/Telegram-DataProvider-AkharinKhabar.md"
+        "promptPath": "Promp/TelegramNews/Telegram-DataProvider-AkharinKhabar.md",
+        "postLimit": 10,
+        "maxAgeMinutes": 30,
+        "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
+        "chatId": "-1003968454810",
+        "useProxy": false
       }
     ]
   }

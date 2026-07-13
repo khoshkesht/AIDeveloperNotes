@@ -130,7 +130,7 @@ internal sealed class PublisherJobRunner
     {
         EnsureDefaultFiles();
         var config = LoadConfig();
-        await new TelegramDataProviderJob(config.TelegramDataProvider, config.Groq, config.Proxy, _basePath).RunAsync();
+        await new TelegramDataProviderJob(config, _basePath).RunAsync();
     }
 
     public void PrintStatus()

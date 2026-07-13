@@ -43,15 +43,16 @@ internal sealed class RssFeedConfig
 
 internal sealed class TelegramDataProviderConfig
 {
-    public int PostLimit { get; set; } = 10;
     public bool UseProxy { get; set; }
     public List<TelegramSourceChannelConfig> Channels { get; set; } = [];
 }
 
-internal sealed class TelegramSourceChannelConfig
+internal sealed class TelegramSourceChannelConfig : TelegramTargetConfig
 {
     public string Url { get; set; } = string.Empty;
     public string PromptPath { get; set; } = string.Empty;
+    public int PostLimit { get; set; } = 10;
+    public int MaxAgeMinutes { get; set; } = 30;
 }
 
 internal sealed class GroqConfig

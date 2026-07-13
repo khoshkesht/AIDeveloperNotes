@@ -49,12 +49,25 @@
     "useProxy": false
   },
   "telegramDataProvider": {
-    "postLimit": 10,
     "useProxy": false,
     "channels": [
       {
         "url": "https://t.me/khabarfouri",
-        "promptPath": "Promp/TelegramNews/Telegram-DataProvider-AkharinKhabar.md"
+        "promptPath": "Promp/TelegramNews/Telegram-DataProvider-AkharinKhabar.md",
+        "postLimit": 10,
+        "maxAgeMinutes": 30,
+        "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
+        "chatId": "-1003823398087",
+        "useProxy": false
+      },
+      {
+        "url": "https://t.me/Varzesh3_onlinei",
+        "promptPath": "Promp/TelegramNews/Telegram-DataProvider-Varzesh3_onlinei.md",
+        "postLimit": 10,
+        "maxAgeMinutes": 30,
+        "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
+        "chatId": "-1003823398087",
+        "useProxy": false
       }
     ]
   },

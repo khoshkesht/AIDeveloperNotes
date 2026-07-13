@@ -3,20 +3,18 @@ using System.Text.RegularExpressions;
 
 internal sealed class TelegramDataProviderJob
 {
+    private readonly AppConfig _appConfig;
     private readonly TelegramDataProviderConfig _config;
-    private readonly GroqConfig _groqConfig;
     private readonly ProxyConfig _proxyConfig;
     private readonly string _basePath;
 
     public TelegramDataProviderJob(
-        TelegramDataProviderConfig config,
-        GroqConfig groqConfig,
-        ProxyConfig proxyConfig,
+        AppConfig appConfig,
         string basePath)
     {
-        _config = config;
-        _groqConfig = groqConfig;
-        _proxyConfig = proxyConfig;
+        _appConfig = appConfig;
+        _config = appConfig.TelegramDataProvider;
+        _proxyConfig = appConfig.Proxy;
         _basePath = basePath;
     }
 
@@ -31,8 +29,8 @@ internal sealed class TelegramDataProviderJob
         }
 
         var reader = new TelegramChannelReader(_proxyConfig);
-        var telegramPostService = new TelegramPostService(_groqConfig, _proxyConfig);
-        var postLimit = Math.Max(1, _config.PostLimit);
+        var telegramPostService = new TelegramPostService(_appConfig.Groq, _proxyConfig);
+        var telegram = new TelegramPublisher(_proxyConfig);
         foreach (var channel in _config.Channels)
         {
             var channelUrl = channel.Url.Trim();
@@ -49,8 +47,17 @@ internal sealed class TelegramDataProviderJob
                 continue;
             }
 
+            var bot = ConfigResolver.ResolveBot(_appConfig, channel);
+            var targetChannel = ConfigResolver.ResolveChannel(_appConfig, channel);
+            if (bot is null || targetChannel is null)
+            {
+                Console.WriteLine($"Skipped Telegram channel because target bot/channel was not found in config.json: {channelUrl}");
+                continue;
+            }
+
             Console.WriteLine();
             Console.WriteLine($"Channel: {channelUrl}");
+            var postLimit = Math.Max(1, channel.PostLimit);
             IReadOnlyList<TelegramChannelPost> posts;
             try
             {
@@ -68,14 +75,16 @@ internal sealed class TelegramDataProviderJob
                 continue;
             }
 
+            var newestAllowedPublishedAt = DateTimeOffset.UtcNow.AddMinutes(-Math.Max(1, channel.MaxAgeMinutes));
             var textPosts = posts
                 .Select(post => new { Post = post, Text = post.Text.Trim() })
+                .Where(item => item.Post.PublishedAt is not null && item.Post.PublishedAt.Value.ToUniversalTime() >= newestAllowedPublishedAt)
                 .Where(item => !string.IsNullOrWhiteSpace(item.Text) && !item.Text.Equals("(no text)", StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
             if (textPosts.Count == 0)
             {
-                Console.WriteLine("No text posts were found.");
+                Console.WriteLine($"No text posts newer than {channel.MaxAgeMinutes} minute(s) were found. Skipping Groq.");
                 continue;
             }
 
@@ -102,11 +111,25 @@ internal sealed class TelegramDataProviderJob
             for (var index = 0; index < generatedPosts.Count; index++)
             {
                 var post = textPosts[index].Post;
+                var postText = generatedPosts[index].Trim();
+                if (string.IsNullOrWhiteSpace(postText))
+                {
+                    Console.WriteLine($"Skipped empty generated post for: {post.Url}");
+                    continue;
+                }
+
+                var result = await telegram.SendPostAsync(bot, targetChannel, postText, imagePath: null, channel.UseProxy);
+                if (!result.Success)
+                {
+                    throw new InvalidOperationException($"Telegram send failed for TelegramDataProvider: {result.ErrorMessage}");
+                }
+
                 Console.WriteLine("----------------------------------------");
                 Console.WriteLine($"Post: {post.PostId}");
                 Console.WriteLine($"Url: {post.Url}");
                 Console.WriteLine($"PublishedAt: {post.PublishedAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "(unknown)"}");
-                Console.WriteLine(generatedPosts[index]);
+                Console.WriteLine(postText);
+                Console.WriteLine("Sent to Telegram.");
             }
         }
 
@@ -150,7 +173,15 @@ internal sealed class TelegramChannelReader
         }
         catch (HttpRequestException ex)
         {
-            throw new InvalidOperationException($"Telegram public channel request failed: {publicUrl}", ex);
+            throw new InvalidOperationException(
+                $"Telegram public channel request failed: {publicUrl}. UseProxy={useProxy}. {ex.Message}",
+                ex);
+        }
+        catch (TaskCanceledException ex)
+        {
+            throw new InvalidOperationException(
+                $"Telegram public channel request timed out: {publicUrl}. UseProxy={useProxy}.",
+                ex);
         }
 
         return ParsePosts(html)

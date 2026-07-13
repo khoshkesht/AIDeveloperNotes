@@ -19,26 +19,10 @@ public sealed partial class MainForm : Form
     public MainForm()
     {
         _postsPath = Path.Combine(_basePath, "Posts");
-        _postedFilePath = Path.Combine(FindProjectRoot(_basePath), "posted.txt");
+        _postedFilePath = Path.Combine(_basePath, "posted.txt");
 
         InitializeComponent();
         Load += MainForm_Load;
-    }
-
-    private static string FindProjectRoot(string startPath)
-    {
-        var directory = new DirectoryInfo(startPath);
-        while (directory is not null)
-        {
-            if (File.Exists(Path.Combine(directory.FullName, "Publisher.csproj")))
-            {
-                return directory.FullName;
-            }
-
-            directory = directory.Parent;
-        }
-
-        return startPath;
     }
 
     private void MainForm_Load(object? sender, EventArgs e)

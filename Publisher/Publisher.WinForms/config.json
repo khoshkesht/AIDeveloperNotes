@@ -19,15 +19,5 @@
       "title": "کانال تهیه کننده محتوا",
       "chatId": "-1003968454810"
     }
-  ],
-  "telegramDataProvider": {
-    "postLimit": 10,
-    "useProxy": false,
-    "channels": [
-      {
-        "url": "https://t.me/khabarfouri",
-        "promptPath": "Promp/TelegramNews/Telegram-DataProvider-AkharinKhabar.md"
-      }
-    ]
-  }
+  ]
 }

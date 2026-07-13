@@ -9,20 +9,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Publisher.Job\**\*.cs" />
+    <Compile Remove="Groq\**\*.cs" />
 
     <Compile Update="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
 
-    <None Update="config.json">
+    <None Include="config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
 
-    <Content Include="Posts\*.txt">
+    <Content Include="..\Posts\*.txt" LinkBase="Posts">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-       <Content Include="posted.txt">
+
+    <Content Include="..\posted.txt" Link="posted.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

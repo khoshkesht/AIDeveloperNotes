@@ -1,4 +1,4 @@
 <Solution>
-  <Project Path="Publisher.csproj" />
+  <Project Path="Publisher.WinForms/Publisher.WinForms.csproj" />
   <Project Path="Publisher.Job/Publisher.Job.csproj" />
 </Solution>

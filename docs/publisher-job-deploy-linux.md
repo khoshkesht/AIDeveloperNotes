@@ -2,6 +2,8 @@
 
 این سند مراحل دریافت کد از GitHub، publish، تنظیم `config.json`، ساخت سرویس `systemd`، اجرای سرویس، و update بعدی از GitHub را پوشش می‌دهد.
 
+برای ساختار فعلی پروژه‌ها و جداسازی WinForms از worker، `docs/publisher-project-structure.md` را ببینید.
+
 فرض‌های این راهنما:
 
 - سرور Linux از نوع Ubuntu/Debian است.

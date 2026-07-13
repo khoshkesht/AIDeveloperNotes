@@ -1,21 +1,19 @@
-این مطالب رو به عنوان "فهرست اخبار" رو در نظر بگیر 
+Treat the input below as a “News List”:
+
 {NewsList}
 
-از بین مطالب فهرست شده زیر فقط خبرهای مرتبط با موضوعات زیر را بررسی کن:
+Task:
+Review only the items related to these two topics:
 
-1. جنگ و تنش‌های خاورمیانه
-2. جام جهانی فوتبال
+Use only the information provided in the News List. Do not add any external facts, assumptions, analysis, numbers, names, causes, conclusions, or details. Ignore all unrelated items completely.
 
-خروجی باید دقیقاً شامل دو پاراگراف فارسی باشد:
-
-- پاراگراف اول: خلاصه‌ای ۵ تا ۶ خطی از وضعیت فعلی جنگ و تنش‌های خاورمیانه، فقط بر اساس خبرهای مرتبط ارائه شده در فهرست اخبار
-- پاراگراف دوم: خلاصه‌ای ۵ تا ۶ خطی از وضعیت فعلی جام جهانی فوتبال، فقط بر اساس خبرهای مرتبط ارائه شده در فهرست اخبار
-
-سبک خروجی:
+Definitions:
+- “War and tensions in the Middle East” includes direct conflict, military threats, attacks, security tensions, regional crises, sensitive maritime routes, or direct consequences of war/tension in the Middle East.
+- “FIFA World Cup football” includes only items explicitly related to the FIFA World Cup. Do not include general football, leagues, Asian Cup, or other competitions unless the item clearly refers to the FIFA World Cup.
+ 
 {Rules}
+{Format}
 
-فرمت خروجی:
-
-پاراگراف اول درباره جنگ و تنش‌های خاورمیانه.
-
-پاراگراف دوم درباره جام جهانی فوتبال.
+Final format:
+First paragraph only if there is enough information about war and tensions in the Middle East.
+Second paragraph only if there is enough information about FIFA World Cup football.

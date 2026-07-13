@@ -51,6 +51,7 @@ internal sealed class TelegramDataProviderConfig
 internal sealed class TelegramSourceChannelConfig
 {
     public string Url { get; set; } = string.Empty;
+    public string PromptPath { get; set; } = string.Empty;
 }
 
 internal sealed class GroqConfig
@@ -112,6 +113,10 @@ internal sealed record TelegramChannelPost(
 internal sealed record GroqTelegramPostRequest(
     string PromptPath,
     IReadOnlyList<RssFeedItem> Items);
+
+internal sealed record TelegramTextPostRequest(
+    string PromptPath,
+    IReadOnlyList<string> Items);
 
 internal sealed record TelegramSendResult(bool Success, string ErrorMessage)
 {

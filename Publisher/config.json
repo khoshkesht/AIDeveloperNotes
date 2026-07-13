@@ -53,7 +53,8 @@
     "useProxy": false,
     "channels": [
       {
-        "url": "https://t.me/khabarfouri"
+        "url": "https://t.me/khabarfouri",
+        "promptPath": "Promp/TelegramNews/Telegram-DataProvider-AkharinKhabar.md"
       }
     ]
   },

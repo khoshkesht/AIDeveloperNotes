@@ -34,6 +34,30 @@ internal sealed class TelegramPostService
         return posts;
     }
 
+    public async Task<IReadOnlyList<string>> GenerateTelegramPostsAsync(
+        TelegramTextPostRequest request,
+        bool useProxy)
+    {
+        var promptTemplate = File.ReadAllText(request.PromptPath, Encoding.UTF8).Trim();
+        if (string.IsNullOrWhiteSpace(promptTemplate))
+        {
+            throw new InvalidOperationException($"Groq prompt file is empty: {request.PromptPath}");
+        }
+
+        if (request.Items.Count == 0)
+        {
+            return [];
+        }
+
+        var response = await _groq.GenerateTelegramPostAsync(BuildTextPrompt(request.PromptPath, promptTemplate, request.Items), useProxy);
+        var posts = ParseJsonArray(response)
+            .Select(post => post.Trim())
+            .Where(post => !string.IsNullOrWhiteSpace(post))
+            .ToList();
+
+        return posts;
+    }
+
     private static string BuildBatchPrompt(string promptTemplate, IReadOnlyList<RssFeedItem> items)
     {
         var builder = new StringBuilder();
@@ -62,6 +86,38 @@ internal sealed class TelegramPostService
         }
 
         return builder.ToString();
+    }
+
+    private static string BuildTextPrompt(string promptPath, string promptTemplate, IReadOnlyList<string> items)
+    {
+        return promptTemplate
+            .Replace("{NewsList}", BuildBulletList(items), StringComparison.Ordinal)
+            .Replace("{Rules}", ReadPromptSibling(promptPath, "Rules.md"), StringComparison.Ordinal)
+            .Replace("{Format}", ReadPromptSibling(promptPath, "Format.md"), StringComparison.Ordinal);
+    }
+
+    private static string BuildBulletList(IReadOnlyList<string> items)
+    {
+        var builder = new StringBuilder();
+        foreach (var item in items)
+        {
+            builder.Append("- ");
+            builder.AppendLine(item);
+        }
+
+        return builder.ToString().TrimEnd();
+    }
+
+    private static string ReadPromptSibling(string promptPath, string fileName)
+    {
+        var promptDirectory = Path.GetDirectoryName(promptPath) ?? AppContext.BaseDirectory;
+        var path = Path.Combine(promptDirectory, fileName);
+        if (!File.Exists(path))
+        {
+            throw new InvalidOperationException($"Prompt dependency file was not found: {path}");
+        }
+
+        return File.ReadAllText(path, Encoding.UTF8);
     }
 
     private static IReadOnlyList<string> ParseJsonArray(string response)

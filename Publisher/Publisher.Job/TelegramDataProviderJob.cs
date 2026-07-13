@@ -4,12 +4,20 @@ using System.Text.RegularExpressions;
 internal sealed class TelegramDataProviderJob
 {
     private readonly TelegramDataProviderConfig _config;
+    private readonly GroqConfig _groqConfig;
     private readonly ProxyConfig _proxyConfig;
+    private readonly string _basePath;
 
-    public TelegramDataProviderJob(TelegramDataProviderConfig config, ProxyConfig proxyConfig)
+    public TelegramDataProviderJob(
+        TelegramDataProviderConfig config,
+        GroqConfig groqConfig,
+        ProxyConfig proxyConfig,
+        string basePath)
     {
         _config = config;
+        _groqConfig = groqConfig;
         _proxyConfig = proxyConfig;
+        _basePath = basePath;
     }
 
     public async Task RunAsync()
@@ -23,6 +31,7 @@ internal sealed class TelegramDataProviderJob
         }
 
         var reader = new TelegramChannelReader(_proxyConfig);
+        var telegramPostService = new TelegramPostService(_groqConfig, _proxyConfig);
         var postLimit = Math.Max(1, _config.PostLimit);
         foreach (var channel in _config.Channels)
         {
@@ -30,6 +39,13 @@ internal sealed class TelegramDataProviderJob
             if (string.IsNullOrWhiteSpace(channelUrl))
             {
                 Console.WriteLine("Skipped empty Telegram channel URL.");
+                continue;
+            }
+
+            var promptPath = ResolvePromptPath(channel.PromptPath);
+            if (string.IsNullOrWhiteSpace(promptPath))
+            {
+                Console.WriteLine($"Skipped Telegram channel because channel promptPath is empty: {channelUrl}");
                 continue;
             }
 
@@ -52,18 +68,62 @@ internal sealed class TelegramDataProviderJob
                 continue;
             }
 
-            foreach (var post in posts)
+            var textPosts = posts
+                .Select(post => new { Post = post, Text = post.Text.Trim() })
+                .Where(item => !string.IsNullOrWhiteSpace(item.Text) && !item.Text.Equals("(no text)", StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (textPosts.Count == 0)
             {
+                Console.WriteLine("No text posts were found.");
+                continue;
+            }
+
+            var plainTexts = textPosts.Select(item => item.Text).ToList();
+            IReadOnlyList<string> generatedPosts;
+            try
+            {
+                generatedPosts = await telegramPostService.GenerateTelegramPostsAsync(
+                    new TelegramTextPostRequest(promptPath, plainTexts),
+                    _config.UseProxy);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to generate Telegram posts for channel: {ex.Message}");
+                continue;
+            }
+
+            if (generatedPosts.Count != plainTexts.Count)
+            {
+                Console.WriteLine($"Skipped generated output because Groq returned {generatedPosts.Count} post(s), but {plainTexts.Count} input text(s) were provided.");
+                continue;
+            }
+
+            for (var index = 0; index < generatedPosts.Count; index++)
+            {
+                var post = textPosts[index].Post;
                 Console.WriteLine("----------------------------------------");
                 Console.WriteLine($"Post: {post.PostId}");
                 Console.WriteLine($"Url: {post.Url}");
                 Console.WriteLine($"PublishedAt: {post.PublishedAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "(unknown)"}");
-                Console.WriteLine(post.Text);
+                Console.WriteLine(generatedPosts[index]);
             }
         }
 
         Console.WriteLine();
         Console.WriteLine("TelegramDataProvider job finished.");
+    }
+
+    private string ResolvePromptPath(string channelPromptPath)
+    {
+        if (string.IsNullOrWhiteSpace(channelPromptPath))
+        {
+            return string.Empty;
+        }
+
+        return Path.IsPathRooted(channelPromptPath)
+            ? channelPromptPath
+            : Path.Combine(_basePath, channelPromptPath);
     }
 }
 

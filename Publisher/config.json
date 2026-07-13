@@ -48,6 +48,15 @@
     "chatId": "-1003968454810",
     "useProxy": false
   },
+  "telegramDataProvider": {
+    "postLimit": 10,
+    "useProxy": false,
+    "channels": [
+      {
+        "url": "https://t.me/khabarfouri"
+      }
+    ]
+  },
   "groq": {
     "baseUrl": "https://api.groq.com/openai/v1",
     "apiKey": "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",

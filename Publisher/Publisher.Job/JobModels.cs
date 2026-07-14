@@ -42,6 +42,7 @@ internal sealed class RssFeedConfig
 internal sealed class TelegramDataProviderConfig
 {
     public bool UseProxy { get; set; }
+    public int SendDelayBetweenChannelsSeconds { get; set; } = 1;
     public List<TelegramSourceChannelConfig> Channels { get; set; } = [];
 }
 

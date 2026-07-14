@@ -1,9 +1,0 @@
-#Post_075
-
-<b>Pub/Sub در معماری Agent Runtime</b>
-
-برای پردازش مقیاس‌پذیر ورودی‌ها، از Pub/Sub استفاده می‌شود تا پیام‌ها به‌صورت streaming به Agent runtime ارسال شوند. این معماری اجازه می‌دهد سیستم بتواند حجم بالای درخواست‌ها را بدون ازدحام پردازش کند. در این مدل، UI و backend به‌صورت جداگانه عمل می‌کنند و ارتباط آن‌ها از طریق event-driven messaging برقرار می‌شود.
-
-#5_Day_AI_Agents #Day_5
-ℹ️ kaggle
-➡️@AIDeveloperNotes

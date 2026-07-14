@@ -1,9 +1,0 @@
-#Post_082
-
-<b>Capstone Project و مسیر پیاده‌سازی واقعی</b>
-
-در پایان دوره، Capstone Project به‌عنوان نقطه اتصال تمام مفاهیم معرفی می‌شود. در این مرحله شرکت‌کنندگان باید یک Agent واقعی طراحی کنند که از مفاهیمی مانند spec-driven development، workflowهای گرافی، امنیت، observability و human-in-the-loop استفاده کند. این پروژه در چهار دسته کاربردی شامل business، education، personal assistant و open-ended ارائه می‌شود.
-
-#5_Day_AI_Agents #Day_5
-ℹ️ kaggle
-➡️@AIDeveloperNotes

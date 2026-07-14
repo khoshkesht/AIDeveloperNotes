@@ -26,7 +26,7 @@ internal sealed class TelegramPostService
         }
 
         var response = await _groq.GenerateTelegramPostAsync(BuildBatchPrompt(promptTemplate, request.Items), useProxy);
-        var posts = ParseJsonArray(response)
+        var posts = ParseJsonArray(response, allowEmptyResponse: false)
             .Select(post => post.Trim())
             .Where(post => !string.IsNullOrWhiteSpace(post))
             .ToList();
@@ -50,7 +50,7 @@ internal sealed class TelegramPostService
         }
 
         var response = await _groq.GenerateTelegramPostAsync(BuildTextPrompt(request.PromptPath, promptTemplate, request.Items), useProxy);
-        var posts = ParseJsonArray(response)
+        var posts = ParseJsonArray(response, allowEmptyResponse: true)
             .Select(post => post.Trim())
             .ToList();
 
@@ -131,9 +131,13 @@ internal sealed class TelegramPostService
         return File.ReadAllText(path, Encoding.UTF8);
     }
 
-    private static IReadOnlyList<string> ParseJsonArray(string response)
+    private static IReadOnlyList<string> ParseJsonArray(string response, bool allowEmptyResponse)
     {
         var trimmed = NormalizeJsonArrayResponse(response);
+        if (string.IsNullOrWhiteSpace(trimmed) && allowEmptyResponse)
+        {
+            return [string.Empty];
+        }
 
         try
         {
@@ -150,7 +154,43 @@ internal sealed class TelegramPostService
         }
         catch (JsonException ex)
         {
+            if (allowEmptyResponse && TryParseSingleStringArrayWithRawLineBreaks(trimmed, out var fallbackPosts))
+            {
+                return fallbackPosts;
+            }
+
+            if (allowEmptyResponse && !string.IsNullOrWhiteSpace(trimmed))
+            {
+                return [trimmed];
+            }
+
             throw new InvalidOperationException($"Groq service response was not valid JSON array: {trimmed}", ex);
+        }
+    }
+
+    private static bool TryParseSingleStringArrayWithRawLineBreaks(string value, out IReadOnlyList<string> posts)
+    {
+        posts = [];
+        var trimmed = value.Trim();
+        if (!trimmed.StartsWith("[\"", StringComparison.Ordinal) || !trimmed.EndsWith("\"]", StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        var content = trimmed[2..^2];
+        try
+        {
+            var normalizedContent = content
+                .Replace("\\", "\\\\", StringComparison.Ordinal)
+                .Replace("\"", "\\\"", StringComparison.Ordinal)
+                .Replace("\r", "\\r", StringComparison.Ordinal)
+                .Replace("\n", "\\n", StringComparison.Ordinal);
+            posts = [JsonSerializer.Deserialize<string>($"\"{normalizedContent}\"") ?? string.Empty];
+            return true;
+        }
+        catch (JsonException)
+        {
+            return false;
         }
     }
 

@@ -40,21 +40,40 @@
   },
   "telegramDataProvider": {
     "useProxy": false,
+    "sendDelayBetweenChannelsSeconds": 1,
     "channels": [
       {
         "url": "https://telegram.me/khabarfouri",
         "promptPath": "Promp/TelegramNews/Telegram-DataProvider-AkharinKhabar.md",
         "postLimit": 10,
-        "maxAgeMinutes": 30,
+        "maxAgeMinutes": -1,
         "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
         "chatId": "-1003823398087",
         "useProxy": false
       },
       {
-        "url": "https://telegram.me/Varzesh3_onlinei",
-        "promptPath": "Promp/TelegramNews/Telegram-DataProvider-Varzesh3_onlinei.md",
+        "url": "https://telegram.me/CinemaDaily",
+        "promptPath": "Promp/TelegramNews/Telegram-DataProvider-CinemaDaily.md",
         "postLimit": 10,
-        "maxAgeMinutes": 30,
+        "maxAgeMinutes":-1,
+        "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
+        "chatId": "-1003823398087",
+        "useProxy": false
+      },
+      {
+        "url": "https://telegram.me/thezoomit",
+        "promptPath": "Promp/TelegramNews/Telegram-DataProvider-thezoomit.md",
+        "postLimit": 10,
+        "maxAgeMinutes": -1,
+        "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
+        "chatId": "-1003823398087",
+        "useProxy": false
+      },
+      {
+        "url": "https://telegram.me/isna94",
+        "promptPath": "Promp/TelegramNews/Telegram-DataProvider-isna94.md",
+        "postLimit": 10,
+        "maxAgeMinutes": -1,
         "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
         "chatId": "-1003823398087",
         "useProxy": false

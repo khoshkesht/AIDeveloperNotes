@@ -1,9 +1,0 @@
-#Post_079
-
-<b>Agent UI Layer روی Runtime</b>
-
-برای بهبود تجربه کاربری، یک UI layer روی Agent runtime قرار می‌گیرد. این لایه امکان تعامل غیرمستقیم با Agent را فراهم می‌کند و به جای chat ساده، از یک رابط گرافیکی استفاده می‌شود. ارتباط بین UI و backend از طریق session service و API gateway انجام می‌شود تا تمامی درخواست‌ها به‌صورت ساختارمند به runtime منتقل شوند.
-
-#5_Day_AI_Agents #Day_5
-ℹ️ kaggle
-➡️@AIDeveloperNotes

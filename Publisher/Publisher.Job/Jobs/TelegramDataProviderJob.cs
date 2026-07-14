@@ -31,6 +31,7 @@ internal sealed class TelegramDataProviderJob
         var reader = new TelegramChannelReader(_proxyConfig);
         var telegramPostService = new TelegramPostService(_appConfig.Groq, _proxyConfig);
         var telegram = new TelegramPublisher(_proxyConfig);
+        var sentSummaries = 0;
         foreach (var channel in _config.Channels)
         {
             var channelUrl = channel.Url.Trim();
@@ -76,16 +77,25 @@ internal sealed class TelegramDataProviderJob
                 continue;
             }
 
-            var newestAllowedPublishedAt = DateTimeOffset.UtcNow.AddMinutes(-Math.Max(1, channel.MaxAgeMinutes));
-            var textPosts = posts
+            var textPostsQuery = posts
                 .Select(post => new { Post = post, Text = post.Text.Trim() })
-                .Where(item => item.Post.PublishedAt is not null && item.Post.PublishedAt.Value.ToUniversalTime() >= newestAllowedPublishedAt)
-                .Where(item => !string.IsNullOrWhiteSpace(item.Text) && !item.Text.Equals("(no text)", StringComparison.OrdinalIgnoreCase))
-                .ToList();
+                .Where(item => !string.IsNullOrWhiteSpace(item.Text) && !item.Text.Equals("(no text)", StringComparison.OrdinalIgnoreCase));
+
+            if (channel.MaxAgeMinutes > 0)
+            {
+                var newestAllowedPublishedAt = DateTimeOffset.UtcNow.AddMinutes(-channel.MaxAgeMinutes);
+                textPostsQuery = textPostsQuery
+                    .Where(item => item.Post.PublishedAt is not null && item.Post.PublishedAt.Value.ToUniversalTime() >= newestAllowedPublishedAt);
+            }
+
+            var textPosts = textPostsQuery.ToList();
 
             if (textPosts.Count == 0)
             {
-                Console.WriteLine($"No text posts newer than {channel.MaxAgeMinutes} minute(s) were found. Skipping Groq.");
+                var ageFilterText = channel.MaxAgeMinutes > 0
+                    ? $"newer than {channel.MaxAgeMinutes} minute(s)"
+                    : "with any age";
+                Console.WriteLine($"No text posts {ageFilterText} were found. Skipping Groq.");
                 continue;
             }
 
@@ -116,12 +126,23 @@ internal sealed class TelegramDataProviderJob
                 continue;
             }
 
+            if (sentSummaries > 0)
+            {
+                var delaySeconds = Math.Max(0, _config.SendDelayBetweenChannelsSeconds);
+                if (delaySeconds > 0)
+                {
+                    Console.WriteLine($"Waiting {delaySeconds} second(s) before sending the next TelegramDataProvider post.");
+                    await Task.Delay(TimeSpan.FromSeconds(delaySeconds));
+                }
+            }
+
             var result = await telegram.SendPostAsync(bot, targetChannel, postText, imagePath: null, channel.UseProxy);
             if (!result.Success)
             {
                 throw new InvalidOperationException($"Telegram send failed for TelegramDataProvider: {result.ErrorMessage}");
             }
 
+            sentSummaries++;
             Console.WriteLine("----------------------------------------");
             Console.WriteLine($"Source posts: {textPosts.Count}");
             Console.WriteLine($"Newest source post: {textPosts[0].Post.Url}");

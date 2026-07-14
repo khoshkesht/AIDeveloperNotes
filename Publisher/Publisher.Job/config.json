@@ -40,8 +40,8 @@
   },
   "telegramDataProvider": { 
     "enabled": true,
-    "startTime": "06:00",
-    "endTime": "23:59",
+    "startTime": "19:00",
+    "endTime": "20:05",
     "intervalMinutes": 30,
     "useProxy": false,
     "sendDelayBetweenChannelsSeconds": 30,

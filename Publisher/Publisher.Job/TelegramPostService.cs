@@ -52,7 +52,6 @@ internal sealed class TelegramPostService
         var response = await _groq.GenerateTelegramPostAsync(BuildTextPrompt(request.PromptPath, promptTemplate, request.Items), useProxy);
         var posts = ParseJsonArray(response)
             .Select(post => post.Trim())
-            .Where(post => !string.IsNullOrWhiteSpace(post))
             .ToList();
 
         return posts;
@@ -90,10 +89,22 @@ internal sealed class TelegramPostService
 
     private static string BuildTextPrompt(string promptPath, string promptTemplate, IReadOnlyList<string> items)
     {
-        return promptTemplate
+        var filledPrompt = promptTemplate
             .Replace("{NewsList}", BuildBulletList(items), StringComparison.Ordinal)
             .Replace("{Rules}", ReadPromptSibling(promptPath, "Rules.md"), StringComparison.Ordinal)
             .Replace("{Format}", ReadPromptSibling(promptPath, "Format.md"), StringComparison.Ordinal);
+
+        var builder = new StringBuilder();
+        builder.AppendLine(filledPrompt);
+        builder.AppendLine();
+        builder.AppendLine("Batch output contract:");
+        builder.AppendLine($"- Treat all {items.Count} News List item(s) as one batch for one Telegram channel update.");
+        builder.AppendLine("- Return only one valid JSON array with exactly one string item.");
+        builder.AppendLine("- That single array string must contain the final Persian Telegram post text summarized from the relevant News List items.");
+        builder.AppendLine("- If the News List does not contain enough relevant information for the prompt, return [\"\"].");
+        builder.AppendLine("- Do not return Markdown fences, explanations, object wrappers, numbering, or text outside the JSON array.");
+        builder.AppendLine("- Escape line breaks inside JSON strings as \\n.");
+        return builder.ToString();
     }
 
     private static string BuildBulletList(IReadOnlyList<string> items)
@@ -122,15 +133,7 @@ internal sealed class TelegramPostService
 
     private static IReadOnlyList<string> ParseJsonArray(string response)
     {
-        var trimmed = response.Trim();
-        if (trimmed.StartsWith("```", StringComparison.Ordinal))
-        {
-            trimmed = trimmed.Trim('`').Trim();
-            if (trimmed.StartsWith("json", StringComparison.OrdinalIgnoreCase))
-            {
-                trimmed = trimmed[4..].Trim();
-            }
-        }
+        var trimmed = NormalizeJsonArrayResponse(response);
 
         try
         {
@@ -149,5 +152,32 @@ internal sealed class TelegramPostService
         {
             throw new InvalidOperationException($"Groq service response was not valid JSON array: {trimmed}", ex);
         }
+    }
+
+    private static string NormalizeJsonArrayResponse(string response)
+    {
+        var trimmed = response.Trim();
+        if (trimmed.StartsWith("```", StringComparison.Ordinal))
+        {
+            trimmed = trimmed.Trim('`').Trim();
+            if (trimmed.StartsWith("json", StringComparison.OrdinalIgnoreCase))
+            {
+                trimmed = trimmed[4..].Trim();
+            }
+        }
+
+        if (trimmed.StartsWith("[", StringComparison.Ordinal) && trimmed.EndsWith("]", StringComparison.Ordinal))
+        {
+            return trimmed;
+        }
+
+        var start = trimmed.IndexOf('[', StringComparison.Ordinal);
+        var end = trimmed.LastIndexOf(']');
+        if (start >= 0 && end > start)
+        {
+            return trimmed[start..(end + 1)].Trim();
+        }
+
+        return trimmed;
     }
 }

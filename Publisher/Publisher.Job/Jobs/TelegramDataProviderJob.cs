@@ -102,35 +102,31 @@ internal sealed class TelegramDataProviderJob
                 continue;
             }
 
-            if (generatedPosts.Count != plainTexts.Count)
+            if (generatedPosts.Count != 1)
             {
-                Console.WriteLine($"Skipped generated output because Groq returned {generatedPosts.Count} post(s), but {plainTexts.Count} input text(s) were provided.");
+                Console.WriteLine($"Skipped generated output because Groq returned {generatedPosts.Count} post(s), but TelegramDataProvider expects exactly 1 summarized post per channel.");
                 continue;
             }
 
-            for (var index = 0; index < generatedPosts.Count; index++)
+            var postText = generatedPosts[0].Trim();
+            if (string.IsNullOrWhiteSpace(postText))
             {
-                var post = textPosts[index].Post;
-                var postText = generatedPosts[index].Trim();
-                if (string.IsNullOrWhiteSpace(postText))
-                {
-                    Console.WriteLine($"Skipped empty generated post for: {post.Url}");
-                    continue;
-                }
-
-                var result = await telegram.SendPostAsync(bot, targetChannel, postText, imagePath: null, channel.UseProxy);
-                if (!result.Success)
-                {
-                    throw new InvalidOperationException($"Telegram send failed for TelegramDataProvider: {result.ErrorMessage}");
-                }
-
-                Console.WriteLine("----------------------------------------");
-                Console.WriteLine($"Post: {post.PostId}");
-                Console.WriteLine($"Url: {post.Url}");
-                Console.WriteLine($"PublishedAt: {post.PublishedAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "(unknown)"}");
-                Console.WriteLine(postText);
-                Console.WriteLine("Sent to Telegram.");
+                Console.WriteLine("Skipped empty generated summary because no relevant Telegram channel items were found.");
+                continue;
             }
+
+            var result = await telegram.SendPostAsync(bot, targetChannel, postText, imagePath: null, channel.UseProxy);
+            if (!result.Success)
+            {
+                throw new InvalidOperationException($"Telegram send failed for TelegramDataProvider: {result.ErrorMessage}");
+            }
+
+            Console.WriteLine("----------------------------------------");
+            Console.WriteLine($"Source posts: {textPosts.Count}");
+            Console.WriteLine($"Newest source post: {textPosts[0].Post.Url}");
+            Console.WriteLine($"Newest source publishedAt: {textPosts[0].Post.PublishedAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "(unknown)"}");
+            Console.WriteLine(postText);
+            Console.WriteLine("Sent summarized TelegramDataProvider post to Telegram.");
         }
 
         Console.WriteLine();
@@ -195,21 +191,21 @@ internal sealed class TelegramChannelReader
         var value = channelUrl.Trim();
         if (value.StartsWith("@", StringComparison.Ordinal))
         {
-            value = "https://t.me/" + value[1..];
+            value = "https://telegram.me/" + value[1..];
         }
 
         if (!Uri.TryCreate(value, UriKind.Absolute, out var uri))
         {
-            value = "https://t.me/" + value.TrimStart('/');
+            value = "https://telegram.me/" + value.TrimStart('/');
             if (!Uri.TryCreate(value, UriKind.Absolute, out uri))
             {
                 throw new InvalidOperationException($"Invalid Telegram channel URL: {channelUrl}");
             }
         }
 
-        if (!uri.Host.Equals("t.me", StringComparison.OrdinalIgnoreCase))
+        if (!uri.Host.Equals("telegram.me", StringComparison.OrdinalIgnoreCase))
         {
-            throw new InvalidOperationException($"Telegram channel host must be t.me: {channelUrl}");
+            throw new InvalidOperationException($"Telegram channel host must be telegram.me: {channelUrl}");
         }
 
         var segments = uri.AbsolutePath.Trim('/').Split('/', StringSplitOptions.RemoveEmptyEntries);
@@ -222,7 +218,7 @@ internal sealed class TelegramChannelReader
             ? segments[1]
             : segments[0];
 
-        return new Uri($"https://t.me/s/{channelName}");
+        return new Uri($"https://telegram.me/s/{channelName}");
     }
 
     private static IEnumerable<TelegramChannelPost> ParsePosts(string html)
@@ -250,7 +246,7 @@ internal sealed class TelegramChannelReader
 
             yield return new TelegramChannelPost(
                 PostId: postId,
-                Url: "https://t.me/" + postId,
+                Url: "https://telegram.me/" + postId,
                 Text: string.IsNullOrWhiteSpace(text) ? "(no text)" : text,
                 PublishedAt: ExtractPublishedAt(body));
         }

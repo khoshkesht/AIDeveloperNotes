@@ -52,7 +52,7 @@
     "useProxy": false,
     "channels": [
       {
-        "url": "https://t.me/khabarfouri",
+        "url": "https://telegram.me/khabarfouri",
         "promptPath": "Promp/TelegramNews/Telegram-DataProvider-AkharinKhabar.md",
         "postLimit": 10,
         "maxAgeMinutes": 30,
@@ -61,7 +61,7 @@
         "useProxy": false
       },
       {
-        "url": "https://t.me/Varzesh3_onlinei",
+        "url": "https://telegram.me/Varzesh3_onlinei",
         "promptPath": "Promp/TelegramNews/Telegram-DataProvider-Varzesh3_onlinei.md",
         "postLimit": 10,
         "maxAgeMinutes": 30,

@@ -38,15 +38,37 @@
     "chatId": "-1003968454810",
     "useProxy": false
   },
-  "telegramDataProvider": {
+  "telegramDataProvider": { 
+    "enabled": true,
+    "startTime": "06:00",
+    "endTime": "23:59",
+    "intervalMinutes": 30,
     "useProxy": false,
-    "sendDelayBetweenChannelsSeconds": 1,
+    "sendDelayBetweenChannelsSeconds": 30,
     "channels": [
       {
         "url": "https://telegram.me/khabarfouri",
         "promptPath": "Promp/TelegramNews/Telegram-DataProvider-AkharinKhabar.md",
         "postLimit": 10,
-        "maxAgeMinutes": -1,
+        "maxAgeMinutes": 30,
+        "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
+        "chatId": "-1003823398087",
+        "useProxy": false
+      },
+      {
+        "url": "https://telegram.me/Khabar_Fouri",
+        "promptPath": "Promp/TelegramNews/Telegram-DataProvider-KhabarFouri.md",
+        "postLimit": 10,
+        "maxAgeMinutes": 30,
+        "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
+        "chatId": "-1003823398087",
+        "useProxy": false
+      },
+      {
+        "url": "https://telegram.me/Jahan_Fouri",
+        "promptPath": "Promp/TelegramNews/Telegram-DataProvider-JahanFouri.md",
+        "postLimit": 10,
+        "maxAgeMinutes": 30,
         "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
         "chatId": "-1003823398087",
         "useProxy": false
@@ -55,7 +77,7 @@
         "url": "https://telegram.me/CinemaDaily",
         "promptPath": "Promp/TelegramNews/Telegram-DataProvider-CinemaDaily.md",
         "postLimit": 10,
-        "maxAgeMinutes":-1,
+        "maxAgeMinutes":30,
         "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
         "chatId": "-1003823398087",
         "useProxy": false
@@ -64,7 +86,7 @@
         "url": "https://telegram.me/thezoomit",
         "promptPath": "Promp/TelegramNews/Telegram-DataProvider-thezoomit.md",
         "postLimit": 10,
-        "maxAgeMinutes": -1,
+        "maxAgeMinutes": 30,
         "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
         "chatId": "-1003823398087",
         "useProxy": false
@@ -73,7 +95,7 @@
         "url": "https://telegram.me/isna94",
         "promptPath": "Promp/TelegramNews/Telegram-DataProvider-isna94.md",
         "postLimit": 10,
-        "maxAgeMinutes": -1,
+        "maxAgeMinutes": 30,
         "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
         "chatId": "-1003823398087",
         "useProxy": false

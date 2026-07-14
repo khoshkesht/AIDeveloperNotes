@@ -55,6 +55,7 @@ internal sealed class PublisherJobRunner
     private readonly string _postedFilePath;
     private readonly JobStateStore _postsState;
     private readonly JobStateStore _groqState;
+    private readonly JobStateStore _telegramDataProviderState;
 
     public PublisherJobRunner(string basePath)
     {
@@ -71,6 +72,9 @@ internal sealed class PublisherJobRunner
         _groqState = new JobStateStore(
             Path.Combine(_basePath, "groq-article-job-state.json"),
             Path.Combine(_basePath, "groq-article-job.lock"));
+        _telegramDataProviderState = new JobStateStore(
+            Path.Combine(_basePath, "telegram-data-provider-job-state.json"),
+            Path.Combine(_basePath, "telegram-data-provider-job.lock"));
     }
 
     public async Task RunAsync()
@@ -94,6 +98,12 @@ internal sealed class PublisherJobRunner
                 config.GroqArticleJob,
                 _groqState,
                 () => CreateGroqArticleJob(config).RunAsync(updateDailyState: true));
+
+            await TryRunIntervalJobAsync(
+                "telegram data provider",
+                config.TelegramDataProvider,
+                _telegramDataProviderState,
+                () => new TelegramDataProviderJob(config, _basePath).RunAsync());
 
             await Task.Delay(CheckInterval);
         }
@@ -150,6 +160,7 @@ internal sealed class PublisherJobRunner
         Console.WriteLine($"  Unposted posts: {DailyPostsJob.GetUnpostedPostFiles(_postsPath, postedFiles).Count()}");
         PrintJobStatus("daily posts", config.DailyJob, _postsState);
         PrintJobStatus("groq article", config.GroqArticleJob, _groqState);
+        PrintTelegramDataProviderStatus(config.TelegramDataProvider, _telegramDataProviderState);
     }
 
     private DailyPostsJob CreateDailyPostsJob(AppConfig config) =>
@@ -177,6 +188,36 @@ internal sealed class PublisherJobRunner
         }
     }
 
+    private async Task TryRunIntervalJobAsync(
+        string jobName,
+        TelegramDataProviderConfig jobConfig,
+        JobStateStore stateStore,
+        Func<Task> runJobAsync)
+    {
+        try
+        {
+            if (!ShouldRunTelegramDataProviderNow(jobConfig, stateStore))
+            {
+                return;
+            }
+
+            using var runLock = stateStore.TryAcquireLock();
+            if (runLock is null)
+            {
+                Console.WriteLine("Another telegram data provider job instance is already running. Skipping this attempt.");
+                return;
+            }
+
+            stateStore.SaveStarted();
+            await runJobAsync();
+            stateStore.SaveFinished(0);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[{DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss zzz}] {jobName} job check failed: {ex.Message}");
+        }
+    }
+
     private void PrintJobStatus(string jobName, ScheduledJobConfig scheduledJob, JobStateStore stateStore)
     {
         var state = stateStore.Load();
@@ -188,6 +229,18 @@ internal sealed class PublisherJobRunner
         Console.WriteLine($"  Last attempt finished at: {state.LastAttemptFinishedAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "(never)"}");
         Console.WriteLine($"  Last sent count: {state.LastSentCount}");
         Console.WriteLine($"  Should run now: {ShouldRunNow(scheduledJob, stateStore)}");
+    }
+
+    private void PrintTelegramDataProviderStatus(TelegramDataProviderConfig jobConfig, JobStateStore stateStore)
+    {
+        var state = stateStore.Load();
+        Console.WriteLine("telegram data provider job:");
+        Console.WriteLine($"  Enabled: {jobConfig.Enabled}");
+        Console.WriteLine($"  Window: {jobConfig.StartTime}-{jobConfig.EndTime}");
+        Console.WriteLine($"  Interval minutes: {jobConfig.IntervalMinutes}");
+        Console.WriteLine($"  Last attempt started at: {state.LastAttemptStartedAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "(never)"}");
+        Console.WriteLine($"  Last attempt finished at: {state.LastAttemptFinishedAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "(never)"}");
+        Console.WriteLine($"  Should run now: {ShouldRunTelegramDataProviderNow(jobConfig, stateStore)}");
     }
 
     private void EnsureDefaultFiles()
@@ -251,5 +304,36 @@ internal sealed class PublisherJobRunner
         }
 
         return TimeOnly.FromDateTime(now) >= scheduledTime;
+    }
+
+    private static bool ShouldRunTelegramDataProviderNow(TelegramDataProviderConfig jobConfig, JobStateStore stateStore)
+    {
+        if (!jobConfig.Enabled)
+        {
+            return false;
+        }
+
+        if (!TimeOnly.TryParse(jobConfig.StartTime, out var startTime))
+        {
+            Console.WriteLine($"Invalid telegramDataProvider.startTime '{jobConfig.StartTime}'. Use HH:mm, for example 06:00.");
+            return false;
+        }
+
+        if (!TimeOnly.TryParse(jobConfig.EndTime, out var endTime))
+        {
+            Console.WriteLine($"Invalid telegramDataProvider.endTime '{jobConfig.EndTime}'. Use HH:mm, for example 23:59.");
+            return false;
+        }
+
+        var nowTime = TimeOnly.FromDateTime(DateTime.Now);
+        if (nowTime < startTime || nowTime > endTime)
+        {
+            return false;
+        }
+
+        var interval = TimeSpan.FromMinutes(Math.Max(1, jobConfig.IntervalMinutes));
+        var state = stateStore.Load();
+        return state.LastAttemptStartedAt is null ||
+            DateTimeOffset.Now - state.LastAttemptStartedAt.Value >= interval;
     }
 }

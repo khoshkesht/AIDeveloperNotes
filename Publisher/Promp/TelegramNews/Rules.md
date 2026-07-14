@@ -15,3 +15,5 @@ Output rules:
 - If the relevant items inside one topic are strongly unrelated to each other and cannot be naturally summarized as one situation, separate them inside that paragraph with simple bullet points instead of forcing an artificial connection.
 - Use bullets only for unrelated relevant items. Otherwise write normal connected paragraph text.
 - Each paragraph should usually be 3 to 4 sentences, but it may be 1 to 2 sentences when the relevant material is short.
+- Before returning the final post, verify that the same topic, fact, name, event, or sentence has not been repeated. If a point appears more than once, keep the strongest mention and remove the duplicate.
+- Before returning the final post, remove mojibake, broken encoding fragments, replacement characters, random symbols, stray Latin/foreign-language fragments that are not part of a real name, and any strange control characters.

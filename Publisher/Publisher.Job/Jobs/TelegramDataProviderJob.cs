@@ -119,12 +119,14 @@ internal sealed class TelegramDataProviderJob
                 continue;
             }
 
-            var postText = generatedPosts[0].Trim();
+            var postText = CleanGeneratedPost(generatedPosts[0]);
             if (string.IsNullOrWhiteSpace(postText))
             {
                 Console.WriteLine("Skipped empty generated summary because no relevant Telegram channel items were found.");
                 continue;
             }
+
+            postText = AppendSourceChannelName(postText, channelUrl);
 
             if (sentSummaries > 0)
             {
@@ -165,6 +167,64 @@ internal sealed class TelegramDataProviderJob
         return Path.IsPathRooted(channelPromptPath)
             ? channelPromptPath
             : Path.Combine(_basePath, channelPromptPath);
+    }
+
+    private static string AppendSourceChannelName(string postText, string channelUrl)
+    {
+        var channelName = GetChannelName(channelUrl);
+        return string.IsNullOrWhiteSpace(channelName)
+            ? postText
+            : $"{postText.Trim()}{Environment.NewLine}{Environment.NewLine}{channelName}";
+    }
+
+    private static string GetChannelName(string channelUrl)
+    {
+        var value = channelUrl.Trim();
+        if (value.StartsWith("@", StringComparison.Ordinal))
+        {
+            return value;
+        }
+
+        if (!Uri.TryCreate(value, UriKind.Absolute, out var uri))
+        {
+            return string.Empty;
+        }
+
+        var segments = uri.AbsolutePath.Trim('/').Split('/', StringSplitOptions.RemoveEmptyEntries);
+        if (segments.Length == 0)
+        {
+            return string.Empty;
+        }
+
+        var channelName = segments[0].Equals("s", StringComparison.OrdinalIgnoreCase) && segments.Length > 1
+            ? segments[1]
+            : segments[0];
+
+        return channelName.Trim();
+    }
+
+    private static string CleanGeneratedPost(string value)
+    {
+        var cleaned = UnwrapSingleJsonStringArray(value.Trim())
+            .Replace("\\r\\n", Environment.NewLine, StringComparison.Ordinal)
+            .Replace("\\n", Environment.NewLine, StringComparison.Ordinal)
+            .Replace("\\r", Environment.NewLine, StringComparison.Ordinal)
+            .Replace("\\t", " ", StringComparison.Ordinal)
+            .Replace("\\\"", "\"", StringComparison.Ordinal)
+            .Replace("\uFFFD", string.Empty, StringComparison.Ordinal)
+            .Replace("�", string.Empty, StringComparison.Ordinal);
+        cleaned = Regex.Replace(cleaned, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]", string.Empty);
+        cleaned = Regex.Replace(cleaned, @"\b(?:Ø|Ù|Û|Ú|Ã|Â|â|€|œ||||||||){2,}\b", string.Empty);
+        cleaned = Regex.Replace(cleaned, @"[ \t]{2,}", " ");
+        cleaned = Regex.Replace(cleaned, @"(?:\r?\n){3,}", Environment.NewLine + Environment.NewLine);
+        return cleaned.Trim();
+    }
+
+    private static string UnwrapSingleJsonStringArray(string value)
+    {
+        return value.StartsWith("[\"", StringComparison.Ordinal) && value.EndsWith("\"]", StringComparison.Ordinal)
+            ? value[2..^2]
+            : value;
     }
 }
 

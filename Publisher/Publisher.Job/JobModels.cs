@@ -41,6 +41,10 @@ internal sealed class RssFeedConfig
 
 internal sealed class TelegramDataProviderConfig
 {
+    public bool Enabled { get; set; }
+    public string StartTime { get; set; } = "06:00";
+    public string EndTime { get; set; } = "23:59";
+    public int IntervalMinutes { get; set; } = 30;
     public bool UseProxy { get; set; }
     public int SendDelayBetweenChannelsSeconds { get; set; } = 1;
     public List<TelegramSourceChannelConfig> Channels { get; set; } = [];

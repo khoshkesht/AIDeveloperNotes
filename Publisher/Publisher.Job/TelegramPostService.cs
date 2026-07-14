@@ -177,11 +177,15 @@ internal sealed class TelegramPostService
             return false;
         }
 
-        var content = trimmed[2..^2];
+        var content = trimmed[2..^2]
+            .Replace("\\\"", "\"", StringComparison.Ordinal)
+            .Replace("\\r\\n", "\n", StringComparison.Ordinal)
+            .Replace("\\n", "\n", StringComparison.Ordinal)
+            .Replace("\\r", "\n", StringComparison.Ordinal)
+            .Replace("\\t", " ", StringComparison.Ordinal);
         try
         {
             var normalizedContent = content
-                .Replace("\\", "\\\\", StringComparison.Ordinal)
                 .Replace("\"", "\\\"", StringComparison.Ordinal)
                 .Replace("\r", "\\r", StringComparison.Ordinal)
                 .Replace("\n", "\\n", StringComparison.Ordinal);

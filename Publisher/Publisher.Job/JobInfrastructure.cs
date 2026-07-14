@@ -88,6 +88,11 @@ internal static class ConfigResolver
             {
                 return botById;
             }
+
+            return new BotConfig
+            {
+                BotId = target.BotId.Trim()
+            };
         }
 
         if (!string.IsNullOrWhiteSpace(target.BotName))
@@ -98,23 +103,17 @@ internal static class ConfigResolver
         return config.Bots.FirstOrDefault();
     }
 
-    public static ChannelConfig? ResolveChannel(AppConfig config, TelegramTargetConfig target)
+    public static ChannelConfig? ResolveChannel(TelegramTargetConfig target)
     {
         if (!string.IsNullOrWhiteSpace(target.ChatId))
         {
-            var channelById = config.Channels.FirstOrDefault(channel => channel.ChatId.Equals(target.ChatId, StringComparison.OrdinalIgnoreCase));
-            if (channelById is not null)
+            return new ChannelConfig
             {
-                return channelById;
-            }
+                ChatId = target.ChatId.Trim()
+            };
         }
 
-        if (!string.IsNullOrWhiteSpace(target.ChannelTitle))
-        {
-            return config.Channels.FirstOrDefault(channel => channel.Title.Equals(target.ChannelTitle, StringComparison.OrdinalIgnoreCase));
-        }
-
-        return config.Channels.FirstOrDefault();
+        return null;
     }
 }
 

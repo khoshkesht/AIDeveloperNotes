@@ -48,7 +48,7 @@ internal sealed class TelegramDataProviderJob
             }
 
             var bot = ConfigResolver.ResolveBot(_appConfig, channel);
-            var targetChannel = ConfigResolver.ResolveChannel(_appConfig, channel);
+            var targetChannel = ConfigResolver.ResolveChannel(channel);
             if (bot is null || targetChannel is null)
             {
                 Console.WriteLine($"Skipped Telegram channel because target bot/channel was not found in config.json: {channelUrl}");
@@ -57,6 +57,7 @@ internal sealed class TelegramDataProviderJob
 
             Console.WriteLine();
             Console.WriteLine($"Channel: {channelUrl}");
+            Console.WriteLine($"Target chatId: {targetChannel.ChatId}");
             var postLimit = Math.Max(1, channel.PostLimit);
             IReadOnlyList<TelegramChannelPost> posts;
             try

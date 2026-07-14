@@ -10,16 +10,6 @@
     "username": "",
     "password": ""
   },
-  "channels": [
-    {
-      "title": "کانال AIDevelopertNotes",
-      "chatId": "-1004320100300"
-    },
-    {
-      "title": "کانال تهیه کننده محتوا",
-      "chatId": "-1003968454810"
-    }
-  ],
   "telegramDataProvider": {
     "useProxy": false,
     "channels": [

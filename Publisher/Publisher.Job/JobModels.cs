@@ -1,7 +1,6 @@
 internal sealed class AppConfig
 {
     public List<BotConfig> Bots { get; set; } = [];
-    public List<ChannelConfig> Channels { get; set; } = [];
     public ProxyConfig Proxy { get; set; } = new();
     public DailyJobConfig DailyJob { get; set; } = new();
     public GroqArticleJobConfig GroqArticleJob { get; set; } = new();
@@ -19,7 +18,6 @@ internal abstract class TelegramTargetConfig
 {
     public string BotName { get; set; } = string.Empty;
     public string BotId { get; set; } = string.Empty;
-    public string ChannelTitle { get; set; } = string.Empty;
     public string ChatId { get; set; } = string.Empty;
     public bool UseProxy { get; set; }
 }
@@ -83,7 +81,6 @@ internal sealed class BotConfig
 
 internal sealed class ChannelConfig
 {
-    public string Title { get; set; } = string.Empty;
     public string ChatId { get; set; } = string.Empty;
 }
 

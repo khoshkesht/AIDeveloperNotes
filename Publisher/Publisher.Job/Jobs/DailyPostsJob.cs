@@ -23,7 +23,7 @@ internal sealed class DailyPostsJob
         var dailyJob = _config.DailyJob;
         var bot = ConfigResolver.ResolveBot(_config, dailyJob)
             ?? throw new InvalidOperationException("dailyJob bot was not found in config.json.");
-        var channel = ConfigResolver.ResolveChannel(_config, dailyJob)
+        var channel = ConfigResolver.ResolveChannel(dailyJob)
             ?? throw new InvalidOperationException("dailyJob channel was not found in config.json.");
 
         using var runLock = _stateStore.TryAcquireLock();

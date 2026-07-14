@@ -28,7 +28,7 @@ internal sealed class ArticleJob
         var groqJob = _config.GroqArticleJob;
         var bot = ConfigResolver.ResolveBot(_config, groqJob)
             ?? throw new InvalidOperationException("groqArticleJob bot was not found in config.json.");
-        var channel = ConfigResolver.ResolveChannel(_config, groqJob)
+        var channel = ConfigResolver.ResolveChannel(groqJob)
             ?? throw new InvalidOperationException("groqArticleJob channel was not found in config.json.");
 
         using var runLock = _stateStore.TryAcquireLock();

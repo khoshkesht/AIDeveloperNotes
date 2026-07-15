@@ -77,6 +77,13 @@ Important scheduling settings:
     "enabled": true,
     "cron": "*/30 15-20 * * *",
     "sendDelayBetweenChannelsSeconds": 30
+  },
+  "groq": {
+    "apiKeys": [
+      "YOUR_GROQ_API_KEY_1",
+      "YOUR_GROQ_API_KEY_2"
+    ],
+    "apiKeyEnvironmentVariable": "GROQ_API_KEY"
   }
 }
 ```
@@ -90,7 +97,9 @@ Notes:
 - App-level state files such as `posted.txt`, `daily-job-state.json`, and lock files are still stored beside `Publisher.Job.dll`.
 - Top-level `channels` no longer exists. Each job or source channel must have its own `chatId`.
 - For `telegramDataProvider.channels[*].maxAgeMinutes`, `0` or a negative value disables the age filter.
-- Prefer `GROQ_API_KEY` environment variable instead of storing the Groq key in `config.json`.
+- `groq.apiKeys` can contain multiple Groq keys. Each Groq request randomly picks one key.
+- The old `groq.apiKey` setting still works as a fallback, but `groq.apiKeys` is preferred for multiple keys.
+- Prefer environment/secret storage instead of storing real Groq keys in `config.json`.
 
 ## Timezone
 

@@ -66,6 +66,7 @@ internal sealed class GroqConfig
 {
     public string BaseUrl { get; set; } = "https://api.groq.com/openai/v1";
     public string ApiKey { get; set; } = string.Empty;
+    public List<string> ApiKeys { get; set; } = [];
     public string ApiKeyEnvironmentVariable { get; set; } = "GROQ_API_KEY";
     public string Model { get; set; } = "llama-3.3-70b-versatile";
     public int MaxCompletionTokens { get; set; } = 2048;

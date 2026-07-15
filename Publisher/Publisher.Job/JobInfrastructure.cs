@@ -355,19 +355,33 @@ internal sealed class GroqArticleGenerator
 
     private string GetApiKey()
     {
-        var apiKey = _groqConfig.ApiKey;
-        if (string.IsNullOrWhiteSpace(apiKey))
+        var apiKeys = new List<string>();
+        apiKeys.AddRange(_groqConfig.ApiKeys.Where(key => !string.IsNullOrWhiteSpace(key)));
+
+        if (!string.IsNullOrWhiteSpace(_groqConfig.ApiKey))
         {
-            apiKey = Environment.GetEnvironmentVariable(_groqConfig.ApiKeyEnvironmentVariable);
+            apiKeys.Add(_groqConfig.ApiKey);
         }
 
-        if (string.IsNullOrWhiteSpace(apiKey))
+        var environmentApiKey = Environment.GetEnvironmentVariable(_groqConfig.ApiKeyEnvironmentVariable);
+        if (!string.IsNullOrWhiteSpace(environmentApiKey))
+        {
+            apiKeys.Add(environmentApiKey);
+        }
+
+        var distinctApiKeys = apiKeys
+            .Select(key => key.Trim())
+            .Where(key => key.Length > 0)
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+
+        if (distinctApiKeys.Count == 0)
         {
             throw new InvalidOperationException(
-                $"Groq API key is missing. Set groq.apiKey or environment variable '{_groqConfig.ApiKeyEnvironmentVariable}'.");
+                $"Groq API key is missing. Set groq.apiKeys, groq.apiKey, or environment variable '{_groqConfig.ApiKeyEnvironmentVariable}'.");
         }
 
-        return apiKey.Trim();
+        return distinctApiKeys[Random.Shared.Next(distinctApiKeys.Count)];
     }
 
     private static string ExtractOutputText(JsonElement root)

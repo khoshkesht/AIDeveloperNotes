@@ -4,6 +4,7 @@ https://telegram.me/AIDeveloperNotesContentBot
 
 https://api.telegram.org/bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM/sendMessage
 
+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
 
 
 curl -X POST "https://api.telegram.org/bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM/sendMessage" 
@@ -11,11 +12,7 @@ curl -X POST "https://api.telegram.org/bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxW
   -d "text=Content Producer test"
 
 
-
-
-git pull
-
-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
+ 
 
 dotnet publish Publisher/Publisher.Job/Publisher.Job.csproj -c Release -o /opt/publisher-job
 
@@ -35,6 +32,7 @@ cp /opt/publisher-job/posted.txt /tmp/publisher-job-posted.txt
 cd /opt/AIDeveloperNotes
 git pull
 
+mo.khoshkesht@gmail.com
 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
 
 

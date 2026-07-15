@@ -311,6 +311,7 @@ public sealed class PublisherJobRunner
         config.GroqArticleJob ??= new GroqArticleJobConfig();
         config.TelegramDataProvider ??= new TelegramDataProviderConfig();
         config.Groq ??= new GroqConfig();
+        config.Groq.ApiKeys ??= [];
         return config;
     }
 

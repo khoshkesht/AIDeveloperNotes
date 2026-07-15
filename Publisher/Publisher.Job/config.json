@@ -43,9 +43,9 @@
   },
   "telegramDataProvider": {
     "enabled": true,
-    "cron": "*/30 15-20 * * *",
+    "cron": "*/30 15-23 * * *",
     "useProxy": false,
-    "sendDelayBetweenChannelsSeconds": 30,
+    "sendDelayBetweenChannelsSeconds": 60,
     "channels": [
       {
         "url": "https://telegram.me/varzesh3",
@@ -58,15 +58,6 @@
       },
       {
         "url": "https://telegram.me/khabarfouri",
-        "promptPath": "Promp/TelegramNews/Telegram-news.md",
-        "postLimit": 10,
-        "maxAgeMinutes": 30,
-        "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
-        "chatId": "-1003823398087",
-        "useProxy": false
-      },
-      {
-        "url": "https://telegram.me/Jahan_Fouri",
         "promptPath": "Promp/TelegramNews/Telegram-news.md",
         "postLimit": 10,
         "maxAgeMinutes": 30,

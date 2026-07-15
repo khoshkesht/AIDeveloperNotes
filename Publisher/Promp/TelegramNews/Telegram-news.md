@@ -21,6 +21,7 @@ Output rules:
 - Avoid repeating the same topic, person, event, or fact.
 - Remove any broken encoding, invalid characters, or stray symbols before returning the output.
 - Limit the output to a maximum of 7 lines.
+- Exclude any item whose primary purpose is promotion, marketing, fundraising, donations, product or service advertising, investment solicitation, or encouraging the reader to take an action (such as buying, investing, registering, joining, donating, or contacting someone), even if it contains factual information. Include only genuine newsworthy events.
 
 Writing style:
 - Write in fluent, simple, natural Persian.

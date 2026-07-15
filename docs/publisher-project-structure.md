@@ -11,12 +11,18 @@ The `Publisher` folder is split into two app projects plus shared runtime conten
 
 - `Publisher/Publisher.Job/Publisher.Job.csproj`
   - Console/worker app for scheduled and manual jobs.
+  - Starts a Hangfire worker when run without arguments.
   - Contains:
     - daily posts job
     - RSS/Groq article job
     - Telegram data provider job
   - Reads source config from `Publisher/Publisher.Job/config.json`.
   - During build/publish, that config is copied beside `Publisher.Job.dll`.
+  - Scheduling is config-driven:
+    - `hangfire.workerCount`
+    - `dailyJob.cron`
+    - `groqArticleJob.cron`
+    - `telegramDataProvider.cron`
 
 ## Shared Content
 
@@ -45,6 +51,15 @@ For `Publisher.Job`, the active config is whichever `config.json` sits beside th
 dotnet build Publisher/Publisher.WinForms/Publisher.WinForms.csproj
 dotnet build Publisher/Publisher.Job/Publisher.Job.csproj
 dotnet build Publisher/Publisher.slnx
+```
+
+## Manual Worker Commands
+
+```powershell
+dotnet run --project Publisher/Publisher.Job/Publisher.Job.csproj -- --status
+dotnet run --project Publisher/Publisher.Job/Publisher.Job.csproj -- --run-posts-once
+dotnet run --project Publisher/Publisher.Job/Publisher.Job.csproj -- --run-groq-once
+dotnet run --project Publisher/Publisher.Job/Publisher.Job.csproj -- --run-telegram-data-provider-once
 ```
 
 ## Linux Publish Command

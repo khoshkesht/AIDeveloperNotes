@@ -2,16 +2,22 @@ internal sealed class AppConfig
 {
     public List<BotConfig> Bots { get; set; } = [];
     public ProxyConfig Proxy { get; set; } = new();
+    public HangfireConfig Hangfire { get; set; } = new();
     public DailyJobConfig DailyJob { get; set; } = new();
     public GroqArticleJobConfig GroqArticleJob { get; set; } = new();
     public TelegramDataProviderConfig TelegramDataProvider { get; set; } = new();
     public GroqConfig Groq { get; set; } = new();
 }
 
+internal sealed class HangfireConfig
+{
+    public int WorkerCount { get; set; } = 1;
+}
+
 internal abstract class ScheduledJobConfig : TelegramTargetConfig
 {
     public bool Enabled { get; set; }
-    public string Time { get; set; } = "09:00";
+    public string Cron { get; set; } = "0 9 * * *";
 }
 
 internal abstract class TelegramTargetConfig
@@ -42,9 +48,7 @@ internal sealed class RssFeedConfig
 internal sealed class TelegramDataProviderConfig
 {
     public bool Enabled { get; set; }
-    public string StartTime { get; set; } = "06:00";
-    public string EndTime { get; set; } = "23:59";
-    public int IntervalMinutes { get; set; } = 30;
+    public string Cron { get; set; } = "*/30 6-23 * * *";
     public bool UseProxy { get; set; }
     public int SendDelayBetweenChannelsSeconds { get; set; } = 1;
     public List<TelegramSourceChannelConfig> Channels { get; set; } = [];

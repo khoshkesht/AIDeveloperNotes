@@ -1,43 +1,38 @@
-# راهنمای Deploy و اجرای Publisher.Job روی Linux
+# Publisher.Job Linux Deploy And Runtime Guide
 
-این سند وضعیت فعلی `Publisher.Job` را پوشش می‌دهد: ارسال پست‌های روزانه، تولید مقاله از RSS با Groq، و `TelegramDataProvider` که هر ۳۰ دقیقه در بازه ۶ صبح تا ۱۲ شب اجرا می‌شود.
+This document describes the current `Publisher.Job` worker. The worker uses Hangfire for scheduling and runs these jobs:
 
-## مسیرهای مهم
+- `DailyPostsJob`
+- RSS/Groq article job
+- `TelegramDataProviderJob`
 
-- سورس روی سرور: `/opt/AIDeveloperNotes`
-- خروجی publish و محل اجرای سرویس: `/opt/publisher-job`
-- پروژه worker: `Publisher/Publisher.Job/Publisher.Job.csproj`
-- فایل اجرای worker: `/opt/publisher-job/Publisher.Job.dll`
-- config واقعی runtime: `/opt/publisher-job/config.json`
+## Runtime Paths
 
-فولدر `Publisher/publish/` دیگر منبع معتبر نیست و از repo حذف/ignore شده است.
+- Source on server: `/opt/AIDeveloperNotes`
+- Published runtime folder: `/opt/publisher-job`
+- Worker project: `Publisher/Publisher.Job/Publisher.Job.csproj`
+- Runtime executable: `/opt/publisher-job/Publisher.Job.dll`
+- Runtime config: `/opt/publisher-job/config.json`
 
-## نصب پیش‌نیازها
+`Publisher/publish/` is generated output, not a source of truth. It is ignored by git.
+
+## Prerequisites
 
 ```bash
 git --version
 dotnet --info
 ```
 
-اگر لازم بود:
+If needed:
 
 ```bash
 sudo apt-get update
 sudo apt-get install -y git dotnet-sdk-10.0
 ```
 
-## دریافت سورس
+`Publisher/NuGet.Config` must include `nuget.org`, because `Publisher.Job` depends on Hangfire packages.
 
-```bash
-cd /opt
-sudo git clone https://github.com/YOUR_USER/YOUR_REPO.git AIDeveloperNotes
-sudo chown -R "$USER:$USER" /opt/AIDeveloperNotes
-cd /opt/AIDeveloperNotes
-git status
-git log -1 --oneline
-```
-
-## Build و Publish
+## Build And Publish
 
 ```bash
 cd /opt/AIDeveloperNotes
@@ -46,7 +41,7 @@ dotnet build Publisher/Publisher.Job/Publisher.Job.csproj -c Release
 dotnet publish Publisher/Publisher.Job/Publisher.Job.csproj -c Release -o /opt/publisher-job
 ```
 
-خروجی را چک کنید:
+Check the output:
 
 ```bash
 ls -la /opt/publisher-job
@@ -54,94 +49,52 @@ ls -la /opt/publisher-job/Publisher.Job.dll
 ls -la /opt/publisher-job/config.json
 ```
 
-## تنظیم config
+## Config
 
-فایل runtime را روی سرور ویرایش کنید:
+Edit the runtime config on the server:
 
 ```bash
 nano /opt/publisher-job/config.json
 python3 -m json.tool /opt/publisher-job/config.json
 ```
 
-نمونه ساختار فعلی:
+Important scheduling settings:
 
 ```json
 {
-  "bots": [
-    {
-      "name": "bot1",
-      "botId": "YOUR_TELEGRAM_BOT_TOKEN"
-    }
-  ],
-  "proxy": {
-    "address": "socks5://127.0.0.1:4567",
-    "username": "",
-    "password": ""
+  "hangfire": {
+    "workerCount": 1
   },
   "dailyJob": {
     "enabled": true,
-    "time": "06:00",
-    "postCount": 3,
-    "botId": "YOUR_TELEGRAM_BOT_TOKEN",
-    "chatId": "-1000000000000",
-    "useProxy": false
+    "cron": "0 6 * * *"
   },
   "groqArticleJob": {
     "enabled": true,
-    "time": "06:30",
-    "promptPath": "Promp/Groq-MakeArticle.md",
-    "downloadImages": false,
-    "feeds": [
-      {
-        "url": "https://aijourn.com/feed/"
-      }
-    ],
-    "botId": "YOUR_TELEGRAM_BOT_TOKEN",
-    "chatId": "-1000000000000",
-    "useProxy": false
+    "cron": "30 6 * * *"
   },
   "telegramDataProvider": {
     "enabled": true,
-    "startTime": "06:00",
-    "endTime": "23:59",
-    "intervalMinutes": 30,
-    "useProxy": false,
-    "sendDelayBetweenChannelsSeconds": 30,
-    "channels": [
-      {
-        "url": "https://telegram.me/khabarfouri",
-        "promptPath": "Promp/TelegramNews/Telegram-DataProvider-AkharinKhabar.md",
-        "postLimit": 10,
-        "maxAgeMinutes": 30,
-        "botId": "YOUR_TELEGRAM_BOT_TOKEN",
-        "chatId": "-1000000000000",
-        "useProxy": false
-      }
-    ]
-  },
-  "groq": {
-    "baseUrl": "https://api.groq.com/openai/v1",
-    "apiKey": "",
-    "apiKeyEnvironmentVariable": "GROQ_API_KEY",
-    "model": "llama-3.3-70b-versatile",
-    "maxCompletionTokens": 2048,
-    "temperature": 0.7,
-    "timeoutSeconds": 300,
-    "systemPrompt": "You generate Telegram-ready Persian posts. Return only the final Telegram post text. Use Telegram-compatible HTML only when formatting is needed."
+    "cron": "*/30 15-20 * * *",
+    "sendDelayBetweenChannelsSeconds": 30
   }
 }
 ```
 
-نکته‌ها:
+Notes:
 
-- `channels` سطح بالا دیگر وجود ندارد. هر job یا source channel باید `chatId` خودش را داشته باشد.
-- برای `telegramDataProvider.channels[*].maxAgeMinutes`:
-  - مقدار مثبت یعنی فقط پست‌های جدیدتر از همان تعداد دقیقه.
-  - مقدار `0` یا منفی یعنی فیلتر زمان خاموش است.
-- `sendDelayBetweenChannelsSeconds` وقفه بین ارسال‌های موفق TelegramDataProvider است.
-- کلید Groq را بهتر است در config ننویسید و با env بدهید.
+- `hangfire.workerCount` controls how many Hangfire workers run in the process.
+- Every scheduled job is registered from its own Hangfire cron expression.
+- `TelegramDataProviderJob` can be scheduled directly with ranges, for example `*/30 18-23 * * *`.
+- Hangfire storage is currently in-memory. Recurring jobs are registered from config every time the worker starts. Hangfire queue state is not persisted across restarts.
+- App-level state files such as `posted.txt`, `daily-job-state.json`, and lock files are still stored beside `Publisher.Job.dll`.
+- Top-level `channels` no longer exists. Each job or source channel must have its own `chatId`.
+- For `telegramDataProvider.channels[*].maxAgeMinutes`, `0` or a negative value disables the age filter.
+- Prefer `GROQ_API_KEY` environment variable instead of storing the Groq key in `config.json`.
 
 ## Timezone
+
+Hangfire uses the local timezone configured on the server.
 
 ```bash
 date
@@ -150,7 +103,7 @@ sudo timedatectl set-timezone Asia/Tehran
 timedatectl
 ```
 
-## اجرای دستی و status
+## Manual Commands
 
 ```bash
 cd /opt/publisher-job
@@ -160,39 +113,35 @@ dotnet Publisher.Job.dll --run-groq-once
 dotnet Publisher.Job.dll --run-telegram-data-provider-once
 ```
 
-`--run-once` هنوز alias قدیمی `--run-posts-once` است.
+`--run-once` is still a backward-compatible alias for `--run-posts-once`.
 
-## رفتار jobها
+## Job Behavior
 
-سرویس long-running است و هر ۱ دقیقه config و زمان را چک می‌کند.
+When started without arguments, `Publisher.Job` starts a long-running Hangfire worker and registers recurring jobs from `config.json`.
 
 `DailyPostsJob`:
 
-- روزی یک بار بعد از `dailyJob.time` اجرا می‌شود.
-- state و lock:
-  - `/opt/publisher-job/daily-job-state.json`
-  - `/opt/publisher-job/daily-job.lock`
-- `posted.txt` را از کنار `Publisher.Job.dll` می‌خواند و می‌نویسد.
+- Runs from `dailyJob.cron`.
+- Uses `daily-job-state.json` and `daily-job.lock`.
+- Reads and writes `posted.txt` beside the running `Publisher.Job.dll`.
 
-`ArticleJob`:
+RSS/Groq article job:
 
-- روزی یک بار بعد از `groqArticleJob.time` اجرا می‌شود.
-- RSS feedها را می‌خواند و Groq فقط خلاصه‌سازی می‌کند.
-- state و lock:
-  - `/opt/publisher-job/groq-article-job-state.json`
-  - `/opt/publisher-job/groq-article-job.lock`
+- Runs from `groqArticleJob.cron`.
+- Reads configured RSS feeds and uses Groq only for summarization.
+- Uses `groq-article-job-state.json` and `groq-article-job.lock`.
 
 `TelegramDataProviderJob`:
 
-- با `telegramDataProvider.enabled` فعال می‌شود.
-- فقط بین `startTime` و `endTime` اجرا می‌شود.
-- فاصله اجراها با `intervalMinutes` کنترل می‌شود.
-- برای هر source channel، latest public posts را می‌خواند، با prompt مربوط خلاصه می‌کند، نام channel را بدون `@` آخر پیام می‌گذارد، و به `chatId` همان channel می‌فرستد.
-- state و lock:
-  - `/opt/publisher-job/telegram-data-provider-job-state.json`
-  - `/opt/publisher-job/telegram-data-provider-job.lock`
+- Runs from `telegramDataProvider.cron`.
+- Reads latest public Telegram posts for each configured source channel.
+- Summarizes with the configured prompt.
+- Appends the source channel name without `@`.
+- Sends each result to that source channel's own `chatId`.
+- Waits `sendDelayBetweenChannelsSeconds` between successful channel sends.
+- Uses `telegram-data-provider-job-state.json` and `telegram-data-provider-job.lock`.
 
-## systemd service
+## systemd Service
 
 ```bash
 sudo nano /etc/systemd/system/publisher-job.service
@@ -225,9 +174,9 @@ sudo systemctl status publisher-job
 journalctl -u publisher-job -f
 ```
 
-## Update از GitHub و publish مجدد
+## Update From Git And Republish
 
-قبل از publish مجدد، runtime config و stateهای مهم را نگه دارید:
+Keep runtime config and state before republishing:
 
 ```bash
 sudo systemctl stop publisher-job
@@ -245,7 +194,7 @@ sudo systemctl start publisher-job
 sudo systemctl status publisher-job
 ```
 
-## عیب‌یابی سریع
+## Quick Troubleshooting
 
 ```bash
 sudo systemctl status publisher-job
@@ -257,12 +206,13 @@ timedatectl
 python3 -m json.tool config.json
 ```
 
-چیزهایی که باید چک شوند:
+Check these first:
 
-- سرویس `active (running)` باشد.
-- timezone درست باشد.
-- فایل runtime config همان `/opt/publisher-job/config.json` باشد.
-- token و `chatId` درست باشند.
-- promptها در `/opt/publisher-job/Promp/` وجود داشته باشند.
-- permission روی `/opt/publisher-job` برای user سرویس درست باشد.
-- state فایل مربوط job مانع اجرای دوباره نشده باشد.
+- The service is `active (running)`.
+- Server timezone is correct.
+- Runtime config is `/opt/publisher-job/config.json`.
+- `dotnet Publisher.Job.dll --status` shows the expected Hangfire cron values.
+- Tokens and `chatId` values are correct.
+- Prompt files exist under `/opt/publisher-job/Promp/`.
+- The service user can write to `/opt/publisher-job`.
+- The relevant state or lock file is not blocking a run.

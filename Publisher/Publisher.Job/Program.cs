@@ -1,3 +1,5 @@
+using Hangfire;
+using Hangfire.InMemory;
 using System.Text;
 using System.Text.Json;
 
@@ -5,12 +7,12 @@ var runner = new PublisherJobRunner(AppContext.BaseDirectory);
 if (args.Any(arg => arg.Equals("--help", StringComparison.OrdinalIgnoreCase) || arg.Equals("-h", StringComparison.OrdinalIgnoreCase)))
 {
     Console.WriteLine("Usage:");
-    Console.WriteLine("  Publisher.Job                       Run all enabled scheduled jobs.");
+    Console.WriteLine("  Publisher.Job                       Run Hangfire worker and scheduled jobs.");
     Console.WriteLine("  Publisher.Job --status              Print config/state diagnostics and exit.");
-    Console.WriteLine("  Publisher.Job --run-posts-once      Run the Posts job immediately, ignoring enabled/time/state.");
-    Console.WriteLine("  Publisher.Job --run-groq-once       Run the Groq article job immediately, ignoring enabled/time/state.");
+    Console.WriteLine("  Publisher.Job --run-posts-once      Run the Posts job immediately, ignoring schedule/state.");
+    Console.WriteLine("  Publisher.Job --run-groq-once       Run the Groq article job immediately, ignoring schedule/state.");
     Console.WriteLine("  Publisher.Job --run-telegram-data-provider-once");
-    Console.WriteLine("                                      Read latest Telegram channel posts and print them.");
+    Console.WriteLine("                                      Read latest Telegram channel posts and send summaries immediately.");
     Console.WriteLine("  Publisher.Job --run-once            Backward-compatible alias for --run-posts-once.");
     return;
 }
@@ -43,9 +45,8 @@ if (args.Any(arg =>
 
 await runner.RunAsync();
 
-internal sealed class PublisherJobRunner
+public sealed class PublisherJobRunner
 {
-    private static readonly TimeSpan CheckInterval = TimeSpan.FromMinutes(1);
     private readonly string _basePath;
     private readonly string _configPath;
     private readonly string _postsPath;
@@ -80,33 +81,19 @@ internal sealed class PublisherJobRunner
     public async Task RunAsync()
     {
         EnsureDefaultFiles();
-        Console.WriteLine("Publisher jobs started.");
-        PrintStatus();
+        var config = LoadConfig();
 
-        while (true)
+        GlobalConfiguration.Configuration.UseInMemoryStorage();
+        ConfigureRecurringJobs(config);
+
+        using var server = new BackgroundJobServer(new BackgroundJobServerOptions
         {
-            var config = LoadConfig();
+            WorkerCount = Math.Max(1, config.Hangfire.WorkerCount)
+        });
 
-            await TryRunScheduledJobAsync(
-                "daily posts",
-                config.DailyJob,
-                _postsState,
-                () => CreateDailyPostsJob(config).RunAsync(updateDailyState: true));
-
-            await TryRunScheduledJobAsync(
-                "groq article",
-                config.GroqArticleJob,
-                _groqState,
-                () => CreateGroqArticleJob(config).RunAsync(updateDailyState: true));
-
-            await TryRunIntervalJobAsync(
-                "telegram data provider",
-                config.TelegramDataProvider,
-                _telegramDataProviderState,
-                () => new TelegramDataProviderJob(config, _basePath).RunAsync());
-
-            await Task.Delay(CheckInterval);
-        }
+        Console.WriteLine("Publisher Hangfire worker started.");
+        PrintStatus();
+        await Task.Delay(Timeout.InfiniteTimeSpan);
     }
 
     public async Task RunPostsManualAsync()
@@ -153,6 +140,8 @@ internal sealed class PublisherJobRunner
         Console.WriteLine($"  Base path: {_basePath}");
         Console.WriteLine($"  Config path: {_configPath}");
         Console.WriteLine($"  Server now: {DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss zzz}");
+        Console.WriteLine($"  Hangfire storage: InMemory");
+        Console.WriteLine($"  Hangfire workers: {Math.Max(1, config.Hangfire.WorkerCount)}");
         Console.WriteLine($"  Posts folder exists: {Directory.Exists(_postsPath)}");
         Console.WriteLine($"  Pics folder exists: {Directory.Exists(_picsPath)}");
         Console.WriteLine($"  Groq prompt path: {_promptPath}");
@@ -163,72 +152,115 @@ internal sealed class PublisherJobRunner
         PrintTelegramDataProviderStatus(config.TelegramDataProvider, _telegramDataProviderState);
     }
 
+    public static async Task RunPostsScheduledAsync(string basePath)
+    {
+        var runner = new PublisherJobRunner(basePath);
+        runner.EnsureDefaultFiles();
+        var config = runner.LoadConfig();
+        if (!config.DailyJob.Enabled)
+        {
+            Console.WriteLine("Skipped daily posts job because dailyJob.enabled=false.");
+            return;
+        }
+
+        await runner.CreateDailyPostsJob(config).RunAsync(updateDailyState: true);
+    }
+
+    public static async Task RunGroqArticleScheduledAsync(string basePath)
+    {
+        var runner = new PublisherJobRunner(basePath);
+        runner.EnsureDefaultFiles();
+        var config = runner.LoadConfig();
+        if (!config.GroqArticleJob.Enabled)
+        {
+            Console.WriteLine("Skipped Groq article job because groqArticleJob.enabled=false.");
+            return;
+        }
+
+        await runner.CreateGroqArticleJob(config).RunAsync(updateDailyState: true);
+    }
+
+    public static async Task RunTelegramDataProviderScheduledAsync(string basePath)
+    {
+        var runner = new PublisherJobRunner(basePath);
+        runner.EnsureDefaultFiles();
+        var config = runner.LoadConfig();
+        if (!config.TelegramDataProvider.Enabled)
+        {
+            Console.WriteLine("Skipped telegram data provider job because telegramDataProvider.enabled=false.");
+            return;
+        }
+
+        using var runLock = runner._telegramDataProviderState.TryAcquireLock();
+        if (runLock is null)
+        {
+            Console.WriteLine("Another telegram data provider job instance is already running. Skipping this attempt.");
+            return;
+        }
+
+        runner._telegramDataProviderState.SaveStarted();
+        await new TelegramDataProviderJob(config, basePath).RunAsync();
+        runner._telegramDataProviderState.SaveFinished(0);
+    }
+
+    private void ConfigureRecurringJobs(AppConfig config)
+    {
+        if (config.DailyJob.Enabled)
+        {
+            RecurringJob.AddOrUpdate(
+                "daily-posts",
+                () => RunPostsScheduledAsync(_basePath),
+                NormalizeCron(config.DailyJob.Cron, "dailyJob.cron"),
+                new RecurringJobOptions { TimeZone = TimeZoneInfo.Local });
+        }
+        else
+        {
+            RecurringJob.RemoveIfExists("daily-posts");
+        }
+
+        if (config.GroqArticleJob.Enabled)
+        {
+            RecurringJob.AddOrUpdate(
+                "groq-article",
+                () => RunGroqArticleScheduledAsync(_basePath),
+                NormalizeCron(config.GroqArticleJob.Cron, "groqArticleJob.cron"),
+                new RecurringJobOptions { TimeZone = TimeZoneInfo.Local });
+        }
+        else
+        {
+            RecurringJob.RemoveIfExists("groq-article");
+        }
+
+        if (config.TelegramDataProvider.Enabled)
+        {
+            RecurringJob.AddOrUpdate(
+                "telegram-data-provider",
+                () => RunTelegramDataProviderScheduledAsync(_basePath),
+                NormalizeCron(config.TelegramDataProvider.Cron, "telegramDataProvider.cron"),
+                new RecurringJobOptions { TimeZone = TimeZoneInfo.Local });
+        }
+        else
+        {
+            RecurringJob.RemoveIfExists("telegram-data-provider");
+        }
+    }
+
     private DailyPostsJob CreateDailyPostsJob(AppConfig config) =>
         new(config, _postsPath, _picsPath, _postedFilePath, _postsState);
 
     private ArticleJob CreateGroqArticleJob(AppConfig config) =>
         new(config, _basePath, _promptPath, _newsPicsPath, _postedFilePath, _groqState);
 
-    private async Task TryRunScheduledJobAsync(
-        string jobName,
-        ScheduledJobConfig scheduledJob,
-        JobStateStore stateStore,
-        Func<Task> runJobAsync)
-    {
-        try
-        {
-            if (ShouldRunNow(scheduledJob, stateStore))
-            {
-                await runJobAsync();
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[{DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss zzz}] {jobName} job check failed: {ex.Message}");
-        }
-    }
-
-    private async Task TryRunIntervalJobAsync(
-        string jobName,
-        TelegramDataProviderConfig jobConfig,
-        JobStateStore stateStore,
-        Func<Task> runJobAsync)
-    {
-        try
-        {
-            if (!ShouldRunTelegramDataProviderNow(jobConfig, stateStore))
-            {
-                return;
-            }
-
-            using var runLock = stateStore.TryAcquireLock();
-            if (runLock is null)
-            {
-                Console.WriteLine("Another telegram data provider job instance is already running. Skipping this attempt.");
-                return;
-            }
-
-            stateStore.SaveStarted();
-            await runJobAsync();
-            stateStore.SaveFinished(0);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[{DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss zzz}] {jobName} job check failed: {ex.Message}");
-        }
-    }
-
     private void PrintJobStatus(string jobName, ScheduledJobConfig scheduledJob, JobStateStore stateStore)
     {
         var state = stateStore.Load();
         Console.WriteLine($"{jobName} job:");
         Console.WriteLine($"  Enabled: {scheduledJob.Enabled}");
-        Console.WriteLine($"  Scheduled time: {scheduledJob.Time}");
+        Console.WriteLine($"  Hangfire cron: {NormalizeCron(scheduledJob.Cron, $"{jobName}.cron")}");
         Console.WriteLine($"  Last run date: {state.LastRunDate?.ToString() ?? "(never)"}");
         Console.WriteLine($"  Last attempt started at: {state.LastAttemptStartedAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "(never)"}");
         Console.WriteLine($"  Last attempt finished at: {state.LastAttemptFinishedAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "(never)"}");
         Console.WriteLine($"  Last sent count: {state.LastSentCount}");
-        Console.WriteLine($"  Should run now: {ShouldRunNow(scheduledJob, stateStore)}");
     }
 
     private void PrintTelegramDataProviderStatus(TelegramDataProviderConfig jobConfig, JobStateStore stateStore)
@@ -236,11 +268,9 @@ internal sealed class PublisherJobRunner
         var state = stateStore.Load();
         Console.WriteLine("telegram data provider job:");
         Console.WriteLine($"  Enabled: {jobConfig.Enabled}");
-        Console.WriteLine($"  Window: {jobConfig.StartTime}-{jobConfig.EndTime}");
-        Console.WriteLine($"  Interval minutes: {jobConfig.IntervalMinutes}");
+        Console.WriteLine($"  Hangfire cron: {NormalizeCron(jobConfig.Cron, "telegramDataProvider.cron")}");
         Console.WriteLine($"  Last attempt started at: {state.LastAttemptStartedAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "(never)"}");
         Console.WriteLine($"  Last attempt finished at: {state.LastAttemptFinishedAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "(never)"}");
-        Console.WriteLine($"  Should run now: {ShouldRunTelegramDataProviderNow(jobConfig, stateStore)}");
     }
 
     private void EnsureDefaultFiles()
@@ -276,6 +306,7 @@ internal sealed class PublisherJobRunner
         }
 
         config.Proxy ??= new ProxyConfig();
+        config.Hangfire ??= new HangfireConfig();
         config.DailyJob ??= new DailyJobConfig();
         config.GroqArticleJob ??= new GroqArticleJobConfig();
         config.TelegramDataProvider ??= new TelegramDataProviderConfig();
@@ -283,57 +314,13 @@ internal sealed class PublisherJobRunner
         return config;
     }
 
-    private static bool ShouldRunNow(ScheduledJobConfig scheduledJob, JobStateStore stateStore)
+    private static string NormalizeCron(string cron, string configPath)
     {
-        if (!scheduledJob.Enabled)
+        if (string.IsNullOrWhiteSpace(cron))
         {
-            return false;
+            throw new InvalidOperationException($"{configPath} is empty. Use a Hangfire cron expression, for example '*/30 18-23 * * *'.");
         }
 
-        if (!TimeOnly.TryParse(scheduledJob.Time, out var scheduledTime))
-        {
-            Console.WriteLine($"Invalid job time '{scheduledJob.Time}'. Use HH:mm, for example 09:00.");
-            return false;
-        }
-
-        var now = DateTime.Now;
-        var today = DateOnly.FromDateTime(now);
-        if (stateStore.Load().LastRunDate == today)
-        {
-            return false;
-        }
-
-        return TimeOnly.FromDateTime(now) >= scheduledTime;
-    }
-
-    private static bool ShouldRunTelegramDataProviderNow(TelegramDataProviderConfig jobConfig, JobStateStore stateStore)
-    {
-        if (!jobConfig.Enabled)
-        {
-            return false;
-        }
-
-        if (!TimeOnly.TryParse(jobConfig.StartTime, out var startTime))
-        {
-            Console.WriteLine($"Invalid telegramDataProvider.startTime '{jobConfig.StartTime}'. Use HH:mm, for example 06:00.");
-            return false;
-        }
-
-        if (!TimeOnly.TryParse(jobConfig.EndTime, out var endTime))
-        {
-            Console.WriteLine($"Invalid telegramDataProvider.endTime '{jobConfig.EndTime}'. Use HH:mm, for example 23:59.");
-            return false;
-        }
-
-        var nowTime = TimeOnly.FromDateTime(DateTime.Now);
-        if (nowTime < startTime || nowTime > endTime)
-        {
-            return false;
-        }
-
-        var interval = TimeSpan.FromMinutes(Math.Max(1, jobConfig.IntervalMinutes));
-        var state = stateStore.Load();
-        return state.LastAttemptStartedAt is null ||
-            DateTimeOffset.Now - state.LastAttemptStartedAt.Value >= interval;
+        return cron.Trim();
     }
 }

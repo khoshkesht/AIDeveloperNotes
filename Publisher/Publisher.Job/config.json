@@ -48,7 +48,7 @@
     "channels": [
       {
         "url": "https://telegram.me/khabarfouri",
-        "promptPath": "Promp/TelegramNews/Telegram-DataProvider-AkharinKhabar.md",
+        "promptPath": "Promp/TelegramNews/Telegram-news.md",
         "postLimit": 10,
         "maxAgeMinutes": 30,
         "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
@@ -57,7 +57,7 @@
       },
       {
         "url": "https://telegram.me/Khabar_Fouri",
-        "promptPath": "Promp/TelegramNews/Telegram-DataProvider-KhabarFouri.md",
+        "promptPath": "Promp/TelegramNews/Telegram-news.md",
         "postLimit": 10,
         "maxAgeMinutes": 30,
         "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
@@ -66,7 +66,7 @@
       },
       {
         "url": "https://telegram.me/Jahan_Fouri",
-        "promptPath": "Promp/TelegramNews/Telegram-DataProvider-JahanFouri.md",
+        "promptPath": "Promp/TelegramNews/Telegram-news.md",
         "postLimit": 10,
         "maxAgeMinutes": 30,
         "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
@@ -75,7 +75,7 @@
       },
       {
         "url": "https://telegram.me/CinemaDaily",
-        "promptPath": "Promp/TelegramNews/Telegram-DataProvider-CinemaDaily.md",
+        "promptPath": "Promp/TelegramNews/Telegram-news.md",
         "postLimit": 10,
         "maxAgeMinutes":30,
         "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
@@ -84,7 +84,7 @@
       },
       {
         "url": "https://telegram.me/thezoomit",
-        "promptPath": "Promp/TelegramNews/Telegram-DataProvider-thezoomit.md",
+        "promptPath": "Promp/TelegramNews/Telegram-news.md",
         "postLimit": 10,
         "maxAgeMinutes": 30,
         "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
@@ -93,7 +93,7 @@
       },
       {
         "url": "https://telegram.me/isna94",
-        "promptPath": "Promp/TelegramNews/Telegram-DataProvider-isna94.md",
+        "promptPath": "Promp/TelegramNews/Telegram-news.md",
         "postLimit": 10,
         "maxAgeMinutes": 30,
         "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",

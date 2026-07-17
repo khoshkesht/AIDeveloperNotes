@@ -26,7 +26,10 @@ internal sealed class TelegramPostService
         }
 
         var response = await _groq.GenerateTelegramPostAsync(BuildBatchPrompt(promptTemplate, request.Items), useProxy);
-        var posts = ParseJsonArray(response, allowEmptyResponse: false)
+        var posts = ParseJsonArray(
+                response,
+                allowEmptyResponse: false,
+                allowPlainTextFallback: request.Items.Count == 1)
             .Select(post => post.Trim())
             .Where(post => !string.IsNullOrWhiteSpace(post))
             .ToList();
@@ -50,7 +53,10 @@ internal sealed class TelegramPostService
         }
 
         var response = await _groq.GenerateTelegramPostAsync(BuildTextPrompt(request.PromptPath, promptTemplate, request.Items), useProxy);
-        var posts = ParseJsonArray(response, allowEmptyResponse: true)
+        var posts = ParseJsonArray(
+                response,
+                allowEmptyResponse: true,
+                allowPlainTextFallback: true)
             .Select(post => post.Trim())
             .ToList();
 
@@ -131,7 +137,10 @@ internal sealed class TelegramPostService
         return File.ReadAllText(path, Encoding.UTF8);
     }
 
-    private static IReadOnlyList<string> ParseJsonArray(string response, bool allowEmptyResponse)
+    private static IReadOnlyList<string> ParseJsonArray(
+        string response,
+        bool allowEmptyResponse,
+        bool allowPlainTextFallback)
     {
         var trimmed = NormalizeJsonArrayResponse(response);
         if (string.IsNullOrWhiteSpace(trimmed) && allowEmptyResponse)
@@ -159,7 +168,7 @@ internal sealed class TelegramPostService
                 return fallbackPosts;
             }
 
-            if (allowEmptyResponse && !string.IsNullOrWhiteSpace(trimmed))
+            if ((allowEmptyResponse || allowPlainTextFallback) && !string.IsNullOrWhiteSpace(trimmed))
             {
                 return [trimmed];
             }

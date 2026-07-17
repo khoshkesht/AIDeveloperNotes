@@ -42,7 +42,7 @@
     "useProxy": false
   },
   "telegramDataProvider": {
-    "enabled": true,
+    "enabled": false,
     "cron": "*/30 15-23 * * *",
     "useProxy": false,
     "sendDelayBetweenChannelsSeconds": 60,

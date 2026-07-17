@@ -25,6 +25,8 @@ dotnet Publisher.Job.dll --run-once
 
 
 
+mo.khoshkesht@gmail.com
+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
 -------------------------update
 
 sudo systemctl stop publisher-job 
@@ -32,8 +34,6 @@ cp /opt/publisher-job/posted.txt /tmp/publisher-job-posted.txt
 cd /opt/AIDeveloperNotes
 git pull
 
-mo.khoshkesht@gmail.com
-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
 
 
 rm -rf '5-Days of AI Agents'/

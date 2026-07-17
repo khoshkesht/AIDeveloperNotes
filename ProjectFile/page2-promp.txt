@@ -1,0 +1,64 @@
+Use the attached image as the visual style reference. Match its color palette, texture, mood, and overall design language without copying it.
+
+Create a premium 1:1 Instagram carousel cover (1080×1080) designed as a modern engineering project dossier.
+
+## Style
+
+- Premium Editorial Design
+- Vintage Engineering Folder + Modern UI
+- Warm paper texture
+- Technical blueprint details
+- Minimal industrial aesthetic
+- Clean cinematic lighting
+- Print-quality finish
+- Balanced typography and whitespace
+
+## Layout
+
+### Header
+Title:
+**شرح پروژه**
+
+### Section 1 (Top 20%)
+
+Title:
+**اهداف**
+
+Content:
+{{GOAL}}
+
+### Section 2 (Bottom 80%)
+
+Title:
+**قابلیتها**
+
+Display each feature with a relevant emoji bullet.
+
+Content:
+{{FEATURES}}
+
+## Rules
+
+- Preserve the provided Goal and Features text exactly as given.
+- Do not rewrite, summarize, or translate the content.
+- Keep the layout clean, highly readable, and visually balanced.
+- Use subtle engineering dossier elements (blueprints, grids, stamps, document borders).
+- Do not add extra text, logos, or watermarks.
+- Final result should look like the cover page of a real engineering project case file rather than a marketing poster.
+- The content is in Persian (Farsi); design the layout specifically for RTL languages.
+- Right-align all titles, paragraphs, and bullet lists.
+- Ensure proper Persian typography, spacing, and line wrapping.
+- Keep all text fully readable and avoid clipping or overlapping.
+- Place emoji bullets on the right side of each feature item (RTL layout).
+- The overall composition should feel natural for Persian readers, not like a mirrored LTR design.
+
+
+## Typography & Readability
+
+- Use larger font sizes for all text elements.
+- Prioritize readability over decorative design.
+- Ensure Persian text is clear, sharp, and easy to read on mobile screens.
+- Use strong typography hierarchy with clear titles and body text.
+- Avoid small fonts, dense paragraphs, and excessive text compression.
+- Keep enough spacing between lines and sections.
+- The design should remain readable when viewed on an Instagram feed.

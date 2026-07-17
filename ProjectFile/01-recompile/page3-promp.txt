@@ -1,0 +1,80 @@
+Use the attached image as the visual style reference. Match its color palette, texture, mood, and overall design language without copying it.
+
+Create a premium 1:1 Instagram carousel cover (1080×1080) designed as a modern engineering project dossier.
+
+## Style
+
+- Premium Editorial Design
+- Vintage Engineering Folder + Modern UI
+- Warm paper texture
+- Technical blueprint details
+- Minimal industrial aesthetic
+- Clean cinematic lighting
+- Print-quality finish
+- Balanced typography and whitespace
+
+## Layout
+
+### Header
+Title:
+**تکنولوژی ها و درسها**
+
+### Section 1 (Top 20%)
+
+Title:
+**تکنولوژی و ابزار ها**
+
+Content:
+• OpenAI Codex
+• ChatGPT
+• Groq
+• Pollinations AI
+• Telegram Bot API
+• Visual Studio Code
+
+### Section 2 (Middle 60%)
+
+Title:
+**نکات**
+
+Display each feature with a relevant emoji bullet.
+
+Content:
+OpenAI API با ChatGPT رایگان متفاوت است.
+WordPress REST API به Headerها حساس است.
+خطای Permission وردپرس همیشه از رمز عبور نیست.
+Telegram Bot باید عضو کانال باشد.
+خبرهای نامرتبط، مقاله را مصنوعی می‌کنند.
+شرط تاریخ ممکن است وارد متن مقاله شود.
+بدون تاریخچه، جلوگیری از تکرار کامل نیست.
+تصویر منبع پیدا می‌شود، اما مجوز استفاده قطعی نیست.
+خطای تصویر نباید کل Workflow را متوقف کند.
+تست مستقل هر بخش خارج از Workflow ضروری است.
+AI برای مستندسازی و Deploy هم کاربرد دارد.
+همه مراحل باید مستندسازی شوند.
+
+
+### Section 3 (Bottom 20%)
+this as a table
+
+زمان حدودی  : 5روز
+سختی : 6/10
+موفیت : 8/10
+
+
+
+## Rules
+
+- Preserve the provided Goal and Features text exactly as given.
+- Do not rewrite, summarize, or translate the content.
+- Keep the layout clean, highly readable, and visually balanced.
+- Use subtle engineering dossier elements (blueprints, grids, stamps, document borders).
+- Do not add extra text, logos, or watermarks.
+- Final result should look like the cover page of a real engineering project case file rather than a marketing poster.
+- The content is in Persian (Farsi); design the layout specifically for RTL languages.
+- Right-align all titles, paragraphs, and bullet lists.
+- Ensure proper Persian typography, spacing, and line wrapping.
+- Keep all text fully readable and avoid clipping or overlapping.
+- Place emoji bullets on the right side of each feature item (RTL layout).
+- The overall composition should feel natural for Persian readers, not like a mirrored LTR design.
+- Optimize typography for mobile viewing: all text must be legible at a glance on a smartphone screen.

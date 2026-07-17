@@ -1,0 +1,31 @@
+## Design Specification — Project File Carousel Cover
+
+Create a premium square Instagram carousel cover (1:1) designed as a modern engineering project dossier.
+
+**Visual Style:** premium editorial design, vintage engineering folder combined with modern UI, warm paper texture, clean cinematic composition, subtle industrial details, print-quality finish.
+
+**Layout:**
+
+* Top badge/logo: «پرونده یک پروژه»
+* Small subtitle: `تهیه پست کوتاه دوره گوگل`
+* File number: `#002`
+* Main visual: a cinematic visual metaphor representing `فلو تولید پستهای کوتاه دوره 5 روزه AI گوگل و تهیه تصاویر و ارسال اتوماتیک روزانه`, occupying about 45% of the page
+* Project title: `فلو تهیه پستهای کوتاه دوره 5 روزه گوگل همراه تصاویر `
+* Reserved clean space for 2–4 lines of Persian description; do not generate random body text
+* Bottom information bar:
+
+  * Status: `انجام شده`
+  * Week: `2`
+  * Category: `AI Automation`
+  * Date: `خرداد 1405`
+* Large realistic rubber stamp: `Deployed`
+* Small subtle `AIDeveloperNotes — BUILD LOG` branding
+
+**Main Visual Direction:**
+`فلو تولید پستهای کوتاه دوره 5 روزه AI گوگل و تهیه تصاویر و ارسال اتوماتیک روزانه`
+
+Use file tabs, paper clips, folder edges, barcode, engineering marks, subtle grids, paper labels and small technical annotations. The output must look like a real archived engineering project file, not a typical Instagram advertisement.
+
+Avoid generic programmers, unnecessary laptop scenes, AI robots, glowing brains, floating code, neon, cyberpunk and repetitive dark-blue backgrounds.
+
+Ultra-detailed, coherent typography, balanced spacing, editorial magazine quality.

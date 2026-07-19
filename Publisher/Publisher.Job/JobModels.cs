@@ -122,6 +122,10 @@ internal sealed record GroqTelegramPostRequest(
     string PromptPath,
     IReadOnlyList<RssFeedItem> Items);
 
+internal sealed record GroqApiKeyCandidate(
+    string Source,
+    string Value);
+
 internal sealed record TelegramTextPostRequest(
     string PromptPath,
     IReadOnlyList<string> Items);

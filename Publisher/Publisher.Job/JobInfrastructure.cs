@@ -332,7 +332,7 @@ internal sealed class GroqArticleGenerator
         {
             var apiKey = apiKeys[(startIndex + attempt) % apiKeys.Count];
             using var request = new HttpRequestMessage(HttpMethod.Post, "chat/completions");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiKey.Value);
             request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
 
             HttpResponseMessage response;
@@ -360,7 +360,9 @@ internal sealed class GroqArticleGenerator
                 if (response.StatusCode == HttpStatusCode.Unauthorized && IsInvalidApiKeyResponse(responseBody))
                 {
                     invalidApiKeyCount++;
-                    Console.WriteLine($"Groq API key failed authorization. Trying another configured key ({invalidApiKeyCount}/{apiKeys.Count}).");
+                    Console.WriteLine(
+                        $"Groq API key failed authorization. Source={apiKey.Source}, Key={CreateSecretFingerprint(apiKey.Value)}. " +
+                        $"Trying another configured key ({invalidApiKeyCount}/{apiKeys.Count}).");
                     continue;
                 }
 
@@ -373,26 +375,30 @@ internal sealed class GroqArticleGenerator
             "Replace revoked/invalid Groq keys in groq.apiKeys or the configured environment variable.");
     }
 
-    private List<string> GetApiKeys()
+    private List<GroqApiKeyCandidate> GetApiKeys()
     {
-        var apiKeys = new List<string>();
-        apiKeys.AddRange(_groqConfig.ApiKeys.Where(key => !string.IsNullOrWhiteSpace(key)));
+        var apiKeys = new List<GroqApiKeyCandidate>();
+        apiKeys.AddRange(_groqConfig.ApiKeys
+            .Where(key => !string.IsNullOrWhiteSpace(key))
+            .Select((key, index) => new GroqApiKeyCandidate($"groq.apiKeys[{index}]", key)));
 
         if (!string.IsNullOrWhiteSpace(_groqConfig.ApiKey))
         {
-            apiKeys.Add(_groqConfig.ApiKey);
+            apiKeys.Add(new GroqApiKeyCandidate("groq.apiKey", _groqConfig.ApiKey));
         }
 
         var environmentApiKey = Environment.GetEnvironmentVariable(_groqConfig.ApiKeyEnvironmentVariable);
         if (!string.IsNullOrWhiteSpace(environmentApiKey))
         {
-            apiKeys.Add(environmentApiKey);
+            apiKeys.Add(new GroqApiKeyCandidate(
+                $"environment:{_groqConfig.ApiKeyEnvironmentVariable}",
+                environmentApiKey));
         }
 
         var distinctApiKeys = apiKeys
-            .Select(key => key.Trim())
-            .Where(key => key.Length > 0)
-            .Distinct(StringComparer.Ordinal)
+            .Select(key => key with { Value = key.Value.Trim() })
+            .Where(key => key.Value.Length > 0)
+            .DistinctBy(key => key.Value)
             .ToList();
 
         if (distinctApiKeys.Count == 0)
@@ -402,6 +408,12 @@ internal sealed class GroqArticleGenerator
         }
 
         return distinctApiKeys;
+    }
+
+    private static string CreateSecretFingerprint(string value)
+    {
+        var suffixLength = Math.Min(4, value.Length);
+        return $"len:{value.Length}...{value[^suffixLength..]}";
     }
 
     private static bool IsInvalidApiKeyResponse(string responseBody)

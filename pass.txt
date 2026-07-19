@@ -27,6 +27,16 @@ dotnet Publisher.Job.dll --run-once
 
 mo.khoshkesht@gmail.com
 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
+
+---------test
+cd ..
+cd ..
+cd /opt/publisher-job
+dotnet Publisher.Job.dll --run-groq-once
+dotnet Publisher.Job.dll --run-posts-once
+dotnet Publisher.Job.dll --status
+dotnet Publisher.Job.dll --run-telegram-data-provider-once
+
 -------------------------update
 
 sudo systemctl stop publisher-job 

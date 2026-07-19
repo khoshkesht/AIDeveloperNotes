@@ -68,6 +68,7 @@ internal sealed class GroqConfig
     public string ApiKey { get; set; } = string.Empty;
     public List<string> ApiKeys { get; set; } = [];
     public string ApiKeyEnvironmentVariable { get; set; } = "GROQ_API_KEY";
+    public List<string> ApiKeyEnvironmentVariables { get; set; } = [];
     public string Model { get; set; } = "llama-3.3-70b-versatile";
     public int MaxCompletionTokens { get; set; } = 2048;
     public double Temperature { get; set; } = 0.7;

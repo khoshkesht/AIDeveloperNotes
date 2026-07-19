@@ -387,12 +387,15 @@ internal sealed class GroqArticleGenerator
             apiKeys.Add(new GroqApiKeyCandidate("groq.apiKey", _groqConfig.ApiKey));
         }
 
-        var environmentApiKey = Environment.GetEnvironmentVariable(_groqConfig.ApiKeyEnvironmentVariable);
-        if (!string.IsNullOrWhiteSpace(environmentApiKey))
+        foreach (var environmentVariable in GetApiKeyEnvironmentVariableNames())
         {
-            apiKeys.Add(new GroqApiKeyCandidate(
-                $"environment:{_groqConfig.ApiKeyEnvironmentVariable}",
-                environmentApiKey));
+            var environmentApiKey = Environment.GetEnvironmentVariable(environmentVariable);
+            if (!string.IsNullOrWhiteSpace(environmentApiKey))
+            {
+                apiKeys.Add(new GroqApiKeyCandidate(
+                    $"environment:{environmentVariable}",
+                    environmentApiKey));
+            }
         }
 
         var distinctApiKeys = apiKeys
@@ -408,6 +411,25 @@ internal sealed class GroqArticleGenerator
         }
 
         return distinctApiKeys;
+    }
+
+    private List<string> GetApiKeyEnvironmentVariableNames()
+    {
+        var names = new List<string>();
+
+        if (!string.IsNullOrWhiteSpace(_groqConfig.ApiKeyEnvironmentVariable))
+        {
+            names.Add(_groqConfig.ApiKeyEnvironmentVariable);
+        }
+
+        names.AddRange(_groqConfig.ApiKeyEnvironmentVariables
+            .Where(name => !string.IsNullOrWhiteSpace(name)));
+
+        return names
+            .Select(name => name.Trim())
+            .Where(name => name.Length > 0)
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
     }
 
     private static string CreateSecretFingerprint(string value)

@@ -79,11 +79,12 @@ Important scheduling settings:
     "sendDelayBetweenChannelsSeconds": 30
   },
   "groq": {
-    "apiKeys": [
-      "YOUR_GROQ_API_KEY_1",
-      "YOUR_GROQ_API_KEY_2"
-    ],
-    "apiKeyEnvironmentVariable": "GROQ_API_KEY"
+    "apiKeys": [],
+    "apiKeyEnvironmentVariable": "GROQ_API_KEY",
+    "apiKeyEnvironmentVariables": [
+      "GROQ_API_KEY_1",
+      "GROQ_API_KEY_2"
+    ]
   }
 }
 ```
@@ -97,9 +98,11 @@ Notes:
 - App-level state files such as `posted.txt`, `daily-job-state.json`, and lock files are still stored beside `Publisher.Job.dll`.
 - Top-level `channels` no longer exists. Each job or source channel must have its own `chatId`.
 - For `telegramDataProvider.channels[*].maxAgeMinutes`, `0` or a negative value disables the age filter.
-- `groq.apiKeys` can contain multiple Groq keys. Each Groq request randomly picks one key.
-- The old `groq.apiKey` setting still works as a fallback, but `groq.apiKeys` is preferred for multiple keys.
-- Prefer environment/secret storage instead of storing real Groq keys in `config.json`.
+- `groq.apiKeys` can contain multiple Groq keys, but avoid committing real keys.
+- `groq.apiKeyEnvironmentVariable` is the backward-compatible single environment variable name.
+- `groq.apiKeyEnvironmentVariables` can contain multiple environment variable names for multiple server-side keys.
+- Each Groq request randomly picks one configured key and retries another key after `invalid_api_key`.
+- Store real Groq keys in systemd environment variables or secret storage, not in `config.json`.
 
 ## Timezone
 
@@ -169,6 +172,8 @@ Restart=always
 RestartSec=10
 User=www-data
 Environment=GROQ_API_KEY=YOUR_GROQ_API_KEY
+Environment=GROQ_API_KEY_1=YOUR_GROQ_API_KEY_1
+Environment=GROQ_API_KEY_2=YOUR_GROQ_API_KEY_2
 
 [Install]
 WantedBy=multi-user.target
@@ -239,8 +244,9 @@ python3 -m json.tool config.json
 sudo systemctl show publisher-job --property=Environment
 ```
 
-Fix or remove revoked keys from `groq.apiKeys` and update `GROQ_API_KEY` in
-`/etc/systemd/system/publisher-job.service` if that environment variable is used.
+Fix or remove revoked keys from `groq.apiKeys` and update `GROQ_API_KEY`,
+`GROQ_API_KEY_1`, or `GROQ_API_KEY_2` in `/etc/systemd/system/publisher-job.service`
+if those environment variables are used.
 After changing the service file:
 
 ```bash

@@ -96,11 +96,12 @@
   },
   "groq": {
     "baseUrl": "https://api.groq.com/openai/v1",
-    "apiKeys": [
-      "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",
-      "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"
-    ],
+    "apiKeys": [],
     "apiKeyEnvironmentVariable": "GROQ_API_KEY",
+    "apiKeyEnvironmentVariables": [
+      "GROQ_API_KEY_1",
+      "GROQ_API_KEY_2"
+    ],
     "model": "llama-3.3-70b-versatile",
     "maxCompletionTokens": 2048,
     "temperature": 0.7,

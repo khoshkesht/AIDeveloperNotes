@@ -282,22 +282,28 @@ public sealed class PublisherJobRunner
             .Select(key => key.Trim())
             .ToList();
         var legacyConfigKey = string.IsNullOrWhiteSpace(groqConfig.ApiKey) ? null : groqConfig.ApiKey.Trim();
-        var environmentApiKey = string.IsNullOrWhiteSpace(groqConfig.ApiKeyEnvironmentVariable)
-            ? null
-            : Environment.GetEnvironmentVariable(groqConfig.ApiKeyEnvironmentVariable)?.Trim();
+        var environmentVariableNames = GetGroqApiKeyEnvironmentVariableNames(groqConfig);
+        var environmentApiKeys = environmentVariableNames
+            .Select(name => new
+            {
+                Name = name,
+                Value = Environment.GetEnvironmentVariable(name)?.Trim()
+            })
+            .Where(item => !string.IsNullOrWhiteSpace(item.Value))
+            .ToList();
 
         Console.WriteLine("groq api keys:");
         Console.WriteLine($"  config apiKeys count: {configKeys.Count}");
         Console.WriteLine($"  legacy config apiKey set: {!string.IsNullOrWhiteSpace(legacyConfigKey)}");
-        Console.WriteLine($"  env variable name: {groqConfig.ApiKeyEnvironmentVariable}");
-        Console.WriteLine($"  env api key set: {!string.IsNullOrWhiteSpace(environmentApiKey)}");
-        Console.WriteLine($"  usable distinct keys: {BuildGroqKeyFingerprints(configKeys, legacyConfigKey, environmentApiKey)}");
+        Console.WriteLine($"  env variable names: {string.Join(", ", environmentVariableNames)}");
+        Console.WriteLine($"  env api keys set: {environmentApiKeys.Count}");
+        Console.WriteLine($"  usable distinct keys: {BuildGroqKeyFingerprints(configKeys, legacyConfigKey, environmentApiKeys.Select(item => item.Value!).ToList())}");
     }
 
     private static string BuildGroqKeyFingerprints(
         List<string> configKeys,
         string? legacyConfigKey,
-        string? environmentApiKey)
+        List<string> environmentApiKeys)
     {
         var keys = new List<string>();
         keys.AddRange(configKeys);
@@ -307,10 +313,7 @@ public sealed class PublisherJobRunner
             keys.Add(legacyConfigKey);
         }
 
-        if (!string.IsNullOrWhiteSpace(environmentApiKey))
-        {
-            keys.Add(environmentApiKey);
-        }
+        keys.AddRange(environmentApiKeys);
 
         var fingerprints = keys
             .Where(key => !string.IsNullOrWhiteSpace(key))
@@ -320,6 +323,25 @@ public sealed class PublisherJobRunner
             .ToList();
 
         return fingerprints.Count == 0 ? "(none)" : string.Join(", ", fingerprints);
+    }
+
+    private static List<string> GetGroqApiKeyEnvironmentVariableNames(GroqConfig groqConfig)
+    {
+        var names = new List<string>();
+
+        if (!string.IsNullOrWhiteSpace(groqConfig.ApiKeyEnvironmentVariable))
+        {
+            names.Add(groqConfig.ApiKeyEnvironmentVariable);
+        }
+
+        names.AddRange(groqConfig.ApiKeyEnvironmentVariables
+            .Where(name => !string.IsNullOrWhiteSpace(name)));
+
+        return names
+            .Select(name => name.Trim())
+            .Where(name => name.Length > 0)
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
     }
 
     private static string CreateSecretFingerprint(string value)
@@ -368,6 +390,7 @@ public sealed class PublisherJobRunner
         config.TelegramDataProvider ??= new TelegramDataProviderConfig();
         config.Groq ??= new GroqConfig();
         config.Groq.ApiKeys ??= [];
+        config.Groq.ApiKeyEnvironmentVariables ??= [];
         return config;
     }
 

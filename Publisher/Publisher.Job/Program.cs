@@ -1,5 +1,6 @@
 using Hangfire;
 using Hangfire.InMemory;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 
@@ -146,6 +147,7 @@ public sealed class PublisherJobRunner
         Console.WriteLine($"  Pics folder exists: {Directory.Exists(_picsPath)}");
         Console.WriteLine($"  Groq prompt path: {_promptPath}");
         Console.WriteLine($"  Groq prompt exists: {File.Exists(_promptPath)}");
+        PrintGroqKeyStatus(config.Groq);
         Console.WriteLine($"  Unposted posts: {DailyPostsJob.GetUnpostedPostFiles(_postsPath, postedFiles).Count()}");
         PrintJobStatus("daily posts", config.DailyJob, _postsState);
         PrintJobStatus("groq article", config.GroqArticleJob, _groqState);
@@ -271,6 +273,60 @@ public sealed class PublisherJobRunner
         Console.WriteLine($"  Hangfire cron: {NormalizeCron(jobConfig.Cron, "telegramDataProvider.cron")}");
         Console.WriteLine($"  Last attempt started at: {state.LastAttemptStartedAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "(never)"}");
         Console.WriteLine($"  Last attempt finished at: {state.LastAttemptFinishedAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "(never)"}");
+    }
+
+    private static void PrintGroqKeyStatus(GroqConfig groqConfig)
+    {
+        var configKeys = groqConfig.ApiKeys
+            .Where(key => !string.IsNullOrWhiteSpace(key))
+            .Select(key => key.Trim())
+            .ToList();
+        var legacyConfigKey = string.IsNullOrWhiteSpace(groqConfig.ApiKey) ? null : groqConfig.ApiKey.Trim();
+        var environmentApiKey = string.IsNullOrWhiteSpace(groqConfig.ApiKeyEnvironmentVariable)
+            ? null
+            : Environment.GetEnvironmentVariable(groqConfig.ApiKeyEnvironmentVariable)?.Trim();
+
+        Console.WriteLine("groq api keys:");
+        Console.WriteLine($"  config apiKeys count: {configKeys.Count}");
+        Console.WriteLine($"  legacy config apiKey set: {!string.IsNullOrWhiteSpace(legacyConfigKey)}");
+        Console.WriteLine($"  env variable name: {groqConfig.ApiKeyEnvironmentVariable}");
+        Console.WriteLine($"  env api key set: {!string.IsNullOrWhiteSpace(environmentApiKey)}");
+        Console.WriteLine($"  usable distinct keys: {BuildGroqKeyFingerprints(configKeys, legacyConfigKey, environmentApiKey)}");
+    }
+
+    private static string BuildGroqKeyFingerprints(
+        List<string> configKeys,
+        string? legacyConfigKey,
+        string? environmentApiKey)
+    {
+        var keys = new List<string>();
+        keys.AddRange(configKeys);
+
+        if (!string.IsNullOrWhiteSpace(legacyConfigKey))
+        {
+            keys.Add(legacyConfigKey);
+        }
+
+        if (!string.IsNullOrWhiteSpace(environmentApiKey))
+        {
+            keys.Add(environmentApiKey);
+        }
+
+        var fingerprints = keys
+            .Where(key => !string.IsNullOrWhiteSpace(key))
+            .Select(key => key.Trim())
+            .Distinct(StringComparer.Ordinal)
+            .Select(CreateSecretFingerprint)
+            .ToList();
+
+        return fingerprints.Count == 0 ? "(none)" : string.Join(", ", fingerprints);
+    }
+
+    private static string CreateSecretFingerprint(string value)
+    {
+        var hash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(value)))[..8].ToLowerInvariant();
+        var suffixLength = Math.Min(4, value.Length);
+        return $"sha256:{hash}...{value[^suffixLength..]}";
     }
 
     private void EnsureDefaultFiles()

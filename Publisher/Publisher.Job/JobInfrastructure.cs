@@ -323,37 +323,57 @@ internal sealed class GroqArticleGenerator
             max_completion_tokens = _groqConfig.MaxCompletionTokens
         };
 
-        using var request = new HttpRequestMessage(HttpMethod.Post, "chat/completions");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", GetApiKey());
-        request.Content = new StringContent(JsonSerializer.Serialize(body, JsonOptions), Encoding.UTF8, "application/json");
+        var requestBody = JsonSerializer.Serialize(body, JsonOptions);
+        var apiKeys = GetApiKeys();
+        var startIndex = Random.Shared.Next(apiKeys.Count);
+        var invalidApiKeyCount = 0;
 
-        HttpResponseMessage response;
-        try
+        for (var attempt = 0; attempt < apiKeys.Count; attempt++)
         {
-            response = await httpClient.SendAsync(request);
-        }
-        catch (HttpRequestException ex)
-        {
-            throw new InvalidOperationException(
-                $"Groq API connection failed. BaseUrl='{_groqConfig.BaseUrl}', UseProxy={useProxy}. " +
-                "If direct HTTPS is blocked, set groqArticleJob.useProxy=true and verify proxy.address.",
-                ex);
-        }
+            var apiKey = apiKeys[(startIndex + attempt) % apiKeys.Count];
+            using var request = new HttpRequestMessage(HttpMethod.Post, "chat/completions");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+            request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
 
-        using (response)
-        {
-            var responseBody = await response.Content.ReadAsStringAsync();
-            if (!response.IsSuccessStatusCode)
+            HttpResponseMessage response;
+            try
             {
-                throw new InvalidOperationException($"Groq API failed with {(int)response.StatusCode} {response.ReasonPhrase}: {responseBody}");
+                response = await httpClient.SendAsync(request);
+            }
+            catch (HttpRequestException ex)
+            {
+                throw new InvalidOperationException(
+                    $"Groq API connection failed. BaseUrl='{_groqConfig.BaseUrl}', UseProxy={useProxy}. " +
+                    "If direct HTTPS is blocked, set groqArticleJob.useProxy=true and verify proxy.address.",
+                    ex);
             }
 
-            using var document = JsonDocument.Parse(responseBody);
-            return ExtractOutputText(document.RootElement);
+            using (response)
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                if (response.IsSuccessStatusCode)
+                {
+                    using var document = JsonDocument.Parse(responseBody);
+                    return ExtractOutputText(document.RootElement);
+                }
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized && IsInvalidApiKeyResponse(responseBody))
+                {
+                    invalidApiKeyCount++;
+                    Console.WriteLine($"Groq API key failed authorization. Trying another configured key ({invalidApiKeyCount}/{apiKeys.Count}).");
+                    continue;
+                }
+
+                throw new InvalidOperationException($"Groq API failed with {(int)response.StatusCode} {response.ReasonPhrase}: {responseBody}");
+            }
         }
+
+        throw new InvalidOperationException(
+            $"Groq API failed with 401 Unauthorized for all {apiKeys.Count} configured key(s). " +
+            "Replace revoked/invalid Groq keys in groq.apiKeys or the configured environment variable.");
     }
 
-    private string GetApiKey()
+    private List<string> GetApiKeys()
     {
         var apiKeys = new List<string>();
         apiKeys.AddRange(_groqConfig.ApiKeys.Where(key => !string.IsNullOrWhiteSpace(key)));
@@ -381,7 +401,30 @@ internal sealed class GroqArticleGenerator
                 $"Groq API key is missing. Set groq.apiKeys, groq.apiKey, or environment variable '{_groqConfig.ApiKeyEnvironmentVariable}'.");
         }
 
-        return distinctApiKeys[Random.Shared.Next(distinctApiKeys.Count)];
+        return distinctApiKeys;
+    }
+
+    private static bool IsInvalidApiKeyResponse(string responseBody)
+    {
+        if (string.IsNullOrWhiteSpace(responseBody))
+        {
+            return false;
+        }
+
+        try
+        {
+            using var document = JsonDocument.Parse(responseBody);
+            if (document.RootElement.TryGetProperty("error", out var error) &&
+                error.TryGetProperty("code", out var code))
+            {
+                return code.GetString()?.Equals("invalid_api_key", StringComparison.OrdinalIgnoreCase) == true;
+            }
+        }
+        catch (JsonException)
+        {
+        }
+
+        return responseBody.Contains("invalid_api_key", StringComparison.OrdinalIgnoreCase);
     }
 
     private static string ExtractOutputText(JsonElement root)

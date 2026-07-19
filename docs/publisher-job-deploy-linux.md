@@ -225,3 +225,30 @@ Check these first:
 - Prompt files exist under `/opt/publisher-job/Promp/`.
 - The service user can write to `/opt/publisher-job`.
 - The relevant state or lock file is not blocking a run.
+
+### Groq 401 Unauthorized
+
+If a manual run fails with `Groq API failed with 401 Unauthorized` and `invalid_api_key`,
+the worker reached Groq successfully but sent an invalid key.
+
+Check the runtime keys on the server:
+
+```bash
+cd /opt/publisher-job
+python3 -m json.tool config.json
+sudo systemctl show publisher-job --property=Environment
+```
+
+Fix or remove revoked keys from `groq.apiKeys` and update `GROQ_API_KEY` in
+`/etc/systemd/system/publisher-job.service` if that environment variable is used.
+After changing the service file:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart publisher-job
+cd /opt/publisher-job
+dotnet Publisher.Job.dll --run-groq-once
+```
+
+When multiple keys are configured, the worker retries another configured key after an
+`invalid_api_key` response. If all keys are invalid, replace them with active Groq keys.

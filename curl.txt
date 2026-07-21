@@ -11,3 +11,39 @@ curl --location 'https://api.telegram.org/bot8993121389:AAG2e_sBN3seau8ujmsQUPSG
 #5_Day_AI_Agents  #Day_1
 ℹ️ kaggle      
 ➡️@AIDeveloperNotes '
+
+
+
+
+
+
+---------test
+cd ..
+cd ..
+cd /opt/publisher-job
+dotnet Publisher.Job.dll --run-groq-once
+dotnet Publisher.Job.dll --run-posts-once
+dotnet Publisher.Job.dll --status
+dotnet Publisher.Job.dll --run-telegram-data-provider-once
+
+-------------------------update
+
+cd ..
+cd ..
+sudo systemctl stop publisher-job 
+cp /opt/publisher-job/posted.txt /tmp/publisher-job-posted.txt
+cd /opt/AIDeveloperNotes
+git pull
+
+
+
+rm -rf '5-Days of AI Agents'/
+rm pass.txt
+rm curl.txt
+rm -rf 'docs'/
+dotnet publish Publisher/Publisher.Job/Publisher.Job.csproj -c Release -o /opt/publisher-job
+ 
+cp /tmp/publisher-job-posted.txt /opt/publisher-job/posted.txt
+sudo chown -R www-data:www-data /opt/publisher-job
+sudo systemctl start publisher-job
+sudo systemctl status publisher-job

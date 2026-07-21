@@ -156,53 +156,79 @@ public sealed class PublisherJobRunner
 
     public static async Task RunPostsScheduledAsync(string basePath)
     {
-        var runner = new PublisherJobRunner(basePath);
-        runner.EnsureDefaultFiles();
-        var config = runner.LoadConfig();
-        if (!config.DailyJob.Enabled)
+        await RunScheduledJobWithLoggingAsync("daily posts", async runner =>
         {
-            Console.WriteLine("Skipped daily posts job because dailyJob.enabled=false.");
-            return;
-        }
+            runner.EnsureDefaultFiles();
+            var config = runner.LoadConfig();
+            if (!config.DailyJob.Enabled)
+            {
+                Console.WriteLine("Skipped daily posts job because dailyJob.enabled=false.");
+                return;
+            }
 
-        await runner.CreateDailyPostsJob(config).RunAsync(updateDailyState: true);
+            await runner.CreateDailyPostsJob(config).RunAsync(updateDailyState: true);
+        }, basePath);
     }
 
     public static async Task RunGroqArticleScheduledAsync(string basePath)
     {
-        var runner = new PublisherJobRunner(basePath);
-        runner.EnsureDefaultFiles();
-        var config = runner.LoadConfig();
-        if (!config.GroqArticleJob.Enabled)
+        await RunScheduledJobWithLoggingAsync("Groq article", async runner =>
         {
-            Console.WriteLine("Skipped Groq article job because groqArticleJob.enabled=false.");
-            return;
-        }
+            runner.EnsureDefaultFiles();
+            var config = runner.LoadConfig();
+            if (!config.GroqArticleJob.Enabled)
+            {
+                Console.WriteLine("Skipped Groq article job because groqArticleJob.enabled=false.");
+                return;
+            }
 
-        await runner.CreateGroqArticleJob(config).RunAsync(updateDailyState: true);
+            await runner.CreateGroqArticleJob(config).RunAsync(updateDailyState: true);
+        }, basePath);
     }
 
     public static async Task RunTelegramDataProviderScheduledAsync(string basePath)
     {
+        await RunScheduledJobWithLoggingAsync("telegram data provider", async runner =>
+        {
+            runner.EnsureDefaultFiles();
+            var config = runner.LoadConfig();
+            if (!config.TelegramDataProvider.Enabled)
+            {
+                Console.WriteLine("Skipped telegram data provider job because telegramDataProvider.enabled=false.");
+                return;
+            }
+
+            using var runLock = runner._telegramDataProviderState.TryAcquireLock();
+            if (runLock is null)
+            {
+                Console.WriteLine("Another telegram data provider job instance is already running. Skipping this attempt.");
+                return;
+            }
+
+            runner._telegramDataProviderState.SaveStarted();
+            await new TelegramDataProviderJob(config, basePath).RunAsync();
+            runner._telegramDataProviderState.SaveFinished(0);
+        }, basePath);
+    }
+
+    private static async Task RunScheduledJobWithLoggingAsync(
+        string jobName,
+        Func<PublisherJobRunner, Task> run,
+        string basePath)
+    {
         var runner = new PublisherJobRunner(basePath);
-        runner.EnsureDefaultFiles();
-        var config = runner.LoadConfig();
-        if (!config.TelegramDataProvider.Enabled)
+        try
         {
-            Console.WriteLine("Skipped telegram data provider job because telegramDataProvider.enabled=false.");
-            return;
+            await run(runner);
         }
-
-        using var runLock = runner._telegramDataProviderState.TryAcquireLock();
-        if (runLock is null)
+        catch (Exception ex)
         {
-            Console.WriteLine("Another telegram data provider job instance is already running. Skipping this attempt.");
-            return;
+            Console.WriteLine($"Scheduled {jobName} job failed: {ex.Message}");
+            if (ex.InnerException is not null)
+            {
+                Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+            }
         }
-
-        runner._telegramDataProviderState.SaveStarted();
-        await new TelegramDataProviderJob(config, basePath).RunAsync();
-        runner._telegramDataProviderState.SaveFinished(0);
     }
 
     private void ConfigureRecurringJobs(AppConfig config)

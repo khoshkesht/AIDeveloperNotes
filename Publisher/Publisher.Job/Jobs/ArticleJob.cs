@@ -61,6 +61,7 @@ internal sealed class ArticleJob
         var sentCount = 0;
         var itemsToSend = new List<RssFeedItem>();
 
+        Console.WriteLine($"Reading {targetCount} RSS feed(s) for Groq article job.");
         foreach (var feed in groqJob.Feeds)
         {
             var feedUrl = feed.Url.Trim();
@@ -77,6 +78,7 @@ internal sealed class ArticleJob
                 continue;
             }
 
+            Console.WriteLine($"Selected RSS item: {latestItem.Title}");
             itemsToSend.Add(latestItem);
         }
 
@@ -91,6 +93,7 @@ internal sealed class ArticleJob
             return;
         }
 
+        Console.WriteLine($"Generating {itemsToSend.Count} Groq article post(s).");
         var generatedPosts = await telegramPostService.GenerateTelegramPostsAsync(
             new GroqTelegramPostRequest(promptPath, itemsToSend),
             groqJob.UseProxy);
@@ -117,6 +120,7 @@ internal sealed class ArticleJob
             var imagePath = groqJob.DownloadImages
                 ? await imageDownloader.DownloadAsync(item.ImageUrl, groqJob.UseProxy)
                 : null;
+            Console.WriteLine($"Sending Groq RSS article {sentCount + 1}/{targetCount}: {item.Title}");
             var result = await telegram.SendPostAsync(bot, channel, postText, imagePath, groqJob.UseProxy);
             if (!result.Success)
             {

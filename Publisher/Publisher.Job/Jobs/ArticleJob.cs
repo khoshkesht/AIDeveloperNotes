@@ -93,20 +93,20 @@ internal sealed class ArticleJob
             return;
         }
 
-        Console.WriteLine($"Generating {itemsToSend.Count} Groq article post(s).");
-        var generatedPosts = await telegramPostService.GenerateTelegramPostsAsync(
-            new GroqTelegramPostRequest(promptPath, itemsToSend, groqJob.MaxContentCharactersPerItem),
-            groqJob.UseProxy);
-        if (generatedPosts.Count != itemsToSend.Count)
-        {
-            throw new InvalidOperationException(
-                $"Groq returned {generatedPosts.Count} Telegram post(s), but {itemsToSend.Count} RSS item(s) were provided.");
-        }
-
-        for (var index = 0; index < generatedPosts.Count; index++)
+        for (var index = 0; index < itemsToSend.Count; index++)
         {
             var item = itemsToSend[index];
-            var postText = generatedPosts[index].Trim();
+            Console.WriteLine($"Generating Groq article post {index + 1}/{itemsToSend.Count}: {item.Title}");
+            var generatedPosts = await telegramPostService.GenerateTelegramPostsAsync(
+                new GroqTelegramPostRequest(promptPath, [item], groqJob.MaxContentCharactersPerItem),
+                groqJob.UseProxy);
+            if (generatedPosts.Count != 1)
+            {
+                throw new InvalidOperationException(
+                    $"Groq returned {generatedPosts.Count} Telegram post(s), but 1 RSS item was provided: {item.Link}");
+            }
+
+            var postText = generatedPosts[0].Trim();
             if (string.IsNullOrWhiteSpace(postText))
             {
                 throw new InvalidOperationException($"Groq returned an empty article for RSS item: {item.Link}");

@@ -26,6 +26,7 @@
     "cron": "30 9 * * *",
     "promptPath": "Promp/Groq-MakeArticle.md",
     "downloadImages": false,
+    "maxContentCharactersPerItem": 2500,
     "feeds": [
       {
         "url": "https://aijourn.com/feed/"

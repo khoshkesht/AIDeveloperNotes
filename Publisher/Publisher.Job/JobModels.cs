@@ -37,6 +37,7 @@ internal sealed class GroqArticleJobConfig : ScheduledJobConfig
 {
     public string PromptPath { get; set; } = Path.Combine("Promp", "Groq-MakeArticle.md");
     public bool DownloadImages { get; set; } = true;
+    public int MaxContentCharactersPerItem { get; set; } = 2500;
     public List<RssFeedConfig> Feeds { get; set; } = [];
 }
 
@@ -121,7 +122,8 @@ internal sealed record TelegramChannelPost(
 
 internal sealed record GroqTelegramPostRequest(
     string PromptPath,
-    IReadOnlyList<RssFeedItem> Items);
+    IReadOnlyList<RssFeedItem> Items,
+    int MaxContentCharactersPerItem);
 
 internal sealed record GroqApiKeyCandidate(
     string Source,

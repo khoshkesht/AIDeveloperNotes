@@ -25,7 +25,9 @@ internal sealed class TelegramPostService
             return [];
         }
 
-        var response = await _groq.GenerateTelegramPostAsync(BuildBatchPrompt(promptTemplate, request.Items), useProxy);
+        var response = await _groq.GenerateTelegramPostAsync(
+            BuildBatchPrompt(promptTemplate, request.Items, request.MaxContentCharactersPerItem),
+            useProxy);
         var posts = ParseJsonArray(
                 response,
                 allowEmptyResponse: false,
@@ -63,7 +65,10 @@ internal sealed class TelegramPostService
         return posts;
     }
 
-    private static string BuildBatchPrompt(string promptTemplate, IReadOnlyList<RssFeedItem> items)
+    private static string BuildBatchPrompt(
+        string promptTemplate,
+        IReadOnlyList<RssFeedItem> items,
+        int maxContentCharactersPerItem)
     {
         var builder = new StringBuilder();
         builder.AppendLine(promptTemplate);
@@ -87,10 +92,28 @@ internal sealed class TelegramPostService
             builder.AppendLine($"Link: {item.Link}");
             builder.AppendLine($"ImageUrl: {item.ImageUrl ?? "None"}");
             builder.AppendLine("Content:");
-            builder.AppendLine(item.Summary);
+            builder.AppendLine(TrimContentForPrompt(item.Summary, maxContentCharactersPerItem, index + 1));
         }
 
         return builder.ToString();
+    }
+
+    private static string TrimContentForPrompt(
+        string content,
+        int maxContentCharacters,
+        int itemNumber)
+    {
+        var normalizedContent = content.Trim();
+        if (maxContentCharacters <= 0 || normalizedContent.Length <= maxContentCharacters)
+        {
+            return normalizedContent;
+        }
+
+        Console.WriteLine(
+            $"Trimmed RSS item {itemNumber} content from {normalizedContent.Length} to {maxContentCharacters} characters before sending to Groq.");
+
+        return normalizedContent[..maxContentCharacters].TrimEnd() +
+            "\n\n[Content truncated before sending to Groq because the RSS item was too large.]";
     }
 
     private static string BuildTextPrompt(string promptPath, string promptTemplate, IReadOnlyList<string> items)

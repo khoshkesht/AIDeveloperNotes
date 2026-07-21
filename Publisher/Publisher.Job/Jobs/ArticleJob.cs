@@ -95,7 +95,7 @@ internal sealed class ArticleJob
 
         Console.WriteLine($"Generating {itemsToSend.Count} Groq article post(s).");
         var generatedPosts = await telegramPostService.GenerateTelegramPostsAsync(
-            new GroqTelegramPostRequest(promptPath, itemsToSend),
+            new GroqTelegramPostRequest(promptPath, itemsToSend, groqJob.MaxContentCharactersPerItem),
             groqJob.UseProxy);
         if (generatedPosts.Count != itemsToSend.Count)
         {

@@ -1,0 +1,8 @@
+#Post_6 <b>تفاوت Tool، Integration و MCP</b>
+
+Hermes برای گسترش قابلیت‌های خود از چند سازوکار متفاوت استفاده می‌کند. Toolها امکانات داخلی مانند Web Search یا Browser Automation را فراهم می‌کنند، در حالی که Integrationها ارتباط با Providerها و سرویس‌های خارجی را برقرار می‌کنند. زمانی که قابلیت موردنیاز به‌صورت بومی وجود نداشته باشد، می‌توان از MCP برای افزودن Toolهای Third-party استفاده کرد و دامنه توانایی‌های Agent را گسترش داد. 
+
+---
+
+#Educational #Hermes_Agent
+➡️@AIDeveloperNotes

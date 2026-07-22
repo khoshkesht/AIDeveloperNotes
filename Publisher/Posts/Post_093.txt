@@ -1,0 +1,8 @@
+#Post_11 <b>ساخت Second Brain با Obsidian</b>
+
+Hermes می‌تواند اطلاعات مهم را در یک Obsidian Vault ذخیره کند و بعداً دوباره از همان اطلاعات استفاده کند. Projectها، Researchها و سایر اسناد در Vault نگهداری می‌شوند و Agent قادر است آن‌ها را بازیابی کرده و ادامه همان کار را انجام دهد. این ساختار باعث می‌شود اطلاعات پروژه‌ها تنها در Conversationها باقی نمانند و به یک مخزن دائمی دانش تبدیل شوند. 
+
+---
+
+#Educational #Hermes_Agent
+➡️@AIDeveloperNotes

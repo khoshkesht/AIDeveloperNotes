@@ -1,0 +1,8 @@
+#Post_4 <b>شخصی‌سازی محیط Hermes</b>
+
+پس از نصب، بخش زیادی از رفتار Hermes از طریق تنظیمات داخلی قابل تغییر است. Model، Workspace، Personality، Appearance، Memory، Safety و Context همگی از داخل Desktop App قابل مدیریت هستند. این ساختار باعث می‌شود بسیاری از نیازهای پیکربندی بدون ویرایش فایل‌های داخلی یا انجام تنظیمات پیچیده انجام شوند و هر Workspace بتواند متناسب با شیوه کاری کاربر تنظیم شود. 
+
+---
+
+#Educational #Hermes_Agent
+➡️@AIDeveloperNotes

@@ -37,8 +37,7 @@ git pull
 
 
 
-rm -rf '5-Days of AI Agents'/
-rm pass.txt
+rm -rf Sources/
 rm curl.txt
 rm -rf 'docs'/
 dotnet publish Publisher/Publisher.Job/Publisher.Job.csproj -c Release -o /opt/publisher-job

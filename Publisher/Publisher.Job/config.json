@@ -22,7 +22,7 @@
     "useProxy": false
   },
   "groqArticleJob": {
-    "enabled": true,
+    "enabled": false,
     "cron": "30 9 * * *",
     "promptPath": "Promp/Groq-MakeArticle.md",
     "downloadImages": false,

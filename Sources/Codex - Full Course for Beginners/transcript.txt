@@ -1,0 +1,1369 @@
+Title: Codex - Full Course for Beginners
+
+(0:00) This video will teach you Codex.
+
+(0:02) I'll go through all of the important features, show you how to set it up and install it,
+
+(0:06) and assume no prior knowledge.
+
+(0:07) So even if you're a complete beginner, you'll be able to follow along.
+
+(0:10) Now I'm going to be covering things like computer use or browser control.
+
+(0:14) I'm going to show you how to set it up for coding model selection, all of the different commands
+
+(0:18) like slash goal, and a lot of the new features that I haven't seen many people cover.
+
+(0:23) So with that said, stick around.
+
+(0:24) Let's get into it and let me teach you Codex.
+
+(0:27) So let's start by discussing what Codex is.
+
+(0:29) We'll look at how we can use it because there's actually many different ways.
+
+(0:32) And then I'll start going through all of the different features.
+
+(0:34) There'll be timestamps down below in case you want to skip forward.
+
+(0:37) And keep in mind I like to make things really thorough in detailed.
+
+(0:40) So if you feel like I'm going to slow, fast forward to the next section okay.
+
+(0:44) So first what is Codex?
+
+(0:46) Well Codex is essentially OpenAI's answer to tools like Claude code.
+
+(0:50) It's actually much more involved than Claude code I would say it has a lot more features,
+
+(0:54) and a lot of people don't know about what you can do with it.
+
+(0:57) Now, the basics is that you can use it to write code
+
+(0:59) because it will give you access to their top models like GPT 5.5.
+
+(1:03) However, you can also use it to control your computer, to automate
+
+(1:07) tasks, to perform something repetitive for you.
+
+(1:10) And you can even do something like tell it to play a song on Spotify for you.
+
+(1:14) And it can go and do that by controlling your computer.
+
+(1:17) So there's a lot of cool features that are not just related to coding.
+
+(1:19) I'm going to try to cover all of those in this video.
+
+(1:22) So what I want to do is quickly cover how you can use Codex, because there's a lot of different ways.
+
+(1:26) And OpenAI has been very confusing with the naming of Codex
+
+(1:30) because they had models called Codex like their actual LLMs.
+
+(1:33) Now they have the tool called Codex, and you can use it in like many different fashions.
+
+(1:38) So for this video we're going to be using the stand alone desktop application.
+
+(1:42) The way this works is you download it and install it on your computer.
+
+(1:45) You can get it for windows, Mac and then they don't have it for Linux right now.
+
+(1:49) So just Windows or Mac.
+
+(1:50) Now you'll sign into this using your ChatGPT subscription.
+
+(1:53) You can use it, I believe, as low as $20 per month on the plus plan.
+
+(1:57) Just keep in mind I do have the $200 per month plan, so my usage limits will be significantly higher.
+
+(2:02) Now the limits are typically very generous.
+
+(2:04) You're probably going to get 5 or 10 times the amount of usage.
+
+(2:07) Then you would compare it to something like Claude Code, so I wouldn't be too concerned
+
+(2:11) with ripping through it.
+
+(2:11) Unless you use the highest end models and you're running it 24 over seven.
+
+(2:15) Now you can also use this with an OpenAI API key.
+
+(2:17) I definitely do not recommend that because that's going to be very expensive.
+
+(2:21) So first up, if you don't want to be downloaded and installed Codex, I'll leave a link to it
+
+(2:25) in the description sign in with your ChatGPT account, then you're good to go
+
+(2:29) now as well as the desktop app, which again is what we're going to be using.
+
+(2:33) They also have an IDE extension.
+
+(2:35) You can install this in the popular editors like cursor, Visual Studio
+
+(2:38) Code and Windsurf and have access to the same Codex interface inside of that editor.
+
+(2:43) If you're a developer, you may want to do that.
+
+(2:45) We also have CLI.
+
+(2:46) Now this is a command line interface more familiar to something like cloud Code, where you're
+
+(2:50) not in kind of a nice graphical user interface, which you'll see in a minute.
+
+(2:54) But the advantage here is that you can run this on something like Linux or a server,
+
+(2:57) and you can have this as a remote machine that's running 24 over seven.
+
+(3:00) Same thing. You can sign in with your account.
+
+(3:02) And then we have the cloud version which is running directly in your browser.
+
+(3:06) It's better if you can use the desktop version, but if you want to do it
+
+(3:09) from the browser on your phone or something, you can do that.
+
+(3:12) Okay, so those are the surfaces for Codex.
+
+(3:14) Again, what we want to do is download the desktop application,
+
+(3:17) which is where we're going to be working.
+
+(3:19) And now let's open up that app.
+
+(3:20) So just open up the desktop application, which is where we're going to be working
+
+(3:24) and where I recommend you use Codex because does the most number of features.
+
+(3:27) Now let's start by going through the user interface.
+
+(3:29) You can understand what all of these buttons actually do.
+
+(3:32) And then I promise we'll go through all of the features.
+
+(3:35) So here you have your main chat window.
+
+(3:37) There's a few things you want to pay attention to, like the model selector which we'll look at in
+
+(3:40) a minute, the voice dictation in case you want to use that the approval modes.
+
+(3:44) So ask for approval approved for me or full access.
+
+(3:47) And then being able to add different skills context.
+
+(3:50) And then if you want you can actually run commands by using this slash.
+
+(3:53) So if you do forward slash
+
+(3:54) you be able to see a list of all of this stuff available which will be going through.
+
+(3:58) You also have the ability to organize different chats into projects.
+
+(4:01) So you can see I have a few projects here.
+
+(4:03) You can make a new one, but we'll look at that in a few minutes.
+
+(4:05) Now from the right hand side you'll also notice that you have these toggle bars.
+
+(4:09) So if you click on the right it's going to show you a browser and a terminal.
+
+(4:12) That's because Codex can automatically control a browser for you and test your applications.
+
+(4:17) And then you can also toggle up the terminal or the shell, which again Codex can control and use for you.
+
+(4:23) You typically don't need to do this, but I'm just showing you
+
+(4:25) those views exist from the left hand side.
+
+(4:27) You can also toggle this sidebar where you have some of the important I don't know, buttons or views.
+
+(4:33) If you want to access the settings menu, you can click on your profile.
+
+(4:36) You can go to profile or to settings for settings.
+
+(4:39) If you are someone who's not going to do any coding, you can switch this over to the everyday work mode.
+
+(4:43) So it's going to be a little bit less technical, but for most of us, we're going to want to stay here
+
+(4:47) where we have access the browser, the terminal and some other features.
+
+(4:50) There's a ton of settings.
+
+(4:51) Feel free to look through these and change any of them if you want.
+
+(4:54) But again, I'll go through them one by one.
+
+(4:56) And then last thing, if you go and look at usage and billing, you'll be able to see your usage,
+
+(5:00) the plan that you're currently on, if you have any balance or anything.
+
+(5:03) Again, these are very generous limits.
+
+(5:05) It's very unlikely that you're going to hit them, especially if you're doing something somewhat normal.
+
+(5:09) So I wouldn't stress out about it too much.
+
+(5:11) Okay, so now that we've gone through that, let's start looking at the models.
+
+(5:13) Let's start running a few chats and setting up some plugins
+
+(5:16) so I can show you things like the computer control, which is super cool.
+
+(5:20) But first, just a quick word from our sponsor boot dev.
+
+(5:24) Now this is one of the best learning platforms out there and actually a long term partner
+
+(5:28) of this channel.
+
+(5:29) Now, one of the biggest problems that I see with people learning to code is boredom.
+
+(5:33) They watch tutorials, copy code, feel productive for a week, and then they quit now.
+
+(5:38) But dev takes a completely different approach.
+
+(5:40) It's very hands on and honestly, it feels more like a game than a course.
+
+(5:45) Now you're learning backend development by actually building things, not just watching videos.
+
+(5:50) You work through real challenges in Python SQL and go earn
+
+(5:54) level up five bosses and progress through a full backend curriculum.
+
+(5:58) Now it sounds a bit gimmicky, but I promise you it actually works because you're
+
+(6:01) doing the same kind of problem solving that you do on the job.
+
+(6:04) Now they also have an AI tutor called boots,
+
+(6:06) which doesn't just dump answers on you, it asks follow up questions and helps
+
+(6:10) you reason through problems when you get stuck, which is way closer to how you actually learn.
+
+(6:14) Now, all of the content is free to read and watch, and if you want the interactive coding,
+
+(6:19) the progress tracking, and the AI assistance, that's part of the paid plan.
+
+(6:23) If you want to check it out, go to dev and use my code
+
+(6:25) tech with Tim to get 25% off your first year.
+
+(6:29) Big thanks to Boot Dev for sponsoring this video.
+
+(6:31) Now let's get back into it.
+
+(6:33) So like I was saying, let's have a look at the model selection.
+
+(6:35) Now, for some reason you don't see this view.
+
+(6:37) You can always just press a new chat and it will bring this up.
+
+(6:40) Now from here if you go to model selector you're going to see that you have
+
+(6:43) a reasoning level light medium high and extra high.
+
+(6:47) Now of course you want to use the best reasoning whenever you possibly can,
+
+(6:50) but keep in mind that this is going to take significantly longer.
+
+(6:54) So the reasoning can kind of come down to how long this is going to take.
+
+(6:58) Of course, the higher reasoning, the better responses and results that you're typically going to get,
+
+(7:02) but it can increase the time by like 4 or 5, sometimes ten x.
+
+(7:06) I've had tasks here taken 30 minutes to run in extra high reasonings.
+
+(7:10) If you want something fast.
+
+(7:11) If you're asking a quick question,
+
+(7:13) you don't need super high reasoning and you can put this in light or medium mode.
+
+(7:17) Now, when it comes to the model itself, you have a few options.
+
+(7:20) GPT 5.5 is kind of the best one.
+
+(7:23) The frontier coding model, the one you're going to want to use for pretty much everything.
+
+(7:27) GPT 5.4 is just the generation before that that has kind of cheaper usage limits.
+
+(7:32) I would never use this one. GPT 5.4 mini.
+
+(7:35) This can be used for small, fast, kind of efficient things
+
+(7:38) where you're asking a question or you just want, you know, quick UI change or something.
+
+(7:42) And then 5.3 Codec Spark is just an extremely fast model
+
+(7:46) that you use again, for very minor things that don't require a lot of intelligence.
+
+(7:50) And specifically when you're running out of the usage on GPT 5.5.
+
+(7:54) So for 99% of you, you just keep GPT 5.5 on.
+
+(7:57) Probably throw it in medium reasoning.
+
+(7:59) If you have enough credits, you can turn on this fast mode so it'll run faster.
+
+(8:02) I pretty much always leave that on, and then if you start running out of the usage,
+
+(8:06) you can switch to some of these other models.
+
+(8:08) You can change the speed back to default
+
+(8:10) and you can adjust the reasoning, but most of the time 5.5 medium.
+
+(8:14) This is what you're going to keep it in.
+
+(8:15) And if you're doing something
+
+(8:16) more complicated, switch up the reasoning level here to high or extra high.
+
+(8:20) You can play around with it, but that's pretty much all you need to know.
+
+(8:23) Okay, so of course we're going to use this and I'm going to show you a bunch of prompts.
+
+(8:26) But I want to show you how to set this up so we can do some really interesting things with Codex.
+
+(8:30) So what we're going to do here is go to plugins.
+
+(8:33) Now this is one of my favorite features of Codex is all of the plugins that it has by default.
+
+(8:37) And the fact that it can control your computer, control your browser, control spreadsheets, access
+
+(8:43) Google Drive, and do this in a really interactive and intuitive way.
+
+(8:47) Now, most of your tools like this like cloud code, they can do the same thing,
+
+(8:50) but I find Codex performs a lot better and it's just way easier to understand.
+
+(8:54) So what we're going to want to do here is go to plugins and start installing
+
+(8:58) some of the ones that you see on my computer right now.
+
+(9:00) So the first one is computer use.
+
+(9:02) If you don't already have this installed, you can install it and activate it.
+
+(9:05) It may ask for some permissions here.
+
+(9:07) And this is going to allow you to control your computer.
+
+(9:09) So you can tell it to open up an application go to your browser, access Spotify.
+
+(9:14) We're going to look at that in one second.
+
+(9:16) Next plug in we're going to want is Chrome.
+
+(9:18) So we're going to want to install this Chrome plug in here.
+
+(9:20) And then open up this Chrome extension okay.
+
+(9:23) This Codex Chrome extension.
+
+(9:24) You can see I already have mine installed here.
+
+(9:26) And if I go to the view you can see we have Codex and it's connected.
+
+(9:29) And this will allow Codex to control your browser.
+
+(9:32) So it can open up a tab.
+
+(9:33) It can search for something. It can debug your application.
+
+(9:36) Make sure that you get that set up again.
+
+(9:37) If you just press this open button you can install the extension and link it.
+
+(9:41) Another extension that I highly recommend is GitHub.
+
+(9:44) If you're unfamiliar with git and GitHub, this is essentially a version control software for code.
+
+(9:49) This means that you can save your changes, that you can recover them later on.
+
+(9:53) You can store them in the clouds,
+
+(9:55) you can use them from a different device and you can share them with your teammates.
+
+(9:58) This is a standard anytime you're building even a medium sized project.
+
+(10:02) Really any type of coding project, you should be using this.
+
+(10:04) So create a free GitHub account.
+
+(10:06) Very easy.
+
+(10:07) You can just go to github.com and then you can connect your GitHub account here inside of Codex.
+
+(10:11) So it can automatically make what's called a repository, which is just storing
+
+(10:15) your code effectively and upload it to the clouds that you're not going to lose it.
+
+(10:18) You can access it from other devices and you can revert back in case Codex makes a change.
+
+(10:23) It breaks whatever the version of your project is.
+
+(10:25) I'm not going to be teaching git in GitHub too much, but I do highly recommend
+
+(10:29) that you set up that plugin and you can see
+
+(10:31) we have a few other ones here like Google Drive, presentations, spreadsheets, slack, Gmail.
+
+(10:35) You can add as many of these as you want, but I'm going to stick with these for right now.
+
+(10:38) So now that we have the computer plugin installed, I want to show you how to use this.
+
+(10:43) So if I go and I use this at symbol, you can see that I can actually reference
+
+(10:47) different applications and specifically this computer.
+
+(10:50) Right.
+
+(10:51) So from computer what I can do is ask it to do something.
+
+(10:54) So let's start by doing something simple.
+
+(10:56) Open up notepad, close any of the existing windows that are there,
+
+(11:00) and then write a simple note and describe your ideal day.
+
+(11:05) I know you're a computer, but just come up with something, okay?
+
+(11:07) I'm just giving it kind of random prompt.
+
+(11:09) By the way,
+
+(11:10) if you're wondering what I'm using to prompt here, I always use this tool called Whisper Flow.
+
+(11:14) Very good for voice dictation, especially in AI tools.
+
+(11:17) I'll leave a link to it so you can check it out. In the description.
+
+(11:19) You can see that I use it a ton based on my usage.
+
+(11:21) Very very good and free to try out.
+
+(11:23) Okay, so let's run this and let's see what we get here.
+
+(11:27) And you can see that it's going to use the computer plugin.
+
+(11:29) And it should control my computer.
+
+(11:31) And keep in mind that while it's controlling my computer, I can still use the computer myself.
+
+(11:36) So I can navigate into an application. I can close something.
+
+(11:39) I don't need to have it kind of freely using the mouse,
+
+(11:41) because it will actually use its own cursor.
+
+(11:44) Okay, apologies, because it had a note there that I didn't want you guys to see,
+
+(11:47) so I had to kind of rerun this.
+
+(11:49) But you can see that
+
+(11:49) it actually just opened up my computer here, open up notepad and wrote this note inside for me.
+
+(11:54) Okay.
+
+(11:54) So now if I want to say something, can you continue this node and make it like double
+
+(11:58) or triple the length? Don't worry if it's unsaved.
+
+(12:00) Just keep writing okay.
+
+(12:01) And let's hit enter.
+
+(12:02) And again you'll see that we kind of get that blue hue around our computer.
+
+(12:06) And it's able to take over
+
+(12:07) and do anything that we want, which can be super useful, especially for automating,
+
+(12:12) kind of like testing a website, going through a form, running a task repetitively.
+
+(12:17) You get the idea.
+
+(12:17) So let's see how it works. And you can see that just opened it.
+
+(12:20) And then did it extend the note?
+
+(12:22) I guess not, says thinking okay, maybe it will take over again in a second.
+
+(12:26) But when it does that you also see it's kind of cursor appearing, which I think is pretty cool.
+
+(12:29) Okay, so for some reason it didn't keep controlling the note.
+
+(12:31) But let's just do another example here.
+
+(12:33) I'm going to say computer, open up Spotify, find Drake's
+
+(12:36) most popular song, and then tell me what it is and play it okay.
+
+(12:40) And let's just do this as an example so we can see okay.
+
+(12:42) So it actually found that Spotify wasn't installed on my computer.
+
+(12:45) And it's going to now do this from Chrome which is what I was trying to show.
+
+(12:48) So I'm going to allow this to access my Chrome browser okay.
+
+(12:51) So we can see it opened this, it actually started playing the song, I just paused,
+
+(12:54) I don't want to get the copyright strike and it found the song for me.
+
+(12:56) And then if I go here it says that this is the most popular one.
+
+(12:59) Okay, I don't know if that's true, but at least that's what it gave us.
+
+(13:01) So the point is it can control Chrome, it can control its own devices.
+
+(13:04) So keep that in mind.
+
+(13:05) That's super useful.
+
+(13:06) But now let's move to some more coding related features okay.
+
+(13:09) So if we're done with the current chat
+
+(13:11) here, what we can do is just press new chat and open up a new one here.
+
+(13:14) And what I'm going to do now is I'm actually going to create a new project.
+
+(13:18) Now, whenever you're coding, I recommend that you make a new projects.
+
+(13:21) You can organize all of your chats for that specific project, and you can go back and find them easily.
+
+(13:26) It's not required to do this, but it's kind of a good practice.
+
+(13:29) So you can see that I can make new project.
+
+(13:30) I can use an existing folder.
+
+(13:32) So maybe I have an existing code repo that I want to use.
+
+(13:35) I can open that up.
+
+(13:36) And that's kind of what a project is.
+
+(13:38) It's really just a folder on your computer.
+
+(13:40) Or I can start one from scratch.
+
+(13:41) So I'm going to start one from scratch, and I'm just going to call this I don't know chess game.
+
+(13:45) And what we'll do is we'll try to make like an interactive chess game here using Codex.
+
+(13:50) So you can see that it's made a new project for me.
+
+(13:52) It's called Chess Game.
+
+(13:53) And notice that we have a few options here for the project.
+
+(13:56) Now I have the ability to connect to Codex Web.
+
+(13:59) This would essentially send all of the kind of info to the cloud, which is a little bit more complicated.
+
+(14:04) We can work locally, which just means we're working on our own computer,
+
+(14:07) which is what we're going to do here.
+
+(14:09) Or we can create something called a work tree.
+
+(14:11) Now we're going to look at work trees later, but essentially this is a clone of this kind of project
+
+(14:16) so that we can work on multiple things at the same time without having a conflict.
+
+(14:19) So for now, we're going to leave it in the current location that it's in.
+
+(14:22) You'll notice that it automatically is connecting to get.
+
+(14:25) So it's created a branch called main.
+
+(14:27) And you can make different branches if you're familiar with git.
+
+(14:30) But we're not going to look at that for right now.
+
+(14:31) I'm also just going to move this to full access mode, just so I don't need to keep approving things.
+
+(14:35) And you can see it's pretty straightforward what you do here with those.
+
+(14:38) So now let me give this a simple prompt.
+
+(14:40) I want to create a simple chess game.
+
+(14:42) I want to have a back end which is using WebSockets and kind of keeping
+
+(14:46) track of scores and ratings and stuff in a database in people's usernames.
+
+(14:50) And then I want to have a front end where we can actually play this.
+
+(14:53) I want it to be multiplayer, so I want two people to be able to play against each other.
+
+(14:57) We can keep it simple, have an MVP to start and then build everything out.
+
+(15:01) Okay.
+
+(15:01) So I'm just giving it kind of, you know, prompt on what I, what it is that I want it to do.
+
+(15:04) I want it to build something out here.
+
+(15:06) And we're going to go ahead and press enter.
+
+(15:08) And I just want to show you how this works okay.
+
+(15:10) So we can see here the Codex is now working.
+
+(15:12) It's making multiple files. We can see what it's doing.
+
+(15:14) And I can kind of go into this and inspect the different commands.
+
+(15:17) But I want to see what's actually running.
+
+(15:19) If I expand this right toggle.
+
+(15:21) Now you'll notice that it's giving me a preview tab.
+
+(15:23) We don't see anything right now because we're just waiting for it to finish the files.
+
+(15:26) But we will be able to see all of the different files, code changes and all this stuff
+
+(15:31) going on here in one second.
+
+(15:32) And then if I go here to this kind of little,
+
+(15:35) I don't know, to do list icon, you can see that we have a bunch of options.
+
+(15:39) So I can change where I want it to work.
+
+(15:40) I can change the branch I can commit or push directly to GitHub.
+
+(15:44) Now it's not giving us any results because it's not available online right now.
+
+(15:47) It's just locally on our computer.
+
+(15:49) But you get the idea.
+
+(15:49) And then we can view the changes which is making right now.
+
+(15:52) So we're just waiting for those to finish.
+
+(15:53) So there's a lot that will start happening when you actually write code.
+
+(15:56) And then I can also toggle open the terminal. Right.
+
+(15:59) So I can run commands or see what's happening there.
+
+(16:01) Let's go back into this view.
+
+(16:02) And then I can open this in any of the tools that are shown here.
+
+(16:06) So if I wanted to open this in cursor and view all of the code in IDE, I can press that button and do so.
+
+(16:11) So let's wait a second for it.
+
+(16:12) To finish writing this code, you can see that it's starting to show me some of the files
+
+(16:15) that we have inside of this folder, and then we'll review it and see what we get okay.
+
+(16:19) So just finished the first pass here.
+
+(16:21) It says that it built the multiplayer chess MVP and started locally.
+
+(16:24) And if I press on any of the links here, you'll notice that they'll actually open directly in Codex.
+
+(16:29) So you can see that it's opened up right here.
+
+(16:31) We kind of have this view.
+
+(16:32) I can change the view, make it large or small or whatever.
+
+(16:35) So let's give a username maybe like Tim okay.
+
+(16:38) And join the game.
+
+(16:39) And then let's try to find a game okay.
+
+(16:41) And then I'm just going to open up another browser here.
+
+(16:43) So you can see I can press this plus button go browser.
+
+(16:46) We can actually manually type.
+
+(16:48) So localhost 3000 okay.
+
+(16:51) And let's see maybe we can change this as I don't know Joe or something.
+
+(16:55) Okay. Join in and find a game.
+
+(16:58) And you can see that we find a game and then we can start playing.
+
+(17:01) So I don't know let me try to move here and see if it moves on this side.
+
+(17:04) And it looks like it's working.
+
+(17:05) So let's make a move like that
+
+(17:08) I'm not going to play the full thing out, but you guys get the idea that it is indeed working.
+
+(17:12) We have a track of all the moves. We have some leaderboard.
+
+(17:14) And then maybe if I resign, you can see now the ELO has updated and I want so says
+
+(17:20) white wins by resignation I mean pretty cool that that worked that fast.
+
+(17:24) Now within this browser view there's a few buttons you should be aware of.
+
+(17:27) So if you have a look at this right hand side, you can see that you can actually take a screenshot.
+
+(17:31) If you do that, it will save it to the clipboard.
+
+(17:33) And then you can copy that screenshot or paste it sorry, into the chat
+
+(17:37) in case you want to capture what's going on inside of this window rather than doing it manually.
+
+(17:41) And of course, ChatGPT and GPT here can do image generation.
+
+(17:44) It can view images.
+
+(17:46) So that's I mean it should be straightforward.
+
+(17:47) You also can annotate.
+
+(17:49) So if you annotate this will allow you to select different HTML elements.
+
+(17:53) So for example maybe I'm going to select this and I can say something like
+
+(17:56) I don't really like this title.
+
+(17:57) I think we can make it look a lot better and put a chess logo okay.
+
+(18:01) And then we can go here and we can actually just update any of the values directly on screen.
+
+(18:06) I'm not going to do that because I would prefer just to prompt it, but I'm just going to run that.
+
+(18:10) You can see we now have an annotation in chat and I can start adding other annotations.
+
+(18:14) So maybe I'm going to say can we change the color of the board
+
+(18:18) or have like a white or dark mode, or maybe change the square colors?
+
+(18:22) I'm just giving random prompts going to show you this works.
+
+(18:25) And you can see we have annotations and I can say like go or something.
+
+(18:28) And now it's going to have the annotations that we made in the browser,
+
+(18:32) and it's going to make those changes which are a lot more targeted.
+
+(18:35) Okay. So I just refresh because I want to see what this was doing live.
+
+(18:37) And you can see if I go here now and I refresh, we've kind of changed what the board looks like.
+
+(18:42) Obviously we've disconnected. Now we're waiting to join.
+
+(18:44) We can see we have the kind of chess icon and it's essentially followed the annotations we asked for.
+
+(18:49) Okay.
+
+(18:49) So hopefully that gave you a bit of information on how the general kind of coding works inside of Codex.
+
+(18:54) It's very good for me.
+
+(18:56) I really like this user interface, and I like using this application.
+
+(18:59) And I mean, you can see that it gives us pretty good results, even though I didn't do anything crazy.
+
+(19:03) So now let's move to a few more advanced features.
+
+(19:06) Let's start by having a look at some basic commands.
+
+(19:08) So commands are just anything that start with a slash.
+
+(19:11) And there's a ton of built in commands inside of cloud code or not cloud code inside of Codex.
+
+(19:16) I'm not going to go over all of them, but I'll show you a few that you should be aware of.
+
+(19:20) So first, if we do slash, we're going to want to look at status.
+
+(19:24) Now status will just show you your usage limit.
+
+(19:26) So you can see that for a five hour limit I'm at 98%.
+
+(19:29) And for my seven day limit I'm at 99%.
+
+(19:32) It also gives me my context limit.
+
+(19:34) Now the context can be viewed using this little kind of circular icon down here.
+
+(19:39) It won't give you a detailed breakdown, but you'll be able to see
+
+(19:42) how much you've used, how much is left, and how many tokens are there.
+
+(19:45) Now, depending on the models you're using, the context size can change, but this is something
+
+(19:49) that's useful to be aware of because if the context gets too large, which means you have too many,
+
+(19:54) you know, too much conversation, history, tool calls, etc., you will need to compact that.
+
+(20:00) Now there's actually a command that can do this for you.
+
+(20:02) It's called slash compact.
+
+(20:04) Now what slash compact will do
+
+(20:06) is it will take everything that you have in your current conversation history.
+
+(20:09) So all of the tool calls, all of the code, anything that it's understood
+
+(20:13) in this whole conversation that we've had, and it will generate a summary of that
+
+(20:17) and then add that to kind of a new, fresh conversation that you'll start.
+
+(20:21) So you'll notice that after I did that, we now if we look at the
+
+(20:24) what is it context use here, we've only used for percent.
+
+(20:27) So it's taken 22% there.
+
+(20:29) It's condensed it down given us a summary.
+
+(20:31) And now we can continue.
+
+(20:33) Now it's not a great idea to compact super early because you want to use up the context window.
+
+(20:37) But as soon as you start getting to 70%, 80%, 90% context,
+
+(20:42) you typically want to compacted because you're going to get better results.
+
+(20:46) Because as the model fills up with context, it performs worse.
+
+(20:50) This is pretty well known.
+
+(20:51) I'm not going to go into all of the details.
+
+(20:52) Just be aware that command exists.
+
+(20:54) You can use it in Codex will automatically compact for you if you're going to go past your context.
+
+(21:00) So you may want to do it at a time that you decide, rather than waiting for it to do it automatically.
+
+(21:05) Now, another thing that we can do, which is sometimes useful, is we can fork this.
+
+(21:08) Now you can see that if we type slash fork, it will allow us to fork this chat
+
+(21:12) into a local or new work tree, which we're going to look at effectively.
+
+(21:16) What this will do is take everything that we've done and just create a complete copy of it,
+
+(21:20) so we can work in multiple agents at the same time without them having any conflict.
+
+(21:26) So they both will kind of work in their own copy of the code base,
+
+(21:29) and then they can go and kind of joy in everything together.
+
+(21:33) Fix any of the merge conflicts.
+
+(21:34) When we get to the final version again,
+
+(21:36) we'll look at fork in a minute, but that is a command to be aware of.
+
+(21:39) You have the fast mode feedback. We're not going to do that.
+
+(21:42) A NIT goal and some other kind of modes that we'll look at here in a second.
+
+(21:45) Few last things to be aware of.
+
+(21:46) You can also pin chats.
+
+(21:48) So if we want this chat to be available we can pin it.
+
+(21:50) And then we can create new chats inside of the same project.
+
+(21:53) So you can see it's in chess game here.
+
+(21:54) And we can decide how we want to work and just have another agent either
+
+(21:57) running at the same time or in a new chat.
+
+(22:00) If we want to ask for something different and kind of forget the previous conversation history
+
+(22:04) we had here. Anyways, let's go to a new chat.
+
+(22:07) Now we're inside of chess game, and let's use a new mode that we haven't seen yet, which is plan.
+
+(22:12) So if we use slash plan, we can enable plan mode.
+
+(22:16) You'll see that it's here and now.
+
+(22:17) With plan mode, what we can do is we can ask this something a little bit more detailed.
+
+(22:22) We can describe what we want.
+
+(22:23) And Codex will prompt us with different questions
+
+(22:26) and kind of clarifying details before it goes and executes the plan.
+
+(22:30) Pretty straightforward, but typically you want to make a plan before you do something too complex.
+
+(22:34) So really for our chess game, we should have started in plan mode, built the plan, and then execute it.
+
+(22:39) I was just saving it for later because it's a little bit more complex.
+
+(22:42) So now maybe I want to expand this chess game.
+
+(22:44) I want to have puzzles. I want to have a leaderboard.
+
+(22:47) I want to have maybe a big UI, I want to have whatever accounts.
+
+(22:50) So let's start generating a plan for that.
+
+(22:52) I want to expand our chess game.
+
+(22:54) I want to have a better landing page so that a user can see their stats,
+
+(22:59) and they have the ability to either play a game or play a puzzle or go to like a practice board.
+
+(23:03) I want to generate a few different game modes,
+
+(23:05) and I want to really polish this up and make it kind of like a Chess.com clone.
+
+(23:09) Let's start with just the MVP features.
+
+(23:11) Can you generate a plan for this?
+
+(23:13) Ask me any questions you need to okay, so let's go here and press enter.
+
+(23:18) And because it's in plan mode it's going to map everything out.
+
+(23:21) And it should start asking us some questions and prompting us so that it can generate that for us.
+
+(23:26) Okay.
+
+(23:26) So we can see that it's now prompting us with a few questions in the bottom here.
+
+(23:29) So it says for the first MVP pass, which mode set should the landing page launch?
+
+(23:34) We can have add bot game, add
+
+(23:36) time modes or core three ship the landing page, live game, daily star puzzles.
+
+(23:40) Let's go with that.
+
+(23:41) How should the user stats work for an MVP?
+
+(23:43) Let's just go.
+
+(23:44) Username. Profiles okay.
+
+(23:46) Username. Login. Expand stats. Okay.
+
+(23:49) How deep should the puzzle mode be an MVP?
+
+(23:52) Let's just do.
+
+(23:54) Yes. Small
+
+(23:55) bundled puzzled library that looks good and that we continue.
+
+(23:58) Now while it's doing this, also mention
+
+(24:00) that if you open up the sidebar here, you'll see a few more options.
+
+(24:03) Because we're in this kind of coding environment, we can now view all of the files.
+
+(24:07) If we want to look at this, we see we have the database.
+
+(24:09) We can open up the server right.
+
+(24:11) And you can modify the code, or you can add comments directly inside of here or tag different things.
+
+(24:15) And now you'll see that it's generating the plan.
+
+(24:18) I believe the plan will be stored in this repo.
+
+(24:20) I might just need to refresh, but we should be able to view it.
+
+(24:23) So if I want to look at the plan here,
+
+(24:25) you can see we can open it up and it gives us everything that needs to be done.
+
+(24:29) Okay.
+
+(24:29) So I could just implement this plan right and just start running with that.
+
+(24:33) But what I want to show you now is another mode that's super useful,
+
+(24:37) that is going to get things done a lot more efficiently for us without us
+
+(24:41) having to keep approving things or prompting the model multiple times.
+
+(24:45) And that is called goal.
+
+(24:47) So there is this slash command called slash goal.
+
+(24:50) Now if we use this let me just actually type it out.
+
+(24:54) What will happen is that codex will run until a goal is achieved.
+
+(24:59) Now this is kind of
+
+(25:00) that agent loops that you may have heard about recently that everyone's talking about.
+
+(25:04) They have that built in now.
+
+(25:06) So what we can do is we can say, hey, here's the goal.
+
+(25:09) And we just set a high level objective, and Codex will keep going until the goal is achieved.
+
+(25:14) So it will plan, it will execute and then it will review if it's achieved the goal.
+
+(25:18) And if it hasn't, it will just keep running.
+
+(25:20) So it's not just going to do one pass or implement one set of features.
+
+(25:24) It will go until the goal is achieved.
+
+(25:26) Now, in order to use this effectively,
+
+(25:28) you need to set a good goal and the conditions for the goal to be achieved.
+
+(25:32) Now, in our case, we already have the plan so we can effectively
+
+(25:35) just say keep running until the entire plan is implemented.
+
+(25:38) It will then run check if the plan is done.
+
+(25:40) If it's not, it will keep going.
+
+(25:41) If it is, it will finish.
+
+(25:43) So this will allow it to run for a long period of time, which also will use a lot of usage.
+
+(25:48) So keep that in mind.
+
+(25:49) So for the goal I'm going to say okay, keep running
+
+(25:52) and implement the entire plan until the plan is fully finished.
+
+(25:55) Everything is tested, everything is working and we are confident to deploy this.
+
+(26:00) Again, not the best prompt in the world, but I'm just showing you the usage here.
+
+(26:03) And now that the plan is enabled, we have goal set.
+
+(26:07) I can press enter and you can see that it's going to pursue this goal and start running.
+
+(26:11) And we can view this is the goal.
+
+(26:13) And it's going through all of the different steps.
+
+(26:15) And it will just be this infinite loop which can take a very long time to run.
+
+(26:19) All right.
+
+(26:19) So the goal has just finished it built this application for us.
+
+(26:22) I don't know if it's fully working, but you guys get the idea and it's done.
+
+(26:26) So now let's have a look at some more features and start going through it okay.
+
+(26:29) So first things first.
+
+(26:31) If you look at any of these chats you have the ability to right click them.
+
+(26:34) You can pin them rename them.
+
+(26:36) You can also fork them into a local version or a new work tray.
+
+(26:40) Now I want to really briefly discuss what a work tree is,
+
+(26:44) because it's a little bit complicated, and we'll save the full usage for a part two.
+
+(26:48) So let me know if you guys want to see that in the comments down below.
+
+(26:51) Now, if I try to open a new project here, right.
+
+(26:53) So I've gone sorry.
+
+(26:54) New chat.
+
+(26:55) Okay, so I want new chat. And then I selected Chess Game.
+
+(26:58) And then what I did is rather than selecting work locally, I selected new work tree.
+
+(27:02) I have the ability to create a local environment.
+
+(27:05) Now the reason this is important is that if you want to run parallel agents at the same time,
+
+(27:10) they should be working in their own copy of the repository or the project that you have.
+
+(27:15) If they work on the same files, there can be conflicts
+
+(27:18) because they're touching the same information at the same time, and that's not good.
+
+(27:22) So the solution to this is a work tree.
+
+(27:25) This is provided by git.
+
+(27:27) Again it's a little bit complicated to setup and a bit confusing to use.
+
+(27:31) So I'm not going to go through all of the details.
+
+(27:32) But if you do want to run parallel agents at the same time,
+
+(27:36) you have multiple tasks going, this is what you would use.
+
+(27:39) You have to configure the environment first, which you can ask Codex to help you do,
+
+(27:43) and then you can change the branches and stuff in order to work on the different features.
+
+(27:47) And now you'll have different agents because you can run multiple at the same time,
+
+(27:51) working in these kind of copies of the same repo.
+
+(27:54) Again, this is a more advanced developer feature, so I'm not going to dive into it too much.
+
+(27:58) Now, another feature that's somewhat related to this.
+
+(28:01) Let's go back to local copy.
+
+(28:02) Here is this tool called Slash Review.
+
+(28:05) Now this is a code review that can automatically compare
+
+(28:08) any changes that have been made in the current session against what's in GitHub.
+
+(28:13) Okay.
+
+(28:14) So if I go to maybe this right now and I go slash review,
+
+(28:18) you can see that I can review this against a base branch.
+
+(28:22) So a branch in git if you're familiar with that or review any uncommitted changes.
+
+(28:26) So if I go slash review right and then uncommitted changes
+
+(28:30) it's going to start looking at all of the changes that it made here and automatically review
+
+(28:34) them to make sure that they're good before we push them to get or before we commit them.
+
+(28:39) This is a pretty useful feature that Codex has, and this is something you should always do
+
+(28:43) after you've done a large amount of changes before you push them to remote repository.
+
+(28:47) And if you don't know what that means, don't worry.
+
+(28:49) But if you're a developer, you'll understand the value
+
+(28:51) of having a built in shortcut that will do all of those passes and checks for you.
+
+(28:55) Okay, so you can see that it's done the review and it's given us some comments now.
+
+(28:58) And it said, hey, these are errors that I found after doing the code review.
+
+(29:02) Right. So let me go ahead and fix them okay.
+
+(29:04) So let's move to the next feature which is memory and context.
+
+(29:07) Now this is less maybe, I don't know demo
+
+(29:10) wise and more me explaining how this works because I want you to understand this.
+
+(29:13) So if I make a new chat right here okay.
+
+(29:16) And we go into this and I'm working locally, I want you to see something.
+
+(29:20) What did I do in my last session when I was working on the chess game?
+
+(29:25) Now, the reason why I'm going to run this prompt and show you the result, is that you need
+
+(29:29) to understand that by default,
+
+(29:32) Codex doesn't remember things that you worked on in the past.
+
+(29:36) Anytime you create a new chat, what it's doing is reviewing anything that you have
+
+(29:41) in your current repo, kind of trying to load in information
+
+(29:44) and find any context that's relevant and then give you an answer.
+
+(29:47) But by default it doesn't remember everything that you did.
+
+(29:50) So it won't have the full conversation history.
+
+(29:53) It won't know maybe preferences
+
+(29:55) that you told it, and it can forget things because it doesn't remember by default.
+
+(29:59) The only reason this actually just gave me a response is because it looked inside
+
+(30:02) of my project here that I'm inside of and was able to find that information.
+
+(30:07) But if I go to a new chat and I say and I remove the project, what did I work on for my chess game?
+
+(30:13) And I just ask it something really vague like that, it shouldn't know.
+
+(30:17) At least I don't think it will know because it's not going to have any of that context.
+
+(30:20) The reason why I'm mentioning this is that you need to understand that
+
+(30:23) anytime you make a new session, you're effectively starting from scratch.
+
+(30:27) And anything that you want this to know, it has to already exist as a file.
+
+(30:31) It has to be saved persistently so Codex can read it in.
+
+(30:34) And you can see here that it's not able to really find the information very well for me here.
+
+(30:39) And it has to actually go and look through the different conversation history
+
+(30:42) and threads to find this information so it can find it.
+
+(30:46) But the only reason it can do that is because it's searching through the threads and it's very slow.
+
+(30:51) And again, it's not going to remember everything by default.
+
+(30:53) The reason why I'm mentioning this is that you can fix this problem
+
+(30:57) by creating something called an agent dot file.
+
+(31:01) Now this is something that's common in all of your code base tools, CLI based tools,
+
+(31:06) whatever AI agents where you can make effectively a memory file
+
+(31:10) that will always be loaded into the prompt or into the model before you start working with it.
+
+(31:15) Now this is a really good file to create,
+
+(31:17) especially when you're working on larger projects with multiple people,
+
+(31:20) because you can store preferences, different tools or stacks that you want to use.
+
+(31:25) I wouldn't say credentials, but you can store just important
+
+(31:28) info that you don't want to have to keep telling the model over and over again.
+
+(31:31) So for example, I can tell this.
+
+(31:33) I would like you to create an agent file with all of the conventions
+
+(31:37) for this project, specifically the tech stack
+
+(31:39) that we're using, how to run it, and what we've set up so far.
+
+(31:43) Okay.
+
+(31:44) And what this will do now is create a new file for us called agents.
+
+(31:48) You'll see it in a second.
+
+(31:50) It's automatically making it starts with all capitals.
+
+(31:52) And it's going to fill this file with important info then.
+
+(31:55) Now we're never going to forget or Codex will never forget because this is by default
+
+(32:00) automatically load it into Codex anytime we make a new conversation.
+
+(32:04) So let's give this a second to make the file and see what it looks like.
+
+(32:06) So let's open this up and you can see that it gives us
+
+(32:09) project conventions, direction, tech stack, how to run it, etc..
+
+(32:13) So now if we make a new conversation, I go, what are the project conventions?
+
+(32:18) It's not going to have to search through a bunch of files to find this.
+
+(32:22) It can just get it directly from its kind of system info now, because it will have been loaded in and MD.
+
+(32:28) So you can see it just immediately gives us the result.
+
+(32:30) It doesn't need to read anything because it was already loaded in when we started the conversation.
+
+(32:35) If we look at the context, you can see the context is slightly
+
+(32:39) higher usage than normal because it's started by loading that file.
+
+(32:42) I hope that that makes sense to you.
+
+(32:43) I know that's not the best explanation possible, but anything that you want to be kind of long
+
+(32:48) term, persistent info that's going to be used all of the time,
+
+(32:51) you want to put it in this agents MD file and tell Codex to create that for you.
+
+(32:56) And you can continually update this
+
+(32:58) to improve the performance of the model you use in a particular project.
+
+(33:02) Okay, so that is kind of the agents, the in memory info that you need to know.
+
+(33:06) And the last thing we'll look at is scheduled tasks.
+
+(33:09) Now I'm not going to actually create these, but I'm just going to mention that they exist
+
+(33:12) just like cloud code or other tools that you may have used, you can create scheduled
+
+(33:16) tasks that run automatically for you, assuming your computer is on.
+
+(33:19) So you can make a daily brief where every morning it opens your computer, searches
+
+(33:24) the news and gives you some info.
+
+(33:26) You can do a weekly review where it tells you all the things you worked on.
+
+(33:29) You can do project monitor where if something changes, we do this.
+
+(33:32) So if I do create via chat, for example, I can make it to set up a scheduled
+
+(33:36) task for me automatically, or I can go to templates and I can pick one.
+
+(33:39) So maybe like this, this is what I want to do.
+
+(33:41) I want to run it in this chat or in a work tree.
+
+(33:45) I want to in this project.
+
+(33:47) I want it to repeat at this time.
+
+(33:49) Then this is the model that I want to use.
+
+(33:50) Okay. So again you can make these.
+
+(33:52) You can have them set to run and you can set this up to kind of automatically
+
+(33:56) do things for you, which is useful if you want some automations.
+
+(33:59) But for me I don't really need any. So I don't have those setup as of now.
+
+(34:01) And then of course, you can search through all of your chats and a bunch of other stuff,
+
+(34:05) and we can go crazy and we can go to add MCP servers.
+
+(34:10) We can control the browser use.
+
+(34:12) We can do computer use, hooks, connections, git environments, work trees.
+
+(34:16) There is a lot more to go over, but I'm going to save that for a part two.
+
+(34:19) If you guys let me know in the comments that you want to see an advanced version of this
+
+(34:23) that is going to wrap up this video, that was a pretty comprehensive overview of Codex,
+
+(34:27) a lot of the features, how to use it, some good demos, setting up a lot of the important plugins.
+
+(34:32) At this point, you know, probably 90% of Codex.
+
+(34:35) If you want the extra 10%, let me know and I will happily make an advanced version.
+
+(34:39) For those of you that are devs and are kind of past some of the beginner stuff that I showed here.
+
+(34:43) Anyway, I hope you enjoyed.
+
+(34:44) If you did leave a like subscribe and I will see you in the next one.
+
+
+
+https://www.youtube.com/watch?v=ZXkeWiWB4xg

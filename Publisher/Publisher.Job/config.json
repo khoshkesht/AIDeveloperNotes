@@ -16,7 +16,7 @@
   "dailyJob": {
     "enabled": true,
     "cron": "0 9 * * *",
-    "postCount": 3,
+    "postCount": 1,
     "botId": "bot8993121389:AAG2e_sBN3seau8ujmsQUPSGzxWGoBudSkM",
     "chatId": "-1004320100300",
     "useProxy": false

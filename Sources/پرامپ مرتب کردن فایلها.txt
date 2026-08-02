@@ -1,0 +1,22 @@
+فایل رو بخون 
+E:\Projects\AIDeveloperNotes\Sources\Agents.md\Posts.txt 
+اول تغییرات زیر رو بده
+
+MainTag=AGENTS در نظر بگیر
+
+ساختار هر پست به شکل زیر بشه
+#Post_###
+
+#{MainTag} (1/{تعداد پست ها})
+<b>عنوان</b>
+
+متن
+
+---------------------
+#{MainTag} #AI_Agents #AIEngineering #CodingAgent #هوش_مصنوعی 
+➡️ @AIDeveloperNotes
+
+بعد تایید بگیر. اگر مورد تایید بود مرحله بعدی رو اجرا کن
+هر پست رو در یک فایل با نام همان پست در فولدر زیر قرار بده
+مثل فایل Post_102.txt در
+E:\Projects\AIDeveloperNotes\Publisher\Posts

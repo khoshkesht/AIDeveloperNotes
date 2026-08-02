@@ -1,0 +1,10 @@
+#Post_117
+#AGENTS_MD (7/9)
+<b>ارتباط AGENTS.md با Context Engineering</b>
+بخش بزرگی از موفقیت AI Agentها به کیفیت Context بستگی دارد، نه صرفاً قدرت Model. Context Engineering تلاش می‌کند اطلاعات مناسب، در زمان مناسب و با کمترین Token در اختیار Agent قرار بگیرد. AGENTS.md یکی از مهم‌ترین ابزارهای این رویکرد است، زیرا اطلاعات پایدار پروژه را از Promptهای روزانه جدا می‌کند و اجازه می‌دهد Agent همیشه با یک Context ثابت و قابل اعتماد کار خود را آغاز کند.
+
+وقتی اطلاعات ثابت پروژه داخل AGENTS.md قرار می‌گیرند، Promptها فقط روی درخواست فعلی تمرکز می‌کنند. این موضوع هم هزینه Token را کاهش می‌دهد و هم احتمال تناقض میان درخواست‌های مختلف را کمتر می‌کند. به همین دلیل، بسیاری از Workflowهای جدید Agentic Engineering، AGENTS.md را به عنوان یکی از منابع اصلی Context در کنار Repository، Issueها و Documentation پروژه در نظر می‌گیرند.
+
+---------------------
+#️⃣ #AGENTS_MD #AI_Agents #AIEngineering #CodingAgent #هوش_مصنوعی 
+➡️ @AIDeveloperNotes

@@ -58,7 +58,7 @@ internal sealed class DailyPostsJob
             if (imagePath is null)
             {
                 Console.WriteLine($"Skipped {post.Name}: matching image was not found in Pics.");
-                continue;
+                //continue;
             }
 
             var postText = ReadPostContent(post.Path).Trim();

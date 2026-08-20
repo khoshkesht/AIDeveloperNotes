@@ -1,0 +1,9 @@
+#Post_134
+<b>مدل‌های Open Source در Coding</b>
+#AI_Models (4/20)
+مدل‌های Open Source در بخش Workhorse به گزینه‌های جدی برای Coding تبدیل شده‌اند و چند Model مختلف با قابلیت‌های قابل توجه در این حوزه وجود دارند. GLM 5.2 یک Openweight Model است که در Terminal Programming عملکرد بالایی دارد. Deepseek V4 Pro نیز در Coding و Deep Reasoning جایگاه قدرتمندی دارد و به‌عنوان گزینه‌ای اقتصادی برای Coding Task مطرح شده است. در بخش مدل‌های تخصصی Coding نیز Kimi K2.7 Code برای Daily Coding و Swarm کاربرد دارد. Core 3 Coder یک Coding Agent Open Source است که امکان اجرای Local و Private Coding را فراهم می‌کند. Mistral Devastrol نیز به‌عنوان Agent Coder اروپایی معرفی شده و Longcat 2.0 یکی دیگر از مدل‌های تخصصی این حوزه است. 
+
+------------------------------------------
+
+#️⃣#AI_Models #AIEngineering #CodingAgent #هوش_مصنوعی 
+➡️@AIDeveloperNotes

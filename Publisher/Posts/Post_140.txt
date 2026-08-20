@@ -1,0 +1,9 @@
+#Post_140
+<b>مدل‌های تخصصی برای نیازهای متفاوت</b>
+#AI_Models (10/20)
+مدل‌های تخصصی زمانی اهمیت پیدا می‌کنند که یک وظیفه مشخص، قابلیت‌های ویژه‌ای را طلب کند. در Coding، مدل‌هایی مانند Kimi K2.7 Code، Core 3 Coder، Mistral Devastrol و Longcat 2.0 برای کاربردهای مشخص این حوزه معرفی شده‌اند. در Multimodal Reasoning نیز مدل‌هایی با قابلیت پردازش چند نوع داده وجود دارند. برای Image Generation، GPT Image 2، Nano Banana، Midream و Flux 2 مطرح شده‌اند و Flux 2 در میان Open Source Image Modelها جایگاه ویژه‌ای دارد. در Video Generation نیز Video 3.1، Runway Gen 4.5 و دیگر مدل‌های تخصصی برای تولید و ویرایش ویدئو استفاده می‌شوند. برای Voice و Audio نیز مدل‌هایی مانند 11 Labs، Suno و Udo در کاربردهای متفاوت قرار گرفته‌اند. 
+
+------------------------------------------
+
+#️⃣#AI_Models #AIEngineering #CodingAgent #هوش_مصنوعی 
+➡️@AIDeveloperNotes

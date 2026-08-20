@@ -1,0 +1,9 @@
+#Post_139
+<b>Open Source و فاصله با مدل‌های بسته</b>
+#AI_Models (9/20)
+فاصله میان Open Source و Closed Source Modelها در سطح قابلیت کاهش پیدا کرده و چند Openweight Model در دسته‌های بالای عملکرد قرار گرفته‌اند. Kimi K3 نمونه‌ای از یک Flagship Open Source است که از نظر قابلیت، به بسیاری از مدل‌های مطرح نزدیک شده و تنها برخی Flagshipهای قدرتمندتر عملکرد بالاتری دارند. در گروه Workhorse نیز مدل‌هایی مانند GLM 5.2، Miniax M3، Mino V2.5 Pro، Quen 3 و Deepseek V4 Pro حضور دارند. مدل‌های دیگری مانند Inkling نیز با تمرکز بر Customization، Calibration و Multimodality ارائه شده‌اند. در اروپا نیز Mistral Large 3 به‌عنوان یک Open Source Model بزرگ مطرح است و تنظیمات مرتبط با EU و GDPR را در خود دارد. 
+
+------------------------------------------
+
+#️⃣#AI_Models #AIEngineering #CodingAgent #هوش_مصنوعی 
+➡️@AIDeveloperNotes

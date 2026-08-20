@@ -21,8 +21,8 @@ curl --location 'https://api.telegram.org/bot8993121389:AAG2e_sBN3seau8ujmsQUPSG
 cd ..
 cd ..
 cd /opt/publisher-job
-dotnet Publisher.Job.dll --run-groq-once
-dotnet Publisher.Job.dll --run-posts-once
+ 
+dotnet Publisher.Job.dll --run-once
 dotnet Publisher.Job.dll --status
 dotnet Publisher.Job.dll --run-telegram-data-provider-once
 

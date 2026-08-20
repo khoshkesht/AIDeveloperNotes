@@ -1,0 +1,9 @@
+#Post_136
+<b>پردازش حجیم با مدل‌های ارزان</b>
+#AI_Models (6/20)
+پردازش حجم بالای درخواست‌ها همیشه به استفاده از قدرتمندترین Model نیاز ندارد. برای چنین کاربردهایی، مدل‌های سریع و ارزان می‌توانند انتخاب مناسب‌تری باشند. Deepseek V4 Flash نسخه کوچک‌تر Deepseek V4 Pro است و برای Classification در مقیاس بزرگ عملکرد خوبی دارد. Mimo V2.5 نیز با هزینه بسیار پایین، عملکردی نزدیک به سطح Workhorse ارائه می‌کند و به همین دلیل برای High Volume Task، به‌خصوص High Volume Code Assistant، مورد استفاده قرار می‌گیرد. Quen 3 Flash نیز با سرعت بالا و Context Window بزرگ در همین گروه قرار دارد. برخی مدل‌های دیگر مانند Ling 3.0 Flash و Mistral Small 4 نیز در این دسته مطرح شده‌اند. Mistral Small 4 قابلیت‌های Reasoning، Vision و Coding را در یک مدل کوچک و کم‌هزینه ترکیب می‌کند. 
+
+------------------------------------------
+
+#️⃣#AI_Models #AIEngineering #CodingAgent #هوش_مصنوعی 
+➡️@AIDeveloperNotes

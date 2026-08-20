@@ -1,0 +1,9 @@
+#Post_138
+<b>مدل‌های مناسب برای ساخت Agent</b>
+#AI_Models (8/20)
+ساخت Agent فقط به انتخاب یک Model قدرتمند محدود نمی‌شود و مدل‌های مختلف می‌توانند در بخش‌های متفاوت یک سیستم Agentic استفاده شوند. مدل‌های سریع مانند Haiku 4.5 و GPT 5.6 Luna برای ساخت Sub-agent مناسب هستند؛ زیرا سرعت و هزینه پایین‌تری دارند و می‌توانند حجم زیادی از وظایف را پردازش کنند. در میان Open Source Modelها، Miniax M3 به دلیل Coding، Context Window یک میلیون توکنی و Native Vision برای ساخت Multimodal Agent مطرح شده است. Mino V2.5 Pro نیز به‌عنوان مدلی مناسب برای Power کردن Agentها معرفی شده است. Quen Family نیز گزینه‌ای متنوع برای Agent، Harness و Softwareهایی است که به Open Source Model نیاز دارند. این تنوع اجازه می‌دهد برای نقش‌های مختلف Agent از Modelهای متفاوت استفاده شود. 
+
+------------------------------------------
+
+#️⃣#AI_Models #AIEngineering #CodingAgent #هوش_مصنوعی 
+➡️@AIDeveloperNotes

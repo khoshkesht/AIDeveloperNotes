@@ -1,0 +1,4 @@
+#Post_150
+<b>مدل‌های OpenAI OSS</b>
+#AI_Models (20/20)
+مدل‌های Open Source در کنار مدل‌های بسته، بخش مهمی از انتخاب‌های موجود در اکوسیستم AI را تشکیل می‌دهند و برای کاربردهای مختلفی استفاده می‌شوند. در میان گزینه‌های Open Source معرفی‌شده، مدل‌هایی مانند GLM 5.2، Miniax M3، Quen 3 و Deepseek V4 Pro در گروه Workhorse قرار دارند و Kimi K3 نیز به‌عنوان یک Flagship Open Source مطرح شده است. در حوزه Coding، Core 3 Coder امکان Local و Private Coding را فراهم می‌کند و مدل‌های تخصصی دیگری نیز برای Coding معرفی شده‌اند. این تنوع باعث می‌شود Open Source Modelها در کاربردهایی مانند Coding، Agent، Local Execution و پردازش‌های مختلف قابل استفاده باشند.

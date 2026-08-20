@@ -1,0 +1,9 @@
+#Post_145
+<b>مدل‌های Image Generation</b>
+#AI_Models (15/20)
+Image Generation یکی از دسته‌های تخصصی Modelهاست که به‌جای تمرکز بر Coding یا تولید متن، برای تولید تصویر استفاده می‌شود. در میان مدل‌های این حوزه، GPT Image 2، Nano Banana، Midream و Flux 2 معرفی شده‌اند. Flux 2 در میان Open Source Image Modelها جایگاه ویژه‌ای دارد و گزینه‌ای برای کاربردهایی است که استفاده از یک Image Model Open Source اهمیت دارد. این دسته نشان می‌دهد که انتخاب Model باید بر اساس نوع خروجی موردنیاز انجام شود. همان‌طور که برای Coding مدل‌های تخصصی وجود دارد، برای تولید تصویر نیز Modelهای جداگانه‌ای توسعه یافته‌اند که وظیفه اصلی آن‌ها Image Generation است. 
+
+------------------------------------------
+
+#️⃣#AI_Models #AIEngineering #CodingAgent #هوش_مصنوعی 
+➡️@AIDeveloperNotes

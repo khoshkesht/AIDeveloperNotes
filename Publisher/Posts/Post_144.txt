@@ -1,0 +1,9 @@
+#Post_144
+<b>مدل‌های Multimodal</b>
+#AI_Models (14/20)
+مدل‌های Multimodal برای کار با بیش از یک نوع داده طراحی شده‌اند و در میان Modelهای تخصصی جایگاه مهمی دارند. Gemini 3.1 Pro یکی از مدل‌هایی است که در Multimodality جایگاه ویژه‌ای دارد. Miniax M3 نیز علاوه بر قابلیت‌های Coding و Context Window یک میلیون توکنی، Native Vision دارد و برای ساخت Multimodal Agent مطرح شده است. Mistral Small 4 نیز Reasoning، Vision و Coding را در یک مدل کوچک و کم‌هزینه ترکیب می‌کند. در این دسته، هدف فقط پردازش متن نیست و Model می‌تواند قابلیت‌های مختلف را در کنار یکدیگر ارائه دهد. به همین دلیل Multimodal بودن می‌تواند یکی از معیارهای انتخاب Model برای Agentها و کاربردهای ترکیبی باشد. 
+
+------------------------------------------
+
+#️⃣#AI_Models #AIEngineering #CodingAgent #هوش_مصنوعی 
+➡️@AIDeveloperNotes

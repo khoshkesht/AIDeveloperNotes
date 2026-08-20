@@ -1,0 +1,9 @@
+#Post_135
+<b>مدل‌های Light برای Automation</b>
+#AI_Models (5/20)
+مدل‌های Light برای زمانی مناسب هستند که سرعت، هزینه پایین و حجم پردازش اهمیت بیشتری از بالاترین سطح قابلیت داشته باشد. این مدل‌ها برای High Volume Processing، Automation و ساخت Sub-agent کاربرد دارند و بسیاری از نمونه‌های Open Source آن‌ها امکان اجرای Local را نیز فراهم می‌کنند. Haiku 4.5 مدلی سریع‌تر از Sonnet است و برای Sub-agentهایی که زیر نظر یک General Model قوی‌تر فعالیت می‌کنند مناسب است. GPT 5.6 Luna کوچک‌ترین، ارزان‌ترین و سریع‌ترین مدل خانواده GPT 5.6 معرفی شده و برای Bulk Processing و High Volume Chat کاربرد دارد. Gemini 3.5 Flashlight برای پردازش‌های Real-time و Throughput بالا مناسب است. Quen 3 Flash نیز سرعت زیاد، Context Window بیش از یک میلیون و هزینه پایین دارد. 
+
+------------------------------------------
+
+#️⃣#AI_Models #AIEngineering #CodingAgent #هوش_مصنوعی 
+➡️@AIDeveloperNotes

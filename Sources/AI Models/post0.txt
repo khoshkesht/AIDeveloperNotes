@@ -1,0 +1,11 @@
+ <b>یک Model برای همه کارها کافی نیست</b>
+#AI_Models (0/20)
+
+انتخاب Model مناسب فقط پیدا کردن «باهوش‌ترین Model» نیست. یک Task پیچیده Software Engineering، یک Automation پرتعداد، یک Coding Task روزمره یا اجرای Local، الزاماً به Model یکسانی نیاز ندارند. مدل‌ها را می‌توان بر اساس کاربرد در گروه‌هایی مثل Flagship، Workhorse، Light و Specialized قرار داد؛ هرکدام تعادل متفاوتی میان قابلیت، سرعت و هزینه دارند. 
+
+در این سری با همین نگاه سراغ Modelهای مختلف می‌رویم؛ از مدل‌های مناسب Coding و Agent گرفته تا Open Source و Local Modelها، مدل‌های Light برای Automation، مدل‌های Multimodal و گزینه‌های تخصصی Image، Video و Audio. هدف این است که به‌جای وابستگی به یک Model برای همه‌چیز، بتوانیم بر اساس نوع کار گزینه مناسب‌تری انتخاب کنیم.  
+
+---
+
+#️⃣#AI_Models #AIEngineering #CodingAgent #هوش_مصنوعی
+➡️@AIDeveloperNotes

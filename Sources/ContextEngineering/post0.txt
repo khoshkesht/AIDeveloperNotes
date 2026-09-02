@@ -1,0 +1,13 @@
+
+#Context_Engineering(0/18) <b>چرا Context Engineering برای Developer مهم شده</b>
+
+وقتی با یک Agent روی Taskهای طولانی کار می‌کنیم، افت کیفیت همیشه به معنی ضعیف بودن Model نیست. با ادامه گفتگو، system prompt، code، chat history، tool outputها و اطلاعات بازیابی‌شده داخل Context جمع می‌شوند. همین رشد Context می‌تواند باعث افزایش cost و latency شود و حتی کیفیت پاسخ را پایین بیاورد.  
+
+اینجاست که Context Engineering اهمیت پیدا می‌کند: تصمیم بگیریم Model در هر فراخوانی چه چیزی را ببیند، چه چیزی حذف شود، چه چیزی بیرون از Context نگهداری شود و چه زمانی Compaction یا Retrieval وارد عمل شود. نکته مهم این است که راه‌حل همیشه «Context کمتر» نیست؛ در بعضی آزمایش‌ها Full History هم ارزان‌تر بود، هم سریع‌تر و هم recall بهتری داشت.  
+
+در این سری، از Compaction و Prompt Caching تا Retrieval، Hybrid Search و Eval را قدم‌به‌قدم بررسی می‌کنیم تا ببینیم مدیریت Context در یک Agent واقعی چگونه به یک تصمیم مهندسی تبدیل می‌شود.
+
+---
+
+#️⃣#Context_Engineering
+➡️@AIDeveloperNotes

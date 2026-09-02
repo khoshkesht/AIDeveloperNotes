@@ -1,0 +1,11 @@
+#Post_165
+<b>هزینه کمتر با Token بیشتر</b>
+#Context_Engineering(15/18)
+
+تعداد Token بیشتر الزاماً به معنای هزینه بیشتر نیست. در آزمایش DeepSeek، Full History بیشترین Token را ارسال می‌کرد، اما ارزان‌ترین روش بود. دلیل این رفتار Prompt Caching بود؛ حدود ۹۷ درصد Tokenهای ارسال‌شده cached بودند و Tokenهای cached هزینه بسیار کمتری نسبت به Tokenهای جدید داشتند.
+
+این نتیجه حتی در یک conversation با ۳۶ turn و حدود ۱.۷۸ میلیون Token نیز حفظ شد. در مقابل، summarization در هر turn باعث تولید و پردازش Tokenهای جدید می‌شد و مزیت Cache را کاهش می‌داد. همچنین در آزمایش memory، Full History توانست جزئیات موردنظر را در ۹۵ درصد موارد برگرداند، در حالی که summarization یا Compaction این عدد را به ۳۲ درصد رساند؛ زیرا بخشی از جزئیات لازم هنگام خلاصه‌سازی از دست می‌رفت.
+
+------------------
+#️⃣#Context_Engineering
+➡️@AIDeveloperNotes

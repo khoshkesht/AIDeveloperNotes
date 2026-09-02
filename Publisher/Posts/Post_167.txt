@@ -1,0 +1,11 @@
+#Post_167
+<b>وقتی Retrieval از Context بزرگ بهتر است</b>
+#Context_Engineering(17/18)
+
+شرایط برای local Model متفاوت است. در آزمایش انجام‌شده روی MacBook، Context Window به 32K محدود بود و بعضی lessonها به‌تنهایی از این مقدار بزرگ‌تر بودند. وقتی conversation دیگر در Context Window جا نمی‌گرفت، Caching هم مسئله را حل نمی‌کرد و Context باید با compression یا Retrieval کوچک‌تر می‌شد. افزایش اندازه Model نیز محدودیت Context Window را برطرف نمی‌کرد.
+
+برای documentهای بزرگ، Retrieval نتیجه بسیار بهتری داشت و در آزمایش مربوطه به ۱۰۰ درصد accuracy رسید. همچنین semantic search به‌تنهایی در مقیاس بزرگ پایدار نبود: Dense RAG در محدوده 50K تا 200K حدود ۸۰ درصد عملکرد داشت، اما در 400K برای facts مدفون به صفر recall رسید؛ در همان آزمایش BM25 همچنان ۱۰۰ درصد نتیجه داشت. به همین دلیل ترکیب Dense Retrieval و BM25 در Hybrid Search استفاده شد.
+
+------------------
+#️⃣#Context_Engineering
+➡️@AIDeveloperNotes

@@ -1,0 +1,11 @@
+#Post_168
+<b>فشرده‌سازی را به انتخاب پیش‌فرض تبدیل نکنید</b>
+#Context_Engineering(18/18)
+
+نتیجه نهایی آزمایش‌ها یک قاعده ساده داشت: Compaction نباید رفتار پیش‌فرض سیستم باشد. ابتدا باید constraint واقعی مشخص شود. اگر Context در window جا می‌شود و Prompt Caching مؤثر است، نگه داشتن Full History می‌تواند از نظر recall، latency و حتی cost بهتر باشد. اگر محدودیت سخت Context Window وجود دارد، آن‌وقت compression یا Retrieval معنا پیدا می‌کند.
+
+در تنظیم نهایی سیستم، DeepSeek V4 Flash به دلیل هزینه و محدودیت‌های سخت‌افزاری انتخاب شد، Hybrid Retrieval برای دسترسی به اطلاعات باقی ماند و history تا حد ممکن کامل نگهداری شد. Compaction نیز به‌جای اجرای مداوم، بعد از رسیدن Context به حد 30K Token در نظر گرفته شد. این تصمیم حاصل مقایسه عملی روش‌ها بود: Context Engineering یعنی انتخاب آنچه Model باید ببیند بر اساس constraint و Eval، نه کوچک کردن Context به هر قیمت.
+
+------------------
+#️⃣#Context_Engineering
+➡️@AIDeveloperNotes

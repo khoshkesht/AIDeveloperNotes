@@ -1,0 +1,2887 @@
+Title: Context Engineering in 2026 — Louis-François Bouchard, Omar Solano & Samridhi Vaid, Towards AI
+
+(0:13) All  right.  Good  afternoon  everyone.
+
+(0:16) Thank  you  for  joining  and  not  watching
+
+(0:19) the  game.  Uh  I  hope  it  will  be  a  bit
+
+(0:22) more  interesting  or  at least  you  will
+
+(0:24) learn  something  compared  to  to  uh
+
+(0:28) hopefully  Germany  winning  or  some  uh
+
+(0:30) anyways.  Yeah.
+
+(0:34) All right.  Is  it  fine?  Okay.
+
+(0:38) All  right.  So  I'm  here  to  talk  about  we
+
+(0:40) are  here  to  talk  about  context
+
+(0:41) engineering  in  2026.  And  more
+
+(0:45) specifically,  we  are  here  because  we've
+
+(0:47) all  lived  that  that  situation  where  you
+
+(0:50) try  to  do  things  with  an  agent  and
+
+(0:52) ultimately  it  does  just  exactly  the
+
+(0:54) thing  that  you  don't  want  it  to  do.  And
+
+(0:56) it  in  my  case  it  usually  ends  up  like
+
+(0:58) this  where  I'm  super  mad  and  I  just  type
+
+(1:01) back  hoping  it  it  learns.
+
+(1:04) And  uh  usually  the  problem  here  is  not
+
+(1:08) that  the  the  model  just  got  dumber  and
+
+(1:10) you  need  to  switch  to  cloud  or  to  codeex
+
+(1:12) or  or  whatever  the  the  harness  that
+
+(1:14) you're  using,  but  it's  more  that  the  the
+
+(1:16) context  is  filling  up  and  it's  getting
+
+(1:18) worse  and  worse.  The  results  are  getting
+
+(1:20) worse  because  of  it.  In  our  case,  this
+
+(1:23) is  important  because  we  build  courses
+
+(1:25) and  trainings  for  AI  engineers
+
+(1:27) specifically.  And  one  of  the  features
+
+(1:30) that  we  provide  is  an  AI  tutor  to  help
+
+(1:32) answer  questions  based  on  our  lessons.
+
+(1:36) And  if  the  interaction  is  just  like  the
+
+(1:38) one  before  and  they  are  super  mad  at  us,
+
+(1:41) they  might  just  ask  for  refund  and  it
+
+(1:43) could  end  up  like  this.  So  that's  not
+
+(1:46) what  we  want.
+
+(1:48) And  so  what  we  did  for  this  workshop  and
+
+(1:50) just  for  the  AI  tutor  in  general  is  to
+
+(1:53) run  many  different  experiments  in  order
+
+(1:55) to  figure  out  how  in  our  case  we  can  fix
+
+(1:59) context  rut  or  at  least  improve  the  i
+
+(2:02) tutor  as  much  as  possible  and  reduce  the
+
+(2:04) cost  as  well  of  running  the  tutor.
+
+(2:08) Uh  the  QR  code  here  is  a  link  to  a
+
+(2:10) hugging  face  space  where  you  have  all
+
+(2:12) these  experiments  that  you  can  see  and
+
+(2:14) also  the  AI  tutor  is  open  source.  who
+
+(2:16) will  share  another  code  for  the  repo  but
+
+(2:18) it's  also  linked  on  the  hugging  face.  So
+
+(2:20) everything  is  open  source  you  can  access
+
+(2:22) everything  uh  and  even  see  the
+
+(2:25) experiments  online  and  use  the  AI
+
+(2:26) tutorial  online  as  well.  In  the  next  80
+
+(2:29) minutes,  we  will  I  will  start  talking
+
+(2:31) about  compaction,  memory  retrieval  and
+
+(2:34) um  everything  that  you  can  do  in  2026
+
+(2:37) that  usually  works  and  then  my
+
+(2:39) colleagues  will  jump  in  with  our  the
+
+(2:42) architecture  of  our  AI  tutor,  our
+
+(2:44) decisions,  what  we  built  and  the
+
+(2:47) evaluations  that  we  built,  the  how  we
+
+(2:49) built  them  and  what  we  decided  to
+
+(2:51) evaluate  and  then  the  results  and  what
+
+(2:53) we  took  out  of  this.  So  of  of  course
+
+(2:56) it's  applied  to  our  use  case  and  our  AI
+
+(2:59) tutor  but  hopefully  you  can  get  away
+
+(3:01) some  interesting  insights  at  least  from
+
+(3:03) from  this  and  some  best  practices  that
+
+(3:05) we  learned  throughout  more  specifically
+
+(3:08) we  is  towards  AI.  Um  I  founded  the
+
+(3:11) company  with  my  partners  in  in  a  few
+
+(3:14) years  ago  and  we've  always  been  focused
+
+(3:17) around  education.  Obviously  back  in  the
+
+(3:19) day  it  was  more  about  computer  vision
+
+(3:21) and  and  more  basic  machine  learning.  Now
+
+(3:22) it's  towards  AI  engineering  and  agents,
+
+(3:26) anything  that  works  for  the  industry.
+
+(3:29) And  I'm  joined  by  my  colleagues  helping
+
+(3:31) me  develop  this  AI  tutor  and  our
+
+(3:33) courses,  Omar  and  Samidi  that  we'll  jump
+
+(3:36) in  later  on.  And  here  more  specifically
+
+(3:40) towards  AI  is  quite  large.  But  what  one
+
+(3:42) one  of  the  things  that  we  do  is  our
+
+(3:44) academy.  So  the  towards  AI  academy  where
+
+(3:45) we  build  courses  technical  courses  for
+
+(3:48) AI  engineers  to  upskill  towards  AI
+
+(3:51) engineering  and  as  I  said  we  provide  an
+
+(3:53) AI  tutor  for  the  students.
+
+(3:57) So  the  the  AI  tutor  specifically  uh  will
+
+(4:02) will  be  like  our  baseline  for  all  our
+
+(4:03) experiments.  We  will  use  that  to  test
+
+(4:05) all  the  different  features  based  on  real
+
+(4:07) user  interactions  and  to  have  the  best
+
+(4:10) results  possible.  We  had  five
+
+(4:12) requirements  we  wanted  to  ensure  that
+
+(4:14) the  chatbot  follows.  The  first  one
+
+(4:17) obviously  we  want  the  answers  of  the
+
+(4:19) chatbot  to  be  grounded  in  our  content
+
+(4:21) not  just  its  own  knowledge.
+
+(4:24) We  need  the  the  tutor  to  be  based  in  the
+
+(4:28) current  students  and  current  lesson  to
+
+(4:30) not  be  a  because  we  have  multiple
+
+(4:32) courses.  So  we  just  need  to  ensure  that
+
+(4:34) it  answers  from  this  course  content.
+
+(4:39) Then  it  needs  to  hold  long  help  sessions
+
+(4:42) in  case  the  student  is  debugging  or  or
+
+(4:45) just  iterating  a  lot  with  the  the  tutor
+
+(4:47) and  uh  obviously  handled  code  because
+
+(4:50) it's  for  AI  engineers.  So  we  just  code  a
+
+(4:52) lot  and  it  needs  to  have  somewhat  of  a
+
+(4:56) low  latency  to  not  be  frustrating  to
+
+(4:58) use.  And  all  of  this  is  related  to
+
+(5:01) context  engineering.  And  here  we'll  be
+
+(5:03) talking  about  uh  what  is  context
+
+(5:06) engineering  in  2026  or  at  least  what  we
+
+(5:08) figured  out  from  this  from  these
+
+(5:12) experiments.
+
+(5:13) And  since  everything  here  is  in  the
+
+(5:15) context  in  the  in  the  context  of  models,
+
+(5:18) it  creates  two  problems.  First,  the
+
+(5:21) context  window  is  finite.  Uh  everything
+
+(5:24) the  model  will  see  from  instructions  to
+
+(5:26) to  lessons  to  code  will  lie  in  the  same
+
+(5:29) space  that  is  limited.  And  the  more  you
+
+(5:31) pile  things  in  this  space,  the  worse  the
+
+(5:33) results  will  be  and  the  more  expensive
+
+(5:34) it  will  be  because  you  pay  for  more
+
+(5:36) tokens.  So  that's  one  of  the  the  main
+
+(5:39) problem  we're  trying  to  fix.  And  the
+
+(5:41) second  problem  is  that  the  model  is
+
+(5:43) stateless.  So  when  a  student  reopens  the
+
+(5:45) AI  tutorially  if  you  don't  build
+
+(5:48) anything  around  it,  the  model  will  have
+
+(5:50) no  idea  what's  going  on.  It's  just
+
+(5:51) starting  from  zero.  So  this  creates  two
+
+(5:55) things  we  have  to  work  on.  the  context
+
+(5:57) management  which  means  within  one
+
+(5:59) session  and  the  memory  aspect  of  these
+
+(6:02) models  which  means  across  sessions  in
+
+(6:05) these  experiments  and  in  this  workshop
+
+(6:07) we  focus  on  the  first  part  the  context
+
+(6:10) management  because  you  cannot  have
+
+(6:11) multiple  sessions  is  if  one  session  is
+
+(6:14) is  shitty.  So  we  try  to  really  optimize
+
+(6:17) for  this  and  maybe  in  a  future  workshop
+
+(6:19) we  will  do  one  about  memory  hopefully.
+
+(6:23) So  for  context  management  what  does  the
+
+(6:24) the  tutor  sees  in  our  case?  It  sees  uh
+
+(6:28) many  things  from  the  system  prompt  to
+
+(6:30) being  for  being  a  tutor  and  the  context
+
+(6:33) of  our  courses  and  stuff  to  tool
+
+(6:35) definitions  uh  so  which  tools  it  can  use
+
+(6:38) how  to  use  them  when  to  use  them.  The
+
+(6:41) chat  history  if  it's  an  ongoing
+
+(6:42) discussion  any  old  tool  outputs  that  was
+
+(6:45) called  course  chunks  that  we  retrieved
+
+(6:48) to  answer  the  students  and  finally  the
+
+(6:50) user  questions.  So  it's  just  not  the
+
+(6:52) user  question  that  we  send  obviously  and
+
+(6:55) typically  it's  the  smallest  part  but  it
+
+(6:57) can  also  have  contain  a  lot  of  code  to
+
+(6:59) debug  and  to  help  or  error  logs.  So  it
+
+(7:02) can  be  large  as  well  and  all  of  this
+
+(7:05) together  just  ends  up  costing  more  and
+
+(7:08) more  to  us.  So  we  really  want  to
+
+(7:12) optimize  this  this  context  management
+
+(7:14) aspect.  And  what  we've  seen  just  quickly
+
+(7:16) is  that  the  the  main  bottleneck  or  the
+
+(7:20) main  problem  scaling  the  context  is  the
+
+(7:22) old  tool  outputs  which  contains  like  any
+
+(7:24) old  chunks  retrieved  all  the  tool  calls
+
+(7:27) and  tool  results  pairs  uh  from  from  all
+
+(7:30) the  tools  called  over  the  the  many
+
+(7:32) sessions  that  it  could  have  the  many
+
+(7:33) turns  that  that  one  session  could  have
+
+(7:36) have  and  any  uh  file  or  searches  that  it
+
+(7:40) did  to  in  its  own  memory.
+
+(7:44) And  the  main  problem  is  not  is  not  that
+
+(7:47) it's  more  costly.  It's  also  that  the
+
+(7:50) quality  degrades  as  we  know  with  a
+
+(7:52) program  called  context  route  because  of
+
+(7:53) the  way  how  large  language  models  are
+
+(7:56) trained  to  handle  longer  context  with  we
+
+(7:58) just  inject  facts  into  large  compass
+
+(8:00) which  doesn't  tell  them  to  manage  the
+
+(8:02) whole  the  whole  context  together  or
+
+(8:05) understand  the  global  context  and
+
+(8:08) uh  so  so  one  of  the  reason  is  to  help
+
+(8:10) with  quality.  We  want  to  reduce  the
+
+(8:12) context  as  much  as  possible.  And  the
+
+(8:14) others  are  that  if  you  reququery  the
+
+(8:18) model  in  a  in  a  discussion,  you  resend
+
+(8:20) every  previous  tokens.  So  you  pay  for
+
+(8:23) them  as  well  again,  which  is  far  from
+
+(8:26) ideal.  And  you  increase  the  the  latency,
+
+(8:29) so  the  time  to  first  token  or  TTFT  uh
+
+(8:32) which  makes  which  creates  a  very  bad
+
+(8:34) user  experience.
+
+(8:36) So  you  may  want  to  in  our  case  manage
+
+(8:39) our  context  for  speed  and  for  spending
+
+(8:43) not  just  because  the  quality  drops  as  we
+
+(8:46) will  see  in  our  experiments  and  and  in
+
+(8:48) the  results  in  the  near  future.
+
+(8:51) So  how  we  do  that  to  manage  uh  spending
+
+(8:53) and  and  speed?  How  do  we  manage  our
+
+(8:55) context?  We  use  compaction.
+
+(8:58) And  the  idea  is  just  very  simple.  Uh  the
+
+(9:01) idea  of  compaction  is  very  simple.  is
+
+(9:02) just  to  try  to  have  the  smallest  context
+
+(9:04) possible  that  contains  the  information
+
+(9:07) to  be  able  to  answer  the  question  and
+
+(9:09) you  drop  or  save  the  rest  somewhere.
+
+(9:13) And  to  do  compaction,  even  a  good
+
+(9:15) compaction,  you  don't  necessarily  have
+
+(9:17) to  have  large  language  models.  You  can
+
+(9:20) start  quite  cheap  with  trivial  tools
+
+(9:22) like  uh  if  you  have  if  you  use  tools  in
+
+(9:25) your  system  um  like  a  web  search  or  just
+
+(9:28) executing  code  you  can  automatically
+
+(9:30) truncate  outliers.  So  if  you  have  like
+
+(9:33) once  tool  that  that  produce  300  lines
+
+(9:35) instead  of  10  usually  you  can  just
+
+(9:37) truncate  almost  everything  except  the
+
+(9:39) the  head  and  tail  the  the  beginning  and
+
+(9:41) the  end  and  just  re  write  that  it's
+
+(9:44) truncated  so  that  the  model  in  the
+
+(9:45) future  can  recall  the  tool  if  it's  if  it
+
+(9:48) feels  it  lacks  context.
+
+(9:50) You  can  use  the  the  simplest  approach
+
+(9:52) that  works  the  best  to  just  use  a
+
+(9:55) sliding  window  or  just  trim.  Basically,
+
+(9:57) use  the  last  n  number  of  of  turns  that
+
+(10:00) the  user  sent  which  uh  you  need  to
+
+(10:02) determine  by  based  on  your  your  own
+
+(10:05) system  and  your  users  and  you  can  clear
+
+(10:09) uh  for  for  some  specific  tools  depending
+
+(10:10) on  those  that  you  implement  you  can  just
+
+(10:12) always  clear  most  of  the  outputs.
+
+(10:16) So  that's  for  when  that's  not  even  using
+
+(10:18) language  models.  And  then  you  can  use
+
+(10:20) language  models  to  basically  spend
+
+(10:22) tokens  to  save  even  more  tokens.  And  in
+
+(10:26) this  case,  you  don't  even  have  to  to  use
+
+(10:28) large  language  models.  You  can  even  use
+
+(10:30) smaller  ones  or  even  low  super  small
+
+(10:32) local  ones  that  that  runs  in  like  one
+
+(10:34) MacBook
+
+(10:36) to  do  a  few  techniques.  There  are  many
+
+(10:38) techniques  that  exist  for  for
+
+(10:39) compacting.
+
+(10:41) the  those  that  had  the  most  impact  in
+
+(10:43) our  experiments  where  selective
+
+(10:45) retention  where  the  language  models  will
+
+(10:47) just  decide  based  on  where  the
+
+(10:49) discussion  go  is  going  what  to  keep  what
+
+(10:51) to  discard.
+
+(10:53) Then  the  simplest  one  here
+
+(10:54) summarization.  So  just  summarize
+
+(10:56) continuously  summarize  the  some  previous
+
+(10:59) terms  depending  on  your  on  on  your  own
+
+(11:02) application  and  in  the  end  you  can  do
+
+(11:05) here  what  cloud  code  does.  So  when  it
+
+(11:07) reaches  the  limit  you  just  sum  produce  a
+
+(11:10) summary  of  everything  and  reset
+
+(11:12) completely  with  that  summary.  And  there
+
+(11:14) are  many  more  techniques  I  highlighted
+
+(11:17) here  those  that  work  the  best.  We  will
+
+(11:19) discuss  them  later  on  in  this  workshop
+
+(11:21) and  the  actual  results  and  experiment
+
+(11:23) setup  but  those  are  the  most  successful
+
+(11:26) techniques.  And  I  want  to  highlight  also
+
+(11:28) delta  summarization  that  cloud  code  uses
+
+(11:31) that  is  very  useful  when  you  spawn  sub
+
+(11:33) aents  when  you  use  sub  aents.  It  just
+
+(11:36) means  to  keep  a  summary  and  updating  the
+
+(11:38) summary  based  on  the  new  summary  that
+
+(11:40) you  produce  over  time  and  then  the  the
+
+(11:43) sub  agent  will  just  give  that  to  the
+
+(11:44) main  agent.  But  in  our  case,  we  don't
+
+(11:47) use  sub  agents  because  the  tutor  works
+
+(11:50) really  well  with  just  one  main.  So  we
+
+(11:51) don't  need  to  add  complexity  for  that.
+
+(11:55) And  lastly,  after  spending  token  to  to
+
+(11:58) save  more  tokens,  you  can  also  offload
+
+(12:00) things.  Right  now  it's  obviously  memory
+
+(12:03) and  skills  are  super  popular.  So  you  can
+
+(12:06) of  course  offload  to  your  memory.  So
+
+(12:08) just  saving  text  in  your  documentations
+
+(12:12) and  you  can  use  what's  been  there  for
+
+(12:14) years  now.  Uh  retrieve  augmented
+
+(12:16) generation  which  is  very  powerful.  And
+
+(12:18) as  a  side  note  we  also  compared  with
+
+(12:20) graph  rag.  So  everything  even  if  I  not  I
+
+(12:23) don't  mention  them  we  compared  them  and
+
+(12:24) I  highlight  just  the  the  best  results
+
+(12:26) here.  So  we  we  compared  graph  rag  with
+
+(12:29) with  rag  here  and  it's  in  our  case  it
+
+(12:33) just  ended  up  being  way  costlier  to  set
+
+(12:35) up  and  just  tie  on  the  results  because
+
+(12:38) it  basically  was  100%  based  on  our  real
+
+(12:41) user  evaluations.  So  we  don't  need  to
+
+(12:44) use  graph  rag  but  it's  it  depends  on
+
+(12:46) your  own  case.  If  you  have  a  very  large
+
+(12:48) data  set  with  inter
+
+(12:51) with  relations  and  interconnected
+
+(12:54) topics  and  things,  it  might  be  worth
+
+(12:56) implementing.  So  you  definitely  want  to
+
+(12:58) still  test  it.
+
+(13:01) And  uh  speaking  of  memory  and  of  up
+
+(13:04) offloading  to  files,  this  is  uh  as  I
+
+(13:08) said,  basically  just  saving  them  locally
+
+(13:12) or  or  in  a  server  for  for  you  to  use,
+
+(13:14) which  means  it's  fully  reversible
+
+(13:15) because  you  don't  lose  anything.  you
+
+(13:17) don't  lose  any  ongoing  discussion.  You
+
+(13:19) just  save  them  ready  to  be  referred  to
+
+(13:22) in  the  future  if  the  same  student  comes
+
+(13:25) back  and  asks  related  questions.  And
+
+(13:28) it's  basically  the  the  Tpetes  idea  of
+
+(13:30) the  LLM  wiki  uh  which  if  you  link  with
+
+(13:34) some  sort  of  uh  chunks  so  a  version  of
+
+(13:38) rag  it's  pretty  powerful  and  it  makes
+
+(13:41) your  system  become  quite  cheap  and
+
+(13:43) durable  and  it's  easy  to  inspect  from
+
+(13:45) both  humans  and  agents.  So  it's  really
+
+(13:47) interesting.  More  specifically,  it  looks
+
+(13:50) like  this  in  our  case.  So  we  have  just
+
+(13:53) chunks.  We  save  everything  into  chunks
+
+(13:55) and  we  cross-link  the  chunks  with
+
+(13:57) pointers  and  then  these  chunks  are
+
+(14:00) linked  to  raw  data  files  from  where  they
+
+(14:02) come  from.  Then  we  have  one  index  that
+
+(14:05) will  just  map  all  these  chunks.  So  just
+
+(14:08) a  link  to  all  the  chunks  and  some
+
+(14:09) context  of  what  it  is  about  and  the
+
+(14:12) agent  will  just  see  this  index.  So  it
+
+(14:14) sees  it's  like  I  think  it  was  450
+
+(14:17) tokens.  So  it's  very  small  and  it  just
+
+(14:19) sees  that  index
+
+(14:22) and  then  uh  based  on  the  user  question
+
+(14:25) if  it  seems  to  be  related  to  some  user
+
+(14:28) specific  question  that  it  may  exists  in
+
+(14:31) the  memory  it  will  scan  the  index  it
+
+(14:32) will  go  back  to  the  chunk  if  it's  enough
+
+(14:34) it  will  answer  based  on  the  junk  the
+
+(14:36) chunk  retrieved  if  it's  not  enough  it
+
+(14:38) can  even  go  back  to  the  raw  data  to  have
+
+(14:40) even  more  information.  So  basically  it's
+
+(14:43) just  the  best  way  to  pull  context
+
+(14:46) accordingly  to  the  task  complexity.  So
+
+(14:48) if  the  task  is  complex  you  will  pull
+
+(14:49) more  and  if  it's  simple  you'll  p  pull
+
+(14:52) less.
+
+(14:54) And  a  parenthesis  on  this  what  we've
+
+(14:56) seen  working  with  our  clients  and  just
+
+(14:59) building  this  in  general  is  that  right
+
+(15:02) now  everyone  is  is  converging  towards
+
+(15:04) having  more  and  smaller  skills.  So  you
+
+(15:07) have  it's  it's  way  better  to  build  small
+
+(15:10) very  precise  skills  that  refer  to  each
+
+(15:14) other's  skills  to  uh  to  save  on  context
+
+(15:16) and  just  load  skills  one  by  one  and  even
+
+(15:19) be  able  to  spawn  a  sub  agent  with  one
+
+(15:22) dedicated  skill  context  instead  of  just
+
+(15:24) basically  to  save  context.  It's  a  well
+
+(15:26) the  idea  of  progressive  disclosure.  So
+
+(15:28) you  just  load  what  you  need  right  now.
+
+(15:32) Okay,  just  to  go  back  now  on  on
+
+(15:34) compaction.  This  is  what  the  the  talk  is
+
+(15:36) about  because  memory  we  have  made  some
+
+(15:38) experiments  but  we  couldn't  really  fit
+
+(15:39) here.  It  was  a  bit  too  much.  And  uh  when
+
+(15:44) talking  about  compaction  there's  an
+
+(15:45) important  problem  or  solution  that  uh
+
+(15:48) that  appeared  recently  uh  well  not
+
+(15:50) recently  but  was  way  more  popularized  is
+
+(15:53) the  uh  the  the  main  problem  is  that
+
+(15:57) first  the  main  problem  is  that  you  when
+
+(15:59) you  ask  a  follow-up  question  you  need  to
+
+(16:02) recomputee  all  previous  tokens  every
+
+(16:04) time.  So  you  just  end  up  paying  twice
+
+(16:06) for  the  same  tokens  or  three  times  or
+
+(16:08) four  times  if  the  conversation  is  going
+
+(16:10) which  is  obviously  far  from  ideal.  So
+
+(16:12) what  providers  do  nowadays  is  to  offer
+
+(16:15) prom  caching.  So  you  will  it  they  will
+
+(16:19) save  the  embedding  and  and  KV  cache  and
+
+(16:21) I  won't  enter  into  the  details  but  they
+
+(16:23) will  premputee  they  will  have  saved  a
+
+(16:26) lot  of  the  the  compute  for  some  tokens
+
+(16:28) and  you  can  just  reload  them  and  what's
+
+(16:31) interesting  for  us  is  that  these  already
+
+(16:33) sent  token  that  you  reuse  are  much  much
+
+(16:35) much  cheaper  uh  specifically  it  can  go
+
+(16:38) up  to  50  times  cheaper  with  some  API
+
+(16:40) like  deepseek  uh  which  we  will  discuss
+
+(16:43) in  the  experiments
+
+(16:45) and  what  that  means  is  that  If  you  send
+
+(16:47) a  very  long  context,
+
+(16:49) you  will  pay  just  one  15th  of  the  the
+
+(16:53) price  per  token  and  just  pay  the  full
+
+(16:55) price  of  the  qu  the  new  user  question  or
+
+(16:58) the  new  interaction.  And  that's  a
+
+(17:00) problem  for  compaction  because  when  you
+
+(17:02) are  compacting,  summarizing,  doing  any
+
+(17:04) transformation  to  this  context,  the  the
+
+(17:07) provider  cannot  use  the  cache  because  it
+
+(17:10) it's  a  new  context.  It  doesn't  the  model
+
+(17:12) is  not  intelligent  enough  to  understand
+
+(17:14) it's  the  same  topic  change.  it  it  just
+
+(17:16) cannot  use  the  cache.  So  you  will  pay
+
+(17:18) full  price  for  these  new  transform
+
+(17:20) tokens.  So  here  what  it  means  is  that
+
+(17:22) you  need  to  to  compress  to  for  for
+
+(17:25) compaction  to  be  worthwhile.  You  need  to
+
+(17:27) compress  by  more  than  50  times  the
+
+(17:31) context.  So  it  can  be  quite  difficult  in
+
+(17:34) some  cases  without  losing
+
+(17:37) quality.  So  caching  is  truly  a  gamecher
+
+(17:41) especially  because  nowadays  almost  all
+
+(17:44) APIs  offer  it  very  easy  to  use  and
+
+(17:47) typically  they  they  save  cost  on  like  on
+
+(17:50) 90%  of  the  cost  when  you  use  caching  but
+
+(17:53) in  some  case  as  I  said  it  can  go  up  to
+
+(17:55) way  more  than  that  and  not  only  that  it
+
+(17:58) helps  with  cost  but  caching  cache  tokens
+
+(18:00) are  also  already  computed  so  it's  way
+
+(18:03) faster  to  get  the  first  the  answer
+
+(18:08) So  ultimately  it  means  that
+
+(18:10) summarization  is  potentially  a  trap.  You
+
+(18:12) may  not  want  to  use  it  at  all  or  you  you
+
+(18:15) may  want  to  just  use  it  very
+
+(18:16) specifically
+
+(18:18) which  is  what  the  most  serious  harnesses
+
+(18:21) do  nowadays.  cloud  code,  C  codeex  and
+
+(18:24) all  of  them  use  context  caching  but  also
+
+(18:27) use  a  different  method  of  compactions
+
+(18:31) and  we  know  that  because  obviously  of
+
+(18:32) the  leak  and  then  because  codeex  is  open
+
+(18:34) source  and  then  the  APIs  also  provide
+
+(18:38) ways  to  manage  context  directly  and
+
+(18:41) caching  directly.  So  it's  it  becomes
+
+(18:45) when  you  build  yourself  a  harness  like
+
+(18:46) we  do  with  the  AI  tutor,  it  becomes
+
+(18:48) really  interesting  to  understand  when  to
+
+(18:50) use  which  technique  and  test  them
+
+(18:52) obviously.
+
+(18:55) So  where  is  this  going?  It  mean  it  means
+
+(18:58) that  you  don't  you  don't  want  to  just
+
+(19:00) compact  you  don't  want  to  summarize
+
+(19:02) everything  any  time  because  it  may  kill
+
+(19:05) the  cache  and  you  won't  be  able  to  use
+
+(19:08) it.  So  some  best  guidance  that  we  found
+
+(19:12) is  that  obvious  obviously  when  the  user
+
+(19:15) seems  to  talk  about  a  very  different
+
+(19:17) topic,  you  may  want  to  refresh  the
+
+(19:20) session  to  clean  it  to  clear  it.  Um  when
+
+(19:24) you  scope  or  files,  use  what  I  described
+
+(19:27) with  progressive  disclosure  to  just  show
+
+(19:30) the  smallest  amount  of  context  possible.
+
+(19:33) You  want  to  clear  every  old  tool  outputs
+
+(19:36) that  are  not  useful  anymore.  You  may
+
+(19:39) want  to  compact  in  some  case.  We  will
+
+(19:41) see  that  in  the  experiments  in  a  few
+
+(19:43) minutes.
+
+(19:45) And  you  may  want  to  optimize  for  cache
+
+(19:48) hits.  So  just  having  the  model  use  be
+
+(19:50) able  to  use  its  cache.  And  regarding
+
+(19:52) that  providers  are  constantly  improving
+
+(19:55) their  feature  set  to  manage  cache.  So
+
+(19:57) you  just  need  to  uh  stay  current  and
+
+(19:59) follow  what  what  the  API  allows
+
+(20:01) nowadays.  But  they  all  provide  different
+
+(20:03) methods  and  um  you  will  have  access  to
+
+(20:07) the  slides  but  there's  I  put  a  link
+
+(20:08) earlier  in  the  in  the  first  few  slides
+
+(20:10) on  a  very  interesting  article  regarding
+
+(20:12) regarding  prompt  caching  that  I
+
+(20:15) recommend  checking  out.  It's  like  on  the
+
+(20:18) sixth  or  seventh  slide  but  you  will  have
+
+(20:20) the  link  to  the  slides.
+
+(20:23) And  lastly,  you  may  want  to  use  a  model
+
+(20:25) router  to  optimize  especially  cost  on
+
+(20:28) various  tasks.
+
+(20:31) And  most  importantly,  and  what  the
+
+(20:34) majority  of  people  don't  do,  you  want  to
+
+(20:36) log  everything.  It's  super  easy.  You
+
+(20:38) just  ask  cloud  to  implement  opic  and
+
+(20:40) track  everything.  It's  you  don't  have
+
+(20:42) anything  to  do.  So  it's  definitely
+
+(20:44) worthwhile  to  to  implement  and  you  can
+
+(20:46) track  cache  it  rate.  You  can  track  user
+
+(20:49) frustration  which  we've  seen  that  cloud
+
+(20:51) does.  So  I  keep  uh  telling  it  when  I'm
+
+(20:55) not  happy.  And  uh  you  you  may  want  to
+
+(20:58) log  for  some  um  abnormally  long  outputs
+
+(21:02) or  any  weird  behavior  that  a  small
+
+(21:05) language  model  could  detect.  And  so  all
+
+(21:08) of  this  together  is  the  is  context
+
+(21:11) engineering  which  basically  means  to
+
+(21:13) decide  what  the  model  sees  every  time
+
+(21:16) you  call  it.  And  to  us  for  the  AI  tutor,
+
+(21:20) it  means  to  decide  what  to  keep  in  the
+
+(21:23) current  context  window  in  order  to
+
+(21:25) optimize  the  caching  what  to  drop  or
+
+(21:28) compact  and  when  to  do  that.  Uh  and
+
+(21:32) those  two  first  things  are  exactly  what
+
+(21:34) what  we  studied  in  many  experiments  that
+
+(21:37) we  that  my  colleague  Omar  will  share
+
+(21:40) with  you  right  now.  And  uh  so  you  can
+
+(21:44) follow  along  with  the  experiments  on  the
+
+(21:45) the  QR  code  link.  It's  the  hugging  face
+
+(21:48) that  I  mentioned  earlier  and  in  there
+
+(21:51) there's  also  a  link  to  the  repo  and
+
+(21:53) everything.
+
+(21:56) All  right.  So,  welcome  to  this  second
+
+(21:58) part  of  the  of  the  workshop.  So  now  that
+
+(22:01) we  have  an  overall  idea  of  what  context
+
+(22:04) engineering  is  and  what  are  the
+
+(22:06) different  techniques  that  we  can  apply
+
+(22:08) to  our  agents
+
+(22:10) uh  now  what  we  want  to  do  here  is  see
+
+(22:13) how  they  actually  perform  in  in  our  case
+
+(22:16) for  our  AI  tutor.  I  will  first  start  by
+
+(22:20) describing  a  little  bit  about  how  the  AI
+
+(22:23) tutor  works.  So  the  system  design  and
+
+(22:25) then  I  will  follow  up  with  the  initial
+
+(22:26) experiments  that  we  did.
+
+(22:34) All  right.  So,  the  AI  tutor  is  actually
+
+(22:37) very  simple.  It's  one  agent  that  it's  a
+
+(22:40) React  type  of  agent  that  just  loops  over
+
+(22:44) over  tool  calls  and  thinking  blocks.  And
+
+(22:48) here  we  just  create  a  very  simple  one
+
+(22:51) using  the  lang  chain  library.  So  we  use
+
+(22:53) the  create  agent  method  with  the
+
+(22:56) in-memory  saver  because  we  in  this  case
+
+(22:58) we  don't  save  past  conversations  we  just
+
+(23:00) use  the  the  current  history
+
+(23:04) and  to  customize  this  agent  we  use  the
+
+(23:07) middleware  feature  of  lang  chain  where
+
+(23:10) you  we  can  add  different  uh  features
+
+(23:14) that  can  change  the  behavior  of  the
+
+(23:16) agent  at  runtime.  So  in  this  case,  we
+
+(23:19) want  to  summarize  for  example  and  clear
+
+(23:21) the  tool  outputs
+
+(23:23) or  also  in  our  case  have  the  the  user  be
+
+(23:27) able  to  choose  the  the  source  uh  uh  the
+
+(23:31) sources  the  like  which  lessons  which
+
+(23:34) courses  to  to  use  to  to  answer.
+
+(23:38) To  do  that  we  also  add  two  different
+
+(23:41) tools.  So  we  have  the  first  one  the
+
+(23:43) retrieve  tutor  context  which  which  uses
+
+(23:46) a  very  classic  hybrid  search  pipeline.
+
+(23:49) So  um  semantic  search  along  with  keyword
+
+(23:53) search  and  we  combine  both  results  to
+
+(23:55) get  the  the  best  possible  list  of
+
+(23:58) chunks.  And  then  recently  we  also  added
+
+(24:01) the  second  one  which  is  letting  the
+
+(24:03) agent  actually  browse  the  file  system
+
+(24:06) the  knowledge  base  uh  just  like  we  can
+
+(24:09) just  like  coding  agents  can  in  the
+
+(24:13) browsing  your  codebase  for example  and
+
+(24:15) we  also  borrow  from  the  idea  of  karpathy
+
+(24:18) by  creating  a  wiki  and  helping  the  agent
+
+(24:21) basically  browse  uh  this  knowledge  base
+
+(24:24) more  easily.
+
+(24:26) I  will  come  back  to  these  tools  in  a  few
+
+(24:28) in  a  few  me  moments.  We  also  add  a  fast
+
+(24:31) API  app  to  wrap  the  whole  system  with  an
+
+(24:34) endpoint  and  we  add  a  nextgs  UI  to  let
+
+(24:38) students  use  the  DII  tutor.
+
+(24:43) So  I  will  talk  a  little  bit  about  the
+
+(24:44) first  tool.  So  we  have  a  large  corpus.
+
+(24:47) So  we  have  all  of  the  lessons  from  all
+
+(24:49) the  different  courses  that  we  created
+
+(24:51) over  the  past  two  years.
+
+(24:53) uh  and  also  documentation  from  various
+
+(24:57) public  open  source  libraries  like  lang
+
+(24:59) chain,  lama  index  and  even  documentation
+
+(25:02) from
+
+(25:04) uh  openai.  So  they  they  make  available
+
+(25:07) available  all  of  the  markdown  files  from
+
+(25:10) like  how  to  use  the  open  API,  how  to  use
+
+(25:12) codeex  and  we  also  have  like  cloud  code
+
+(25:15) documentation.  So  it's  a  very  big  corpus
+
+(25:17) that  has  over  8  million  tokens  and  of
+
+(25:21) course  this  cannot  fit  in  a  single
+
+(25:22) context  window.  So  we  have  to  store  it
+
+(25:25) in  a  way  where  we  can  retrieve  the  most
+
+(25:27) important  or  most  relevant  information.
+
+(25:30) So  in  this  case  the  agent  receives  a
+
+(25:32) question  and  the  user  can  then  choose
+
+(25:35) well  beforehand  the  user  can  choose
+
+(25:37) specific  source.  So  we  can  filter  this
+
+(25:40) knowledge  base.  It  makes  it  better  for
+
+(25:43) um  to  improve  recall.  So  precision  to
+
+(25:46) get  the  most  relevant  information.
+
+(25:49) Then  we  do  hybrid  search.  So  this  is
+
+(25:52) very  classic  um  hybrid  search.  We  use
+
+(25:56) embedding  model.  In  this  case  it's  a
+
+(25:58) coherent  coherent  model  with  BM25  for
+
+(26:02) the  keyword  index  to  get  the  the  most
+
+(26:05) relevant  top  30  uh  chunks.
+
+(26:09) Then  we  merge  the  two  results  from  the
+
+(26:12) semantic  similarity  and  the  keyword
+
+(26:15) search  and  we  then  rerank  to  the  top
+
+(26:18) five  most  relevant  chunks
+
+(26:22) and  that's  that's  what  return  to  the
+
+(26:25) agent.  We  also  have  a  limit  of  100,000
+
+(26:27) tokens.  So  we  don't  want  to.  So  let's
+
+(26:29) say  for  example  we  we  go  over  we  just
+
+(26:32) remove  the  last  few  chunk  uh  the  last
+
+(26:36) chunks  that  make  it  so  that  we  don't
+
+(26:38) cross  that  threshold.  So  these  numbers
+
+(26:40) the  this  configuration  actually  is  not
+
+(26:42) random.  We  did  experiments
+
+(26:45) uh  to  optimize  this  pipeline.  I'm  not
+
+(26:48) going  to  talk  about  it  but  it's  in  one
+
+(26:50) of  the  courses  that  we  share.  Uh
+
+(26:53) basically  we  just  want  to  try  as  many
+
+(26:55) configurations  as  possible  and  improve
+
+(26:57) recall.  So  we  measure  did  we  retrieve
+
+(26:59) the  correct  page  uh  in  our  knowledge
+
+(27:01) base  and  we  just  choose  the  best  uh
+
+(27:04) settings.
+
+(27:07) So  like  I  said  it  uh  yeah  in  this  case
+
+(27:09) it's  very  precise  very  it's  very  good
+
+(27:11) but  what  if  the  agent  needs  to  browse
+
+(27:16) the  whole  knowledge  base  to  get  the  best
+
+(27:18) possible  answer.  So  let's  say  I  want  to
+
+(27:21) learn  about  codeex  and  I  want  to  learn
+
+(27:23) about  cloud  code  how  can  I  best  use  uh
+
+(27:25) those  two  tools  and  also  like  if  we  need
+
+(27:29) to  have  v  various  documentation  pages  in
+
+(27:32) context  is  this  the  best  possible  uh
+
+(27:36) tool
+
+(27:37) and  there's  a  paper  uh  I  I  link  it  here
+
+(27:40) in  the  in  in  the  slides  but  it's  a  yeah
+
+(27:43) it's  a  paper  that  shows  that  basically
+
+(27:45) letting  the  agent  browse  the  the
+
+(27:47) knowledge  base  can  be  very  bene
+
+(27:49) beneicial  uh  so  you  can  look  at  it  if
+
+(27:51) you  want  afterwards.  Very  very  slow  to
+
+(27:55) load.
+
+(27:57) Uh  so  that's  why  we  ended  up  creating
+
+(28:00) this  second  tool  the  run  keep
+
+(28:04) run  knowledgebased  command  where  the
+
+(28:07) agent  can  browse  u  the  knowledge  base
+
+(28:10) the  file  system  using  bash  commands.  So
+
+(28:13) first  of  all  what  we  did  first  is  create
+
+(28:16) these  uh  three  different  u  folders.  So
+
+(28:19) we  have  the  raw  folder  with  all  the
+
+(28:21) different  markdown  files.  So  all  the
+
+(28:23) lessons  from  the  different  courses  the
+
+(28:26) documentation  from  the  different  open
+
+(28:28) open  source  libraries.  We  we  also  have
+
+(28:31) this  generated  uh  folder  with  this  is
+
+(28:34) the  generated  automatically  with
+
+(28:37) basically  just  the  the  the  titles  of
+
+(28:41) each  of  the  markdown  files  so  it's
+
+(28:43) easier  for  the  agent  to  to  find  um
+
+(28:47) relevant  information.  And  then  we  also
+
+(28:49) have  the  wiki  where  uh  in  this  case  it
+
+(28:52) was  cl  code  that  created  this.  It
+
+(28:54) basically  reads  all  of  the  raw  files  in
+
+(28:57) the  in  the  folder  in  the  raw  folder  and
+
+(29:00) it  creates  a  very  uh  concise  uh  set  of
+
+(29:04) files.  So  topics,  frameworks  uh  from  the
+
+(29:07) different  source  uh  sources.  So  for
+
+(29:10) example,  I  can  have  a  topic  related  to
+
+(29:12) finetuning.  So  in  this  case,  the  agent
+
+(29:14) will  be  able  to  find  all  of  the
+
+(29:16) different  raw  files  related  to
+
+(29:17) finetuning.  For example,
+
+(29:20) here  we  let  the  agent  only  read.  So  this
+
+(29:23) is  when  we  actually  deploy  it.  So  this
+
+(29:25) is  the  one  you  can  try  on  the  on  the
+
+(29:27) space  here.  The  agent  can  only  read  the
+
+(29:30) knowledge  base.  It  cannot  modify  it.  Uh
+
+(29:32) so  we  only  allow  these  bash  commands
+
+(29:34) that  basically  cannot  uh  modify  the  the
+
+(29:37) file  system.  We  also  put  some  limits
+
+(29:40) around  this.  So  for  example,  if  a
+
+(29:43) command  lasts  over  8  seconds,  we  can
+
+(29:45) just  return  an  error  or  let  the  agent
+
+(29:48) execute  something  else  because  it's
+
+(29:50) taking  too  much  time.  And  we  also  cap
+
+(29:53) the  tool  outputs  to  40,000  uh
+
+(29:55) characters.  So  in  this  case,  for
+
+(29:57) example,  if  a  lesson  is  over  this
+
+(29:59) amount,  what  the  agent  can  do  is  then
+
+(30:02) okay,  so  I  just  got  the  first  40,000.
+
+(30:05) Let  me  let  me  do  a  follow-up  command  to
+
+(30:07) get  the  last  uh  piece  of  the  of  the
+
+(30:09) lesson.  For example,
+
+(30:11) uh  we  also  limit  the  number  of  the  of
+
+(30:14) commands.  We  actually  never  see  the
+
+(30:16) agent  go  over  this  limit  of  20  commands
+
+(30:19) per  turn,  but  this  is  just  a  a  fallback
+
+(30:23) uh  in  case  it  takes  too  too  much  time  to
+
+(30:25) to  answer.  And  we  also  sandbox  of  course
+
+(30:28) the  agent  to  only  browse  the  knowledge
+
+(30:30) base  this  specific  folder.
+
+(30:33) Like  I  said,  we  create  this  offline.  So
+
+(30:36) the  the  three  different  file  folders  we
+
+(30:38) create  this  once  or  every  time  we  want
+
+(30:41) to  add  a  new  uh  a  new  course  for  example
+
+(30:44) we  we  we  tell  cloud  code  can  you  add  a
+
+(30:46) new  uh  can  you  add  this  to  the  raw  raw
+
+(30:49) folder  and  also  create  new  topics  around
+
+(30:51) this  new  new  content.  So  we  do  this  once
+
+(30:54) and  then  we  deploy  it  so  that  the  agent
+
+(30:57) u  can  can  browse  it  with  our  current
+
+(31:01) system  prompt.  We  can  see  that  it's  uh
+
+(31:04) used  almost  every  time.  So  for  almost
+
+(31:06) 90%  of  the  terms  we  can  tweak  this  to
+
+(31:09) make  it  use  it  less  uh  or  more.  We
+
+(31:12) didn't  optimize  for  for  this
+
+(31:14) specifically.
+
+(31:15) And  I  guess  the  most  interesting  aspect
+
+(31:18) of  doing  this  is  that  we  measured  the
+
+(31:20) precision  the  recall  of  using  this  tool
+
+(31:24) uh  actually  turning  turning  it  off  and
+
+(31:27) we  actually  got  the  same  amount  of
+
+(31:30) recall.  So
+
+(31:32) just  using  the  first  tool  was  enough  to
+
+(31:35) get  all  the  relevant  information  and
+
+(31:38) just  having  this  second  tool  was  just
+
+(31:41) 50%  slower.  Basically,  it's  faster
+
+(31:44) without  this  tool  because  it  does  less
+
+(31:46) tool  calls.  Um,  and  yeah,  we  we
+
+(31:50) basically  didn't  see  any  improvement  on
+
+(31:52) uh  on  re  on  answering  with  the  correct
+
+(31:56) uh  documentation.
+
+(31:58) It  it  was  fun  to  add  but  we  yeah  we
+
+(32:01) didn't  see  any  any  benefit  and  one
+
+(32:03) reason  for  that  is  that  we  tested  using
+
+(32:05) real  world  well  basically  the  questions
+
+(32:08) we  get  from  students  and  basically  those
+
+(32:11) questions  were  complex  enough  we  guess
+
+(32:13) to  actually  benefit  from  using  this  new
+
+(32:16) new  setup.  Um
+
+(32:19) so  this  is  what  this  is  how  initially  uh
+
+(32:24) our  AI  tutor  managed  its  context.  Uh  we
+
+(32:27) we
+
+(32:29) started  with  this  because  uh  it  looked
+
+(32:32) fast,  it  looked  good.  Uh  we  didn't
+
+(32:34) actually  measure  anything.  It  was  just
+
+(32:36) like  oh  it  looks  good.  Okay,  we  will
+
+(32:38) just  set  it  set  it  like  this.  And  so
+
+(32:41) basically  we  have  these  three  different
+
+(32:43) um
+
+(32:44) context  engineering  techniques  where  we
+
+(32:47) clear  the  outputs  uh  after  5,000  tokens
+
+(32:51) uh  but  we  at  least  keep  the  last  five
+
+(32:54) ones.  So  this  was  basically  a  way  to
+
+(32:57) keep  a  very  small  context  uh  during  a
+
+(33:00) conversation.  We  also  added  the  the
+
+(33:03) capacity  to  summarize.  So  after  30,000
+
+(33:06) tokens  uh  the  two  well  the  system
+
+(33:09) summarizes  the  uh  the  history  but  we  at
+
+(33:12) least  keep  the  last  20  messages  to  make
+
+(33:14) sure  that  uh  those  are  very  accurate
+
+(33:17) those  messages.  And  we  also  have  the
+
+(33:20) source  preference.  So  that  that  just
+
+(33:23) allows  people  to  choose  what  uh  sources
+
+(33:27) to  use  uh  when  the  thetutor  answers.
+
+(33:32) But  like  I  said,  these  are  unproven
+
+(33:34) unproven  defaults  and  we  actually  want
+
+(33:37) to  know  what  actually  works  best.  Um  so
+
+(33:40) I  guess  you  you  can  Lou  showed  this  at
+
+(33:43) the  beginning,  but  you  can  access  the
+
+(33:45) tutor  live.  I'm  just  going  to  show  this
+
+(33:47) very  quickly.  This  is  the  huging  face.
+
+(33:51) So  this  is  a  separate  UI  just  to  show
+
+(33:54) you.  We  also  have  the  the  chat  bubble
+
+(33:57) one  on  the  lessons  on  the  course
+
+(34:00) themselves  itself.  Uh  and  here  on  the  on
+
+(34:03) the  left  you  can  choose  the  different  uh
+
+(34:05) sources  to  use,  enable  them  or  disable
+
+(34:07) them  and  then  you  can  uh  yeah  send  your
+
+(34:10) your  query.  So  as  you  can  see  here  I  can
+
+(34:13) just  uh  send  a  new  request  and  we  see
+
+(34:16) Gemini  in  this  case  Gemini  3.5  flash  use
+
+(34:20) its  reasoning  and  use  its  uh  capacity  to
+
+(34:24) to  do  tool  calling  and  to  answer  and  I
+
+(34:27) guess  uh  here  there's  a  I  think  it's
+
+(34:31) just  the  internet
+
+(34:35) bugging
+
+(34:41) But  we  should  have  a  response
+
+(34:52) and  yeah  the  code  is  open  source  so  you
+
+(34:54) can  use  your  favorite  coding  agent  to
+
+(34:56) explore  the  codebase  and  uh  and  learn
+
+(35:00) about  how  we  implemented  this
+
+(35:01) specifically.  So  we  have  the  different
+
+(35:04) activity  u
+
+(35:07) the  the  activity  that  the  the  the  model
+
+(35:09) did.  So  for  tool  calls  it  thought  four
+
+(35:11) times  and  it  use  10  sources  and  we  have
+
+(35:13) the  the  final  answer.
+
+(35:19) So  everything  that  uh  so  every  time  the
+
+(35:22) student  uses  this  chatbot  we  actually
+
+(35:24) log  everything.  So  we  for  every  single
+
+(35:27) turn  we  have  uh  the  input  tokens,  the
+
+(35:30) the  output  tokens,  how  many  of  them  were
+
+(35:33) cached,  uh  what  was  the  cost,  what  time
+
+(35:36) it  took  to  to  get  the  first  token,  how
+
+(35:38) many  tool  calls  it  did  and  if  we
+
+(35:40) actually  if  the  system  actually  did
+
+(35:42) something  around  summarization.  So  this
+
+(35:45) is  very  useful  and  that's  uh  what  we  are
+
+(35:47) going  to  use  when  uh  measuring  the  uh
+
+(35:50) the  different  techniques.  So  why  do  we
+
+(35:53) need  to  measure?  Well,  because
+
+(35:55) the  the  techniques  that  Lou  showed  all
+
+(35:57) sound  very  smart.  So  you  you  might  think
+
+(36:00) that  they  are  very  uh  useful,  but
+
+(36:03) sometimes  they're  not.  And  uh  as  we  as
+
+(36:06) we  discovered  with  our  experiments,
+
+(36:08) actually  it  might  be  detrimental.  So
+
+(36:11) because  of  the  the  way  APIs  cache  the
+
+(36:14) tokens  when  they  are  um  when  they  are
+
+(36:16) sent  and  it's  also  difficult  to  to  know
+
+(36:19) in  advance  what  what  is  best  to  use.
+
+(36:23) So  before  I  go  into  the  experiments,  I
+
+(36:25) just  want  to
+
+(36:27) define  a  few  words  because  we're  I'm
+
+(36:29) going  to  use  these  words  throughout  the
+
+(36:31) uh  the  the  presentation.  So  a  preset  is
+
+(36:35) basically  uh  the  way  the  AI  tutor  was
+
+(36:38) set  up  in  the  in  the  experiment.  So  for
+
+(36:40) example,  it  can  be  in  this  preset  we  did
+
+(36:44) summarization  at  this  amount  of  tokens
+
+(36:46) or  in  this  preset  we  we  used  sliding
+
+(36:48) window  for  example.  So  that's  what  a
+
+(36:50) preset  is.  we  have  the  different  tasks.
+
+(36:53) So  at  task  type  uh  for  these  initial
+
+(36:57) experiments  we  only  did  two  tasks  single
+
+(37:00) turn  and  multiple  turns  also  sessions  uh
+
+(37:04) called  sessions  and  one  run  is  basically
+
+(37:07) just  running  one  preset  on  a  task  and
+
+(37:10) then  you  get  the  run.  Um  the  bundle  is
+
+(37:14) just  the  the  result.  So  it's  just  a  JSON
+
+(37:17) file  with  all  the  different  uh  metrics
+
+(37:20) that  we  save  to  the  disk.
+
+(37:24) So  first  task  single  turn.  Uh  so  these
+
+(37:28) are  question  and  answers  and  we  didn't
+
+(37:31) generate  this.  It's  not  synthetic.  Uh  we
+
+(37:33) actually  I I  had  codeex
+
+(37:37) scrape  all  of  the  uh  questions  and
+
+(37:40) responses  from  our  website  where
+
+(37:43) students  can  ask  questions  and  get
+
+(37:45) answers  from  uh  members  of  the  staff.  Uh
+
+(37:49) and  that's  how  I  got  this  initial  we  got
+
+(37:51) this  initial  um  data  set.  uh  we  cleaned
+
+(37:55) the  data  set  and  only  used  60  60  pairs
+
+(38:00) uh  because  we  saw  that  some  of  the
+
+(38:01) questions  weren't  good  for  the  type  of
+
+(38:04) task  for  example  uh  there  were  old
+
+(38:06) questions  about  previous  versions  of
+
+(38:09) some  libraries  and  we  we  might  not  I
+
+(38:12) mean  the  right  now  if  the  tutor  answers
+
+(38:15) it's  not  going  to  be  using  this  old
+
+(38:17) version  of  the  library  so  we  just  uh
+
+(38:19) remove  some  of  the  questions  some
+
+(38:21) duplicate  ones  and  and and  we  got  this
+
+(38:24) first  uh  data  set  and  what  we  measure  is
+
+(38:29) the  retrieval.  So  did  we  retrieve  the
+
+(38:32) correct  is  did  the  total  retrieve  the
+
+(38:34) correct  lesson  for  example  this  is  done
+
+(38:37) automatically  we  can  see  uh  just  by
+
+(38:40) looking  at  the  code  did  we  did  we  use
+
+(38:42) the  correct  uh  lesson  or  not  and  we  also
+
+(38:45) look  at  did  do  we  have  the  correct  facts
+
+(38:48) in  the  answer  or  the  right  kind  of
+
+(38:50) response  in  the  answer.  These  two  uh  are
+
+(38:53) actually  graded  using  using  an  LLM.  Uh
+
+(38:57) you  can  use  APIs  to  do  it  but  uh  right
+
+(39:00) now  I  think  the  best  way  to  do  it  is  to
+
+(39:02) just  use  use  your  uh  code  code
+
+(39:05) subscription  or  your  codec  subscription
+
+(39:08) because  it's  cheaper  than  using  the
+
+(39:09) APIs.
+
+(39:12) We  also  have  the  second  task  the
+
+(39:15) session.  So  multi-turn  um  conversations
+
+(39:19) back  and  forth.  uh  here  what  we  want  to
+
+(39:22) know  is
+
+(39:24) is  the  AI  tutor  able  to  recall  facts
+
+(39:27) after  multiple  terms.  So  this  is  a  bit
+
+(39:30) uh  in  this  case  we  do  use  some  generated
+
+(39:34) uh  content.  So  we  do  in  generate  facts
+
+(39:37) that  we  put  at  the  beginning.  So  we  have
+
+(39:40) a  student  like  a  fake  student  state  uh
+
+(39:43) fact.  So  for  example,  I  want  to  learn
+
+(39:45) about  rag  and  then  we  stuff  the
+
+(39:49) conversation  with  just  filler  messages
+
+(39:51) because  we  just  want  yeah  we  just  want
+
+(39:54) to  have  a  lot  of  messages  and  then  we
+
+(39:56) have  um
+
+(39:59) a  probe  which  is  just  the  student  asking
+
+(40:02) a  question  again.  So  for  example  it  can
+
+(40:05) be  uh  what  should  I  learn  today?  And
+
+(40:09) since  the  uh  I'm  going  to  go  through  it
+
+(40:11) in  the  next  slide,  but  uh  yeah,  let's
+
+(40:15) let's  let's  the
+
+(40:17) example.  So  for  example,  here  at  turn
+
+(40:19) one,  we  we  uh  we  have  the  student  the
+
+(40:22) fake  student  implement  a  state  of  fact.
+
+(40:25) So  it  the  student  wants  to  learn  about
+
+(40:27) rag  evaluation.  Um  and  that  that's
+
+(40:30) basically  the  fact.  Then  we  just  add  a
+
+(40:33) lot  of  messages  uh  filler  filler
+
+(40:35) messages  and  then  at  at  some  point  we
+
+(40:38) have  the  student  say  for  example  what
+
+(40:42) topic  should  I  learn  about  today  and
+
+(40:45) then  what  we  expect  the  AI  tutor  to  to
+
+(40:48) to  say  is  that  uh  the  student  should
+
+(40:51) learn  about  rag  evaluation.  So  more
+
+(40:53) specifically  heat  rate  and  MR  for
+
+(40:55) example.
+
+(40:57) We  also  have  a  gate  part  in  the
+
+(41:00) evaluation  where  let's  say  we  are
+
+(41:03) testing  the  summarization  technique.  Uh
+
+(41:05) we  actually  just  want  to  know  did
+
+(41:07) summarization  actually  happen  or  not.  Um
+
+(41:10) so  this  is  this  is  this  is  like  one
+
+(41:12) example  of  one  task  in  the  sessions  uh
+
+(41:15) data  set  in  the  sessions  task.
+
+(41:18) Now  we  have  the  evaluation  hardness.  Um
+
+(41:21) so  the  main  uh  harness  I  guess  the  the
+
+(41:25) main  function  is  the  run  the  run  task
+
+(41:27) the  run  battery  function  that  just  uh
+
+(41:30) runs  this  uh  this  task.  Um  we  have  the
+
+(41:36) grading  like  I  said  we  it  can  either  be
+
+(41:38) a  code  check  so  did  we  retrieve  the
+
+(41:40) correct  lesson  or  not  and  we  can  also
+
+(41:43) have  the  LM  as  a  judge  and  in  this  case
+
+(41:46) we  use  the  subscription  of  code.  We  also
+
+(41:50) have  the  check  triggers  aspect.  So  this
+
+(41:52) is  just  a  check  to  to  see  that  if  the
+
+(41:55) evaluation  went  uh  good  or  not.  Did  we
+
+(41:57) actually  compact  or  not?  This  is  this  is
+
+(41:59) just  to  make  sure  that  the  the  run  is
+
+(42:02) actually  good  and  we  can  save  it.  And
+
+(42:05) then  we  have  a  generated  report  uh  to
+
+(42:08) see  like  what  was  the  latency,  what  was
+
+(42:10) the  time  to  first  token  and  every  metric
+
+(42:14) that  we  can  uh  measure.
+
+(42:17) So  yeah,  basically  we  can  evaluate
+
+(42:19) everything  and  then  grade  it  afterwards.
+
+(42:21) Uh  we  we  can  run  it  once  and  grade  it
+
+(42:23) afterwards.
+
+(42:25) So  what  what  we  run  so  we  run  11  presets
+
+(42:31) uh  and  we  change  them  uh  for  for  each
+
+(42:34) experiment.  So  we  have  the  the  full
+
+(42:37) history.  So  these  are  the  the  main  ones
+
+(42:38) the  full  history.  So  this  is  the  case
+
+(42:41) where  we  don't  don't  touch  the  context.
+
+(42:43) We  we  leave  everything  as  is  in  the
+
+(42:46) history.  And  then  we  also  have  the
+
+(42:48) production  that  I  showed  at  the
+
+(42:50) beginning  the  defaults  that  we  have.  Uh
+
+(42:53) so  these  are  the  reference  points  and
+
+(42:55) then  we  have  these  six  techniques  that  I
+
+(42:57) want  to  compare.  So  sliding  window
+
+(42:59) prompt  compression  uh  selective
+
+(43:01) retention  and  the  other  ones  and  I  what
+
+(43:04) I  want  to  see  is  just  what  uh  memory
+
+(43:08) recall  recall  do  I  get  if  I  keep
+
+(43:11) everything  else  fixed.  So  I  use  the  same
+
+(43:13) model  the  same  prompt  the  same  tools  the
+
+(43:16) same  data  set  what's  the  difference?  Uh
+
+(43:19) now  ju  now  just  doing  this  was  a  bit
+
+(43:21) expensive.  I  I  didn't  expect  this  to  to
+
+(43:24) get  over  $500,  but  it  did.  And  that's
+
+(43:29) one  of  the  reason  we  did  afterwards
+
+(43:32) follow-up  experiments  using  cheaper
+
+(43:34) models.  But  my  colleague  Sani  will  talk
+
+(43:36) about  this.  Uh  so  what  ARM  so  what
+
+(43:40) basically  what  preset  actually  won.  Uh,
+
+(43:43) and  so  these  are  our  um  our  results.  And
+
+(43:47) as  you  can  see,  h  we  weren't  expecting
+
+(43:50) this,  but  basically  not  touching  um  the
+
+(43:54) context  was  actually  the  best  the  best
+
+(43:57) strategy  for  recovering  this  fact  over
+
+(44:00) time  over  multiple  uh  messages.  Um  you
+
+(44:05) can  see  that  the  production  so  the  the
+
+(44:08) defaults  that  we  thought  were  good
+
+(44:10) enough  were  actually  not  the  best.  Uh
+
+(44:13) not  doing  anything  is  actually  better.  H
+
+(44:16) we  did  two  uh  two  different  experiments
+
+(44:19) where  one  was  just  one  trial  and  the
+
+(44:21) second  was  um  two  trials.  So  we  have
+
+(44:24) like  a  more  statist  I  I  guess  it's  it's
+
+(44:28) better  but  the  uh  the  numbers  are  not
+
+(44:31) like
+
+(44:33) can  might  not  be  accurate  because  it's
+
+(44:35) just  one  trial  and  two  trials  but  I
+
+(44:36) guess  the  most  interesting  thing  is  just
+
+(44:38) the  order  in  which  the  techniques  ended
+
+(44:40) up  being  in  the  table.
+
+(44:42) So  in  this  case  keeping  everything  wins
+
+(44:45) on  the  memory  side  but  what  about  the
+
+(44:47) cost?
+
+(44:49) Uh  this  is  what  the  production  cost  uh
+
+(44:52) was  for  the  single  turn  and  the  session.
+
+(44:54) So  almost  50  cents  uh  for  a  single  turn
+
+(44:57) and  24  cents  uh  for  the  multi-turn
+
+(45:01) or  each  turn.  Uh  we  actually  had
+
+(45:05) very  good  memory  uh  recall  for  pretty
+
+(45:08) much  all  the  techniques  in  the  single
+
+(45:09) turn  because  in  single  turn  you  don't
+
+(45:11) have  enough  tokens  to  actually  fire  up
+
+(45:13) the  different  strategies.  Uh  so  for  one
+
+(45:16) response  you  don't  need  to  do
+
+(45:18) summarization  compaction  or  anything
+
+(45:20) like  that.  Uh  so  that's  why  you  you  see
+
+(45:23) um  high  numbers.  Uh  but  as  you  can  see
+
+(45:27) after  in  the  multi-turn  uh  task  you  can
+
+(45:31) see  that  the  quality  degraded  to  38%.
+
+(45:35) uh  and  we  if  we  compare  this  to  the  full
+
+(45:39) history.  So  here  we  don't  touch  the
+
+(45:41) context  uh  the  history  of  the  model  we
+
+(45:44) can  see  that  not  touching  uh  is  actually
+
+(45:47) cheaper,  it's  faster  and  we  have  better
+
+(45:50) recall  overall.  So  keeping  everything
+
+(45:53) wins  on  on  all  of  these  three  fronts.
+
+(45:57) Uh  so  why  does  it  so  why  is  it  actually
+
+(46:03) uh
+
+(46:05) like  why  is  it  uh  why  do  we  have  less
+
+(46:09) latency  like  what's  we  want  to  we  wanted
+
+(46:12) to  understand  that  and  it's  basically
+
+(46:14) because  if  you  remove  the  tool  outputs
+
+(46:18) consistently  then  the  agent  needs  to
+
+(46:20) rerieve  uh  afterwards  for  information  it
+
+(46:24) already  had.  So  you're  just  making  the
+
+(46:28) agent  uh  do  more  tool  calls  and  that's
+
+(46:31) why  it  ended  up  costing  more  uh  and  yeah
+
+(46:34) using  more  tokens  and  having  less  uh
+
+(46:38) uh  less  memory  recall.  So  these  are  the
+
+(46:41) results  we  initially  got  using  uh  Gemini
+
+(46:44) 3.5  with  the  uh  this  this  data  set  of  11
+
+(46:49) to  13  turns  is  not  huge.  Uh  there's  not
+
+(46:52) many  messages.  That's  why  we  wanted  we
+
+(46:55) now  want  uh  in  the  follow-up  part  do
+
+(46:58) more  different  experiments  that  my
+
+(47:01) colleagues  already  will  will  show  you.
+
+(47:03) So  yeah,  let  me  in  let  me  introduce  you
+
+(47:06) to  something.  Yeah.
+
+(47:10) Um,  so  this  is  going  to  be  my  part  and
+
+(47:13) um,  as  we  ended  on  the  note  where  Omar
+
+(47:16) just  said  that  it  costed  it  c  um,  it
+
+(47:19) costed  us  almost  $600  to  um,  run  the
+
+(47:22) evals  that  we  ran.  One  question  we  were
+
+(47:25) trying  to  um,  answer  with  this  extended
+
+(47:27) evaluation  was  um,  so  when  do  you  uh,
+
+(47:32) when  does  compaction  actually  matter  or
+
+(47:34) should  you  actually  compact  or  not?
+
+(47:35) because  we  clearly  saw  that  when  we  have
+
+(47:38) um  you  know  the  full  answers  in  the
+
+(47:40) window  it  works  really  well  but  it  costs
+
+(47:43) a  lot  of  money.  So  um  I  tried  to  you
+
+(47:46) know  do  this  evaluation  in  like  three
+
+(47:48) sorts  of  context.  Uh  first  one  was  cash
+
+(47:51) chats.  So  you  know  like  when  you're
+
+(47:53) chatting  with  Gemini  you'd  be  able  to
+
+(47:54) see  that  is  the  cash  chat  option.  The
+
+(47:57) second  version  is  going  to  be  document
+
+(47:59) plus  tool.  So  if  you're  pasting  like  a
+
+(48:01) long  document  in  the  AI  tutor  or  if
+
+(48:04) there's  just  tool  output  what  happens
+
+(48:05) then  and  finally  you  know  if  you  go
+
+(48:08) local  or  if  you  scale  this  evaluation
+
+(48:10) how  well  is  it  going  to  work  out
+
+(48:13) so  um  should  you  ever  compact  so  before
+
+(48:16) my  part  Omar  just  showed  that  on  Gemini
+
+(48:19) 3.5  flash  um  keeping  everything  one
+
+(48:23) um  but  uh  you  know  the  why  did  we  come
+
+(48:25) up  with  that  question  was  because  um  you
+
+(48:28) know  full  history  on  a  frontier  model
+
+(48:29) like  Gemini  would  be  very  very
+
+(48:31) expensive.
+
+(48:33) Um  so  um  you  know  with  all  this  extended
+
+(48:36) experiment  we  are  trying  to  figure  out
+
+(48:38) was  it  actually  worth  it  or  not.
+
+(48:41) But  uh  before  we  start  that  I  wanted  to
+
+(48:43) just  talk  about  the  different  context  we
+
+(48:45) see  in  our  AI  tutor  application.  Um  so
+
+(48:48) first  one  is  going  to  be  like  a  long
+
+(48:49) chat  history  uh  where  you  know  we  have
+
+(48:52) um  a  long  chat  but  all  of  the  details
+
+(48:54) what  the  the  students  are  asking  or
+
+(48:56) they're  chatting  about  they  can  get
+
+(48:58) buried  in.  Um  the  second  is  going  to  be
+
+(49:00) a  pasted  document.  So  you  know  we  do
+
+(49:02) have  a  lot  of  students  who  are  going  to
+
+(49:03) just  like  copy  paste  a  lot  of  documents
+
+(49:05) there.  Um  so  you  know  um  and  also
+
+(49:07) because  we  have  like  limited  uh  context
+
+(49:09) window.  How  does  that  fit?  And  then  it's
+
+(49:12) going  to  be  you  know  different  tools
+
+(49:14) that  we  use  internally.  Um  but  this  is
+
+(49:16) just  going  to  be  like  bunch  of  logs  that
+
+(49:18) the  tools  have  and  since  you  know  these
+
+(49:22) are  like  different  context  each  of  them
+
+(49:24) need  some  sort  of  different  fix.  So  you
+
+(49:26) know  we  had  to  evaluate  it  for  all
+
+(49:28) different  um  contexts  that  we  had.
+
+(49:32) So  um  you  know  the  first  obvious  thing
+
+(49:34) uh  looking  at  the  cost  uh  we  were  like
+
+(49:36) okay  let's  try  out  a  cheaper  model  and
+
+(49:38) see  you  know  um  does  it  do  better  you
+
+(49:40) know  what  sort  of  techniques  work  on
+
+(49:42) that  does  compaction  work  on  it  or  not.
+
+(49:45) So  um  deepseek  v4  flash  was  an  obvious
+
+(49:48) option  and  we  were  like  we  will  uh  try
+
+(49:49) this  out  on  this  and  see  um  how  well  it
+
+(49:52) works  out  and  you  know  you  can  see  there
+
+(49:55) is  um  you  know  a  drastic  cost  difference
+
+(49:58) between  Gemini  and  Deepseek  here.  So
+
+(50:01) here  we  can  see  um  you  know  there's  a
+
+(50:03) drastic  difference  between  cost  when  we
+
+(50:05) checked  the  performance  on  deepseek  v4
+
+(50:08) and  the  main  reason  was  that  that  we
+
+(50:10) were  getting  a  cash  discount.  So  the
+
+(50:12) cash  discount  on  GE  um  deepseek  was  um
+
+(50:14) you  know  50x  as  compared  to  Gemini  and
+
+(50:18) even  in  this  um  you  know  setting  we  saw
+
+(50:20) that  keeping  all  um  you  know  all  of  the
+
+(50:23) context  still  one.  So  you  know  we  were
+
+(50:24) just  getting  the  best  performance  um  in
+
+(50:27) that  case  for  deepseek  as  well.  So,  but
+
+(50:31) you  know  the  the  plus  thing  from  this
+
+(50:33) experiment  was  that  we  figured  out  a
+
+(50:34) cheaper  model  but  um  you  know  uh  now  we
+
+(50:38) wanted  to  see  that  even  though  we  have
+
+(50:40) everything  uh  you  know  keeping
+
+(50:41) everything  uh  makes  it  cheaper  but  does
+
+(50:44) it  remember  better  you  know  does  uh
+
+(50:46) keeping  all  of  the  context  remember  all
+
+(50:48) of  the  details  the  student  might  be
+
+(50:49) asking  us.  So  um  you  know  this  is  how  I
+
+(50:53) tested  out  the  memory  of  the  model.  Um
+
+(50:55) so  we  have  conversation  within  our
+
+(50:57) system  where  you  know  students  are
+
+(50:59) asking  questions  like  you  know  about
+
+(51:01) their  setup  about  the  errors  that
+
+(51:03) they're  seeing  what  whatever  they've
+
+(51:05) already  tried.  So  I  just  took  these
+
+(51:06) questions  um  so  I  just  took  these  chats
+
+(51:09) and  you  know  asked  questions  about
+
+(51:11) specific  details  just  to  see  if  the
+
+(51:13) model  is  able  to  like  figure  that  out  if
+
+(51:15) it  is  able  to  give  me  an  output  for  that
+
+(51:17) or  not.  And  you  know  the  results  I  saw
+
+(51:20) is  that  95%  of  the  time  if  the  model  was
+
+(51:23) able  to  uh  you  know  give  us  the  right
+
+(51:25) exact  details  that  I  was  trying  to  look
+
+(51:27) for  and  even  when  it  is  keeping  all  of
+
+(51:30) the  details  whereas  if  I  summarize  first
+
+(51:33) or  if  I  compact  um  the  context  I  had  it
+
+(51:36) only  gave  me  the  answer  back  32%  of  the
+
+(51:39) time.  And  um  if  you  think  about  it  um
+
+(51:41) the  reason  for  that  is  that  when  you
+
+(51:43) summarize  you  you  know  you  uh  remove  all
+
+(51:46) of  the  necessary  details.  So  you're  not
+
+(51:47) able  to  uh  you  know  keep  all  of  those
+
+(51:49) details  and  the  model  keeps  on  missing
+
+(51:51) those  out.  So  uh  you  know  we  are  able  to
+
+(51:54) see  that  keeping  everything  wins  in
+
+(51:56) terms  of  cost.  If  you  have  like  a  you
+
+(51:58) know  model  like  deepseeek  um  then  it
+
+(52:00) also  is  remembering  things.  So  you  know
+
+(52:02) it's  not  that  if  you  have  a  long
+
+(52:04) conversation  it  is  not  able  to  remember
+
+(52:06) things.  So  you  know  it  is  correct  95%  of
+
+(52:08) the  time.  So  the  next  thing  we  wanted  to
+
+(52:10) see  is  the  cost  part  of  it.  Uh  you  know
+
+(52:13) how  does  it  actually  um  does  it  cost
+
+(52:16) most?  Does  it  cost  the  lease?  What
+
+(52:17) happens  in  terms  of  tokens?  So,  um  you
+
+(52:20) know  on  Deep  Seek  we  saw  um  the  setup
+
+(52:23) that  was  sending  the  most  tokens  is
+
+(52:25) actually  the  cheapest  to  run.  So  the
+
+(52:28) full  history  u  you  know  setup  that  we
+
+(52:31) had  was  sending  the  most  tokens  but  uh
+
+(52:33) we  were  still  getting  the  best  results
+
+(52:35) out  of  it  because  97%  of  the  tokens  that
+
+(52:38) we  had  were  cached  and  uh  you  know  as
+
+(52:41) you  as  I  as  we  just  saw  in  the  previous
+
+(52:43) slide  cash  tokens  are  really  cheap.  they
+
+(52:45) are  uh  you  know  they  are  charged
+
+(52:47) separately.  So  um  summarizing  uh  works
+
+(52:50) the  other  way  uh  and  every  turn  it  makes
+
+(52:53) the  model  reads  and  writes  uh  new  tokens
+
+(52:56) and  you  know  this  is  something  that  I
+
+(52:58) ran  on  like  36  turn  conversation  and  it
+
+(53:01) was  about  1.78  million  tokens  and
+
+(53:04) keeping  everything  still  came  out  ahead
+
+(53:07) and  um  so  you  know  this  answers  the
+
+(53:10) question  that  it  wasn't  just  u  you  know
+
+(53:13) Gemini  it  it  works  same  on  deepseek  as
+
+(53:16) well  So  um  the  cheaper  model  is  u  what
+
+(53:20) brought  the  cost  down  but  the  results
+
+(53:23) are  the  same  and  um  you  know  in  in
+
+(53:26) respect  of  this  I  wanted  the  next  thing
+
+(53:27) I  wanted  to  ask  is  what  happens  when  the
+
+(53:30) conversations  really  grow  because  all  of
+
+(53:32) these  were  tested  out  on  like  short
+
+(53:33) conversation  if  I  really  really  uh  you
+
+(53:36) know  increase  the  length  of  the
+
+(53:37) conversation  how  does  that  work  out  so
+
+(53:40) um  you  know  when  I  tried  to  you  know  run
+
+(53:43) this  entire  experiment  on  a  longer
+
+(53:45) context  I  saw  saw  that  um  you  know  if
+
+(53:48) even  if  I'm  pulling  like  one  specific
+
+(53:50) detail  out  of  it  um  the  model  performed
+
+(53:53) really  well.  So  on  the  top  part  the
+
+(53:55) green  line  those  are  all  of  the
+
+(53:56) distinctive  distinctive  facts  that  the
+
+(53:58) model  is  able  to  find  out.  So  we  can  see
+
+(54:00) that  up  until  800k  tokens  as  well  the
+
+(54:04) model  was  not  missing  out  on  those
+
+(54:05) facts.  It  was  giving  me  like  good  and
+
+(54:07) consistent  results  for  uh  you  know  some
+
+(54:10) ambiguous  facts.  um  the  performance
+
+(54:12) dropped  um  you  know  to  half  of  what  I
+
+(54:15) observed  on  the  distinct  distinctive
+
+(54:17) facts  but  for  overall  our  for  our  AI
+
+(54:20) tutor  this  uh  you  know  result  um  was
+
+(54:22) really  good.  So  you  know  we  saw  that  um
+
+(54:25) the  model  even  when  you're  not
+
+(54:27) compacting  anything  holds  really  well
+
+(54:29) even  if  you  have  a  really  long
+
+(54:31) conversation
+
+(54:33) so  uh  but  so  far  everything  that  I've
+
+(54:36) talked  about  is  only  per  turn.  So  you
+
+(54:38) know  every  cost  has  been  per  turn  but
+
+(54:41) does  it  help  when  you  know  we  scale  it
+
+(54:43) because  um  a  chatbot  is  not  something  um
+
+(54:47) that  you  know  it's  not  like  one  turn  uh
+
+(54:50) situation  for  a  chatbot.  Um  the  tutor  is
+
+(54:53) a  long-term  service  where  you  know
+
+(54:54) students  are  asking  um  you  know
+
+(54:57) questions  on  on  a  massive  scale.  So
+
+(55:00) let's  say  we  have  uh  you  know  if  I  I
+
+(55:02) calculated  this  using  this  like  if  we
+
+(55:04) have  100,000  to  a  million  turns  of
+
+(55:06) questions  every  day  what  would  you  know
+
+(55:09) be  the  cost  on  deepseek  or  so  you  know
+
+(55:12) for  deepseek  the  cost  was  uh
+
+(55:14) approximately  somewhere  from  18,000  to
+
+(55:17) like  180,000  a  month  and  uh  you  know
+
+(55:20) even  though  we  don't  see  that  sort  of
+
+(55:22) volume  as  of  now  but  paying  per  token
+
+(55:25) starts  to  add  up  and  so  the  the
+
+(55:28) alternative  for  that  was  going  over  to  a
+
+(55:30) local  model  just  to  see  if  we  are
+
+(55:32) getting  the  same  sort  of  performance  on
+
+(55:33) local  model  or  not.  And  um  so  one  way  um
+
+(55:39) you  know  we  were  thinking  that  because
+
+(55:40) local  models  cache  as  well  can  you  know
+
+(55:43) we  use  the  same  sort  of  setup  on  a  local
+
+(55:45) model  and  will  we  get  the  same  result.
+
+(55:49) So  uh  you  know  because  uh  we  had  like
+
+(55:52) hardware  limitations  we  just  tested  it
+
+(55:54) out  on  a  MacBook.  the  maximum  context
+
+(55:57) window  that  we  could  go  up  to  was  32K
+
+(56:00) and  uh  so  we  thought  that  can  we  uh  you
+
+(56:03) know  can  we  do  that  locally  now  uh  but
+
+(56:06) we  can't  because  uh  you  know  the  the
+
+(56:09) sort  of  uh  lessons  that  we  had  are  had
+
+(56:11) are  bigger  than  like  32k  context  window
+
+(56:14) on  their  own  and  once  the  conversation
+
+(56:16) doesn't  fit  in  the  window  um  caching  was
+
+(56:19) no  longer  helpful  for  us  and  we  uh  you
+
+(56:22) know  we  have  to  make  um  the  context
+
+(56:25) smaller  either  by  compressing  it  or  by
+
+(56:28) retrieving  only  the  parts  that  we  need.
+
+(56:31) So  uh  you  know  the  next  question  we  were
+
+(56:33) trying  to  answer  is  can  we  uh  you  know
+
+(56:35) once  you  have  to  compact  locally  what
+
+(56:37) actually  works?  So  uh  you  know  for  um
+
+(56:41) the  chat  memory  going  local  uh  and
+
+(56:44) trying  to  keep  everything  stops  winning
+
+(56:46) because  you  can't  keep  everything  and
+
+(56:48) you  know  a  simple  uh  question  here  would
+
+(56:50) be  that  why  can't  you  just  keep
+
+(56:52) increasing  the  length  of  the  model  you
+
+(56:54) know  why  can't  you  use  a  bigger  model
+
+(56:55) because  of  course  we  have  hardware
+
+(56:57) limitations  for  us  it  was  uh  you  know  a
+
+(56:59) MacBook  but  you  know  GPUs  also  have  like
+
+(57:01) hardware  limitations  but  you  know  we
+
+(57:03) went  from  like  a  7B  model  8B  model  to  a
+
+(57:06) 32-B  model  uh  but  here  we  landed  Ed  on
+
+(57:09) the  uh  you  know  conclusion  that  even
+
+(57:11) though  you  keep  increasing  the  length  of
+
+(57:13) the  model  uh  it  is  not  going  to  increase
+
+(57:15) your  context  window  you  know  you  cannot
+
+(57:17) repair  that  part  you  have  to  you  know
+
+(57:20) make  a  choice  there
+
+(57:22) uh  but  um  you  know  this  is  only  for  the
+
+(57:24) chat  history  and  what  happens  when  you
+
+(57:27) are  trying  to  deal  with  like  documents
+
+(57:29) locally  so  um  this  was  a  little
+
+(57:32) surprising  because  if  you  are  retrieving
+
+(57:34) results  with  like  local  documents  um  you
+
+(57:36) know  it  was  really  good  we  got  like  100%
+
+(57:39) in  accuracy  in  that  case.  So  if  uh  you
+
+(57:41) know  when  students  are  pasting  something
+
+(57:43) which  is  too  big  uh  you  know  rag  is  a
+
+(57:46) good  option  there  you  can  use  that  and
+
+(57:48) it  can  help  you  retrieve  the  exact  uh
+
+(57:50) data  that  you're  looking  for.  Also  the
+
+(57:52) processing  time  in  this  case  was
+
+(57:53) anywhere  from  25  to  65  seconds.  So  you
+
+(57:56) know  which  is  uh  pretty  good  in  terms  of
+
+(57:58) the  you  know  the  output  that  we're
+
+(58:00) getting.  Uh  but  you  know  if  you  are
+
+(58:03) trying  to  like  stuff  the  window  with
+
+(58:05) like  more  context  than  you  have.  We  saw
+
+(58:07) that  you  know  it  took  us  like
+
+(58:08) approximately  340  seconds  um  to  get  the
+
+(58:12) output  when  you  know  our  um
+
+(58:13) conversations  were  really  long  and  the
+
+(58:16) output  that  we  got  was  a  single  token.
+
+(58:18) So  you  know  you  are  um  not  getting
+
+(58:21) anything  but  you're  also  wasting  a  lot
+
+(58:23) of  time  when  you  are  trying  to  do  it.  So
+
+(58:25) um  you  know  you  have  to  be  careful  about
+
+(58:27) what  option  you  choose  in  this  case.
+
+(58:31) So  um  so  you  know  you  also  have  like
+
+(58:34) different  type  of  retrieval  strategies
+
+(58:37) that  you  could  use.  The  default
+
+(58:39) retrieval  is  of  course  semantic  search
+
+(58:41) where  you're  just  trying  to  match  uh  you
+
+(58:42) know  the  meaning  of  the  text  and  that  is
+
+(58:45) the  dense  rag  uh  heading  that  you  can
+
+(58:47) see  on  the  chart.  Um  it  mostly  works  but
+
+(58:51) uh  you  know  we  saw  we  tried  to  make  it
+
+(58:52) work  from  like  uh  50k  token  to  200k  and
+
+(58:56) we  saw  that  you  know  dense  um  rag  worked
+
+(58:58) really  well.  you  know  it  was  like  80%.
+
+(59:00) But  when  we  increased  it  to  like  400k
+
+(59:02) tokens  it  was  not  able  to  facts  that
+
+(59:04) were  buried  in  the  middle  and  it  started
+
+(59:06) giving  us  like  0%  recall  whereas  uh  you
+
+(59:10) know  something  like  BM25  it  still  got
+
+(59:12) 100%  every  time.  So  semantic  search  uh
+
+(59:16) on  its  own  is  not  enough  and  that's  why
+
+(59:18) you  know  when  Omar  talked  about  our
+
+(59:19) setup  in  the  AI  tutor  we're  actually
+
+(59:21) using  a  hybrid  search  we're  using  a  mix
+
+(59:24) of  both  u  you  know  dense  and  um  you  know
+
+(59:28) BM25  we're  using  a  combination  of  both
+
+(59:30) those  um  so  you  know  after  all  of  this
+
+(59:34) we  came  up  we  had  like  one  other
+
+(59:37) question  which  was  like  uh  how  does  all
+
+(59:39) of  this  um  local  setup  compare  to  cloud
+
+(59:43) because  that's  the  uh  real  way  we'll  see
+
+(59:45) the  result.  So  we  wanted  to  put  them
+
+(59:48) side  by  side  just  to  see  uh  what  is  the
+
+(59:50) output  and  for  chat  uh  you  know  the
+
+(59:53) local  setup  was  not  up  to  the  par  of  um
+
+(59:56) the  cloud  you  know  the  cloud  setup  on
+
+(59:58) cloud  keeping  everything  scores  you  know
+
+(60:01) somewhere  from  from  92  to  95%.  But
+
+(60:04) locally  it  was  stuck  at  like  33%  and  the
+
+(60:06) context  window  was  a  limitation  here.
+
+(60:10) Also  you  can  see  that  um  you  know  local
+
+(60:13) um  local  models  actually  work  because  um
+
+(60:16) there  is  no  cost  like  you  cannot  see
+
+(60:19) because  you  already  own  the  hardware
+
+(60:21) though  um  you  know  there's  a  throughput
+
+(60:23) limitation  there.  Uh  but  if  you  use  a
+
+(60:26) technique  like  retrieval  uh  you  know  you
+
+(60:29) get  like  good  accuracy  even  on  a  local
+
+(60:31) setup.
+
+(60:33) So  um  in  our  case  what  we  found  is  that
+
+(60:36) on  memory  uh  you  know  keeping  the  whole
+
+(60:38) chat  recalled  about  like  95%  of  the
+
+(60:42) details  that  we  were  providing  it  it  was
+
+(60:44) able  to  you  know  give  us  correct  answer
+
+(60:46) 95%  of  the  time  versus  it  was  uh  like
+
+(60:49) just  32%  if  you  summarize  it  um  on  long
+
+(60:53) context  uh  you  know  finding  a  single
+
+(60:55) fact  uh  is  easy  for  the  model.  we  went
+
+(60:58) up  to  800k  tokens  and  you  know  we  did
+
+(61:01) not  um  see  any  sort  of  context  rot  in
+
+(61:03) that  case.  Um  on  cost  per  turn  we  saw
+
+(61:07) that  the  cheapest  run  is  actually  the
+
+(61:10) one  which  is  sending  the  most  tokens
+
+(61:12) because  caching  makes  um  resending  the
+
+(61:14) same  context  uh  you  know  very  cheap  and
+
+(61:17) on  no  cost  at  scale  um  um  you  know  it
+
+(61:20) scales  up  for  like  let's  say  if  we  have
+
+(61:22) like  thousand  students  uh  you  know
+
+(61:24) Gemini  costs  us  about  like  $40,000
+
+(61:28) 40,000  a  month  whereas  Deep  Seek  Deep
+
+(61:30) Seek  was  around  1,900  a  month  um  so  um
+
+(61:34) going  local  saves  us  on  a  cost  a  bit
+
+(61:37) more.  So  the  main  thing  to  take  away  is
+
+(61:40) that  um  do  not  compact  by  default.  You
+
+(61:43) have  to  name  the  constraint  that  you
+
+(61:44) have  and  then  you  know  look  for  a  better
+
+(61:46) alternative.
+
+(61:48) So  what  did  we  finally  decide  after  all
+
+(61:51) of  these  different  experiments  that  we
+
+(61:53) ran?  Um  so  we  decided  on  deep  uh  V4
+
+(61:56) flash  because  uh  we  had  hardware
+
+(61:58) limitations.  So  for  us  um  the  cloud
+
+(62:00) structure  worked  out  really  well.  It  is
+
+(62:02) also  the  cheapest  considering  the
+
+(62:04) current  um  intake  of  students  we  have.
+
+(62:06) So  you  know  it  works  out  well  for  us.  Um
+
+(62:08) and  we're  using  on  top  of  that  model  we
+
+(62:11) are  using  a  mix  of  u  you  know  using
+
+(62:13) hybrid  retrieval  to  uh  you  know  get  good
+
+(62:16) results.  For  memory  uh  you  know  we  have
+
+(62:18) chosen  to  keep  everything.  uh  we  have
+
+(62:21) got  um  you  know  a  default  limit  that
+
+(62:23) after  30k  tokens  we  are  going  to  you
+
+(62:26) know  have  compaction  but  up  until  that
+
+(62:28) we're  planning  to  like  keep  everything
+
+(62:31) and  uh  you  know  that  is  the  tutor  setup
+
+(62:33) that  we  have
+
+(62:35) so  you  know  because  we  had  like  time
+
+(62:38) limitations  so  these  are  all  the
+
+(62:39) evaluations  and  experiments  that  I  could
+
+(62:41) pack  into  this  time  but  if  you  would
+
+(62:43) like  to  you  know  learn  more  about  these
+
+(62:45) evaluations  or  you  would  want  to  build  a
+
+(62:47) tutor  yourself  um  this  is  the  fullstack
+
+(62:50) AI  engineering  course  uh  on
+
+(62:52) academy.towardsai.net.
+
+(62:55) Um  so  you  can  go  to  this  link  and  uh  you
+
+(62:57) know  go  through  the  course.  Uh  but  thank
+
+(63:00) you  so  much  everyone.  Uh  and  now  we  can
+
+(63:02) take  any  questions.
+
+(63:07) [applause]
+
+(63:22) >> [music]

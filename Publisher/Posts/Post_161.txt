@@ -1,0 +1,11 @@
+#Post_161
+<b>دو مسیر برای Retrieval</b>
+#Context_Engineering(11/18)
+
+وقتی Knowledge Base از Context Window بزرگ‌تر باشد، باید فقط اطلاعات مرتبط بازیابی شوند. یک روش، Hybrid Search است که semantic search را با keyword search ترکیب می‌کند. در پیاده‌سازی بررسی‌شده، ابتدا نتایج semantic similarity و BM25 گرفته می‌شوند، سپس نتایج ترکیب و rerank می‌شوند تا مرتبط‌ترین chunkها به Agent برسند.
+
+مسیر دیگر این است که Agent خودش Knowledge Base را مانند file system مرور کند. برای این کار ساختاری شامل raw files، فایل‌های generated و wiki ساخته شد و Agent با Bash commandهای read-only در آن جستجو می‌کرد. Sandbox دسترسی را به همان پوشه محدود می‌کرد و برای زمان اجرای command، اندازه tool output و تعداد commandها نیز محدودیت وجود داشت. این روش امکان exploration مستقیم Knowledge Base را به Agent می‌داد.
+
+------------------
+#️⃣#Context_Engineering
+➡️@AIDeveloperNotes

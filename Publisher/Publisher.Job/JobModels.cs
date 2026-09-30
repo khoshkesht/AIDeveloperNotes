@@ -6,6 +6,7 @@ internal sealed class AppConfig
     public DailyJobConfig DailyJob { get; set; } = new();
     public GroqArticleJobConfig GroqArticleJob { get; set; } = new();
     public TelegramDataProviderConfig TelegramDataProvider { get; set; } = new();
+    public ZohoCliqDataProviderConfig ZohoCliqDataProvider { get; set; } = new();
     public GroqConfig Groq { get; set; } = new();
 }
 
@@ -50,6 +51,18 @@ internal sealed class TelegramDataProviderConfig
 {
     public bool Enabled { get; set; }
     public string Cron { get; set; } = "*/30 6-23 * * *";
+    public bool UseProxy { get; set; }
+    public int SendDelayBetweenChannelsSeconds { get; set; } = 1;
+    public List<TelegramSourceChannelConfig> Channels { get; set; } = [];
+}
+
+internal sealed class ZohoCliqDataProviderConfig
+{
+    public bool Enabled { get; set; }
+    public string Cron { get; set; } = "*/30 6-23 * * *";
+    public string Endpoint { get; set; } = string.Empty;
+    public string ApiKey { get; set; } = string.Empty;
+    public string ApiKeyEnvironmentVariable { get; set; } = "ZOHO_CLIQ_API_KEY";
     public bool UseProxy { get; set; }
     public int SendDelayBetweenChannelsSeconds { get; set; } = 1;
     public List<TelegramSourceChannelConfig> Channels { get; set; } = [];

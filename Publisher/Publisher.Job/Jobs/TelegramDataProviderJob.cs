@@ -169,7 +169,7 @@ internal sealed class TelegramDataProviderJob
             : Path.Combine(_basePath, channelPromptPath);
     }
 
-    private static string AppendSourceChannelName(string postText, string channelUrl)
+    internal static string AppendSourceChannelName(string postText, string channelUrl)
     {
         var channelName = GetChannelName(channelUrl);
         return string.IsNullOrWhiteSpace(channelName)
@@ -203,7 +203,7 @@ internal sealed class TelegramDataProviderJob
         return channelName.Trim();
     }
 
-    private static string CleanGeneratedPost(string value)
+    internal static string CleanGeneratedPost(string value)
     {
         var cleaned = UnwrapSingleJsonStringArray(value.Trim())
             .Replace("\\r\\n", Environment.NewLine, StringComparison.Ordinal)

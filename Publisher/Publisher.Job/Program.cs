@@ -14,6 +14,8 @@ if (args.Any(arg => arg.Equals("--help", StringComparison.OrdinalIgnoreCase) || 
     Console.WriteLine("  Publisher.Job --run-groq-once       Run the Groq article job immediately, ignoring schedule/state.");
     Console.WriteLine("  Publisher.Job --run-telegram-data-provider-once");
     Console.WriteLine("                                      Read latest Telegram channel posts and send summaries immediately.");
+    Console.WriteLine("  Publisher.Job --run-zoho-cliq-data-provider-once");
+    Console.WriteLine("                                      Read latest Telegram channel posts and send summaries to Zoho Cliq immediately.");
     Console.WriteLine("  Publisher.Job --run-once            Backward-compatible alias for --run-posts-once.");
     return;
 }
@@ -33,6 +35,12 @@ if (args.Any(arg => arg.Equals("--run-groq-once", StringComparison.OrdinalIgnore
 if (args.Any(arg => arg.Equals("--run-telegram-data-provider-once", StringComparison.OrdinalIgnoreCase)))
 {
     await runner.RunTelegramDataProviderManualAsync();
+    return;
+}
+
+if (args.Any(arg => arg.Equals("--run-zoho-cliq-data-provider-once", StringComparison.OrdinalIgnoreCase)))
+{
+    await runner.RunZohoCliqDataProviderManualAsync();
     return;
 }
 
@@ -58,6 +66,7 @@ public sealed class PublisherJobRunner
     private readonly JobStateStore _postsState;
     private readonly JobStateStore _groqState;
     private readonly JobStateStore _telegramDataProviderState;
+    private readonly JobStateStore _zohoCliqDataProviderState;
 
     public PublisherJobRunner(string basePath)
     {
@@ -77,6 +86,9 @@ public sealed class PublisherJobRunner
         _telegramDataProviderState = new JobStateStore(
             Path.Combine(_basePath, "telegram-data-provider-job-state.json"),
             Path.Combine(_basePath, "telegram-data-provider-job.lock"));
+        _zohoCliqDataProviderState = new JobStateStore(
+            Path.Combine(_basePath, "zoho-cliq-data-provider-job-state.json"),
+            Path.Combine(_basePath, "zoho-cliq-data-provider-job.lock"));
     }
 
     public async Task RunAsync()
@@ -131,6 +143,13 @@ public sealed class PublisherJobRunner
         await new TelegramDataProviderJob(config, _basePath).RunAsync();
     }
 
+    public async Task RunZohoCliqDataProviderManualAsync()
+    {
+        EnsureDefaultFiles();
+        var config = LoadConfig();
+        await new ZohoCliqDataProviderJob(config, _basePath).RunAsync();
+    }
+
     public void PrintStatus()
     {
         EnsureDefaultFiles();
@@ -152,6 +171,7 @@ public sealed class PublisherJobRunner
         PrintJobStatus("daily posts", config.DailyJob, _postsState);
         PrintJobStatus("groq article", config.GroqArticleJob, _groqState);
         PrintTelegramDataProviderStatus(config.TelegramDataProvider, _telegramDataProviderState);
+        PrintZohoCliqDataProviderStatus(config.ZohoCliqDataProvider, _zohoCliqDataProviderState);
     }
 
     public static async Task RunPostsScheduledAsync(string basePath)
@@ -208,6 +228,31 @@ public sealed class PublisherJobRunner
             runner._telegramDataProviderState.SaveStarted();
             await new TelegramDataProviderJob(config, basePath).RunAsync();
             runner._telegramDataProviderState.SaveFinished(0);
+        }, basePath);
+    }
+
+    public static async Task RunZohoCliqDataProviderScheduledAsync(string basePath)
+    {
+        await RunScheduledJobWithLoggingAsync("Zoho Cliq data provider", async runner =>
+        {
+            runner.EnsureDefaultFiles();
+            var config = runner.LoadConfig();
+            if (!config.ZohoCliqDataProvider.Enabled)
+            {
+                Console.WriteLine("Skipped Zoho Cliq data provider job because zohoCliqDataProvider.enabled=false.");
+                return;
+            }
+
+            using var runLock = runner._zohoCliqDataProviderState.TryAcquireLock();
+            if (runLock is null)
+            {
+                Console.WriteLine("Another Zoho Cliq data provider job instance is already running. Skipping this attempt.");
+                return;
+            }
+
+            runner._zohoCliqDataProviderState.SaveStarted();
+            await new ZohoCliqDataProviderJob(config, basePath).RunAsync();
+            runner._zohoCliqDataProviderState.SaveFinished(0);
         }, basePath);
     }
 
@@ -271,6 +316,19 @@ public sealed class PublisherJobRunner
         {
             RecurringJob.RemoveIfExists("telegram-data-provider");
         }
+
+        if (config.ZohoCliqDataProvider.Enabled)
+        {
+            RecurringJob.AddOrUpdate(
+                "zoho-cliq-data-provider",
+                () => RunZohoCliqDataProviderScheduledAsync(_basePath),
+                NormalizeCron(config.ZohoCliqDataProvider.Cron, "zohoCliqDataProvider.cron"),
+                new RecurringJobOptions { TimeZone = TimeZoneInfo.Local });
+        }
+        else
+        {
+            RecurringJob.RemoveIfExists("zoho-cliq-data-provider");
+        }
     }
 
     private DailyPostsJob CreateDailyPostsJob(AppConfig config) =>
@@ -297,6 +355,18 @@ public sealed class PublisherJobRunner
         Console.WriteLine("telegram data provider job:");
         Console.WriteLine($"  Enabled: {jobConfig.Enabled}");
         Console.WriteLine($"  Hangfire cron: {NormalizeCron(jobConfig.Cron, "telegramDataProvider.cron")}");
+        Console.WriteLine($"  Last attempt started at: {state.LastAttemptStartedAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "(never)"}");
+        Console.WriteLine($"  Last attempt finished at: {state.LastAttemptFinishedAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "(never)"}");
+    }
+
+    private void PrintZohoCliqDataProviderStatus(ZohoCliqDataProviderConfig jobConfig, JobStateStore stateStore)
+    {
+        var state = stateStore.Load();
+        Console.WriteLine("Zoho Cliq data provider job:");
+        Console.WriteLine($"  Enabled: {jobConfig.Enabled}");
+        Console.WriteLine($"  Hangfire cron: {NormalizeCron(jobConfig.Cron, "zohoCliqDataProvider.cron")}");
+        Console.WriteLine($"  Endpoint configured: {!string.IsNullOrWhiteSpace(jobConfig.Endpoint)}");
+        Console.WriteLine($"  API key configured: {!string.IsNullOrWhiteSpace(jobConfig.ApiKey) || !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(jobConfig.ApiKeyEnvironmentVariable))}");
         Console.WriteLine($"  Last attempt started at: {state.LastAttemptStartedAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "(never)"}");
         Console.WriteLine($"  Last attempt finished at: {state.LastAttemptFinishedAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "(never)"}");
     }
@@ -414,6 +484,7 @@ public sealed class PublisherJobRunner
         config.DailyJob ??= new DailyJobConfig();
         config.GroqArticleJob ??= new GroqArticleJobConfig();
         config.TelegramDataProvider ??= new TelegramDataProviderConfig();
+        config.ZohoCliqDataProvider ??= new ZohoCliqDataProviderConfig();
         config.Groq ??= new GroqConfig();
         config.Groq.ApiKeys ??= [];
         config.Groq.ApiKeyEnvironmentVariables ??= [];

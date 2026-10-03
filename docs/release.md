@@ -154,3 +154,13 @@ Set-Location C:\PublisherJob\app
 .\Publisher.Job.exe --status
 Start-Service -Name 'Publisher.Job'
 ```
+
+```run
+
+Stop-Service -Name 'Publisher.Job'
+
+Set-Location C:\PublisherJob\app
+.\Publisher.Job.exe --run-zoho-cliq-data-provider-once
+
+Start-Service -Name 'Publisher.Job'
+```

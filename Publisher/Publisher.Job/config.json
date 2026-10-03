@@ -102,7 +102,7 @@
     "apiKeyEnvironmentVariable": "ZOHO_CLIQ_API_KEY",
     "useProxy": false,
     "postCount": 1,
-    "startPostNumber": 150
+    "startPostNumber": 111
   },
   "groq": {
     "baseUrl": "https://api.groq.com/openai/v1",

@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 internal sealed class ZohoCliqDataProviderJob
 {
@@ -106,6 +107,11 @@ internal sealed class ZohoCliqDataProviderJob
             .Replace("<b>", "*", StringComparison.OrdinalIgnoreCase)
             .Replace("</b>", "*", StringComparison.OrdinalIgnoreCase)
             .Trim();
+
+        content = Regex.Replace(
+            content,
+            @"(?<!\\)#(?=[\p{L}\p{N}_-]+\s*\(\d+/\d+\))",
+            @"\#");
 
         return string.IsNullOrWhiteSpace(content)
             ? string.Empty

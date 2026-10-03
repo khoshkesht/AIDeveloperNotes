@@ -100,6 +100,7 @@ internal sealed class ZohoCliqDataProviderJob
         var separatorIndex = value.IndexOf("-------", StringComparison.Ordinal);
         var content = separatorIndex >= 0 ? value[..separatorIndex] : value;
         content = content
+            .Replace("**", "*", StringComparison.OrdinalIgnoreCase)
             .Replace("\\<b>", "*", StringComparison.OrdinalIgnoreCase)
             .Replace("\\</b>", "*", StringComparison.OrdinalIgnoreCase)
             .Replace("<b>", "*", StringComparison.OrdinalIgnoreCase)

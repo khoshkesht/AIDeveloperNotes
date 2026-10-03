@@ -4,7 +4,7 @@
 
 - اگر سرویس `Publisher.Job` وجود داشته باشد، آن را متوقف می‌کند.
 - اگر سورس در `C:\PublisherJob\source` وجود داشته باشد، همان clone را با `git pull --ff-only` به‌روزرسانی می‌کند؛ در غیر این صورت clone جدید می‌گیرد.
-- `config.json` و state/history ارسال‌ها را قبل از publish نگه می‌دارد و پس از آن برمی‌گرداند.
+- `config.json` و state/history ارسال‌ها را قبل از publish در `C:\PublisherJob\backup` نگه می‌دارد و پس از آن برمی‌گرداند. این backup در هر اجرا جایگزین می‌شود.
 - اگر سرویس از قبل وجود نداشته باشد، آن را ایجاد و در پایان اجرا می‌کند. خروجی فعلی برنامه به صورت native Windows Service اجرا می‌شود.
 
 > `git pull --ff-only` عمداً در صورت وجود تغییر local در سورس متوقف می‌شود تا تغییری ناخواسته overwrite نشود. ابتدا آن تغییر را commit، stash یا بررسی کنید و سپس اسکریپت را دوباره اجرا کنید.
@@ -21,7 +21,7 @@ $appPath = Join-Path $rootPath 'app'
 $serviceName = 'Publisher.Job'
 $repositoryUrl = 'https://github.com/khoshkesht/AIDeveloperNotes'
 $projectPath = Join-Path $sourcePath 'Publisher\Publisher.Job\Publisher.Job.csproj'
-$backupPath = Join-Path $rootPath ("backup-" + (Get-Date -Format 'yyyyMMdd-HHmmss'))
+$backupPath = Join-Path $rootPath 'backup'
 
 function Invoke-NativeCommand {
     param([scriptblock]$Command, [string]$Description)
@@ -58,6 +58,9 @@ else {
 }
 
 # 3. Save runtime-only configuration and delivery history before publish.
+if (Test-Path $backupPath) {
+    Remove-Item -LiteralPath $backupPath -Recurse -Force
+}
 New-Item -ItemType Directory -Force -Path $backupPath | Out-Null
 if (Test-Path $appPath) {
     @('config.json', 'posted.txt', 'zoho-cliq-posted.txt') |

@@ -3,6 +3,7 @@
 این اسکریپت را در PowerShell با **Run as administrator** اجرا کنید. اجرای مجدد آن امن است:
 
 - اگر سرویس `Publisher.Job` وجود داشته باشد، آن را متوقف می‌کند.
+- فقط فایل‌های لازم برای `Publisher.Job` را با Git sparse-checkout دریافت می‌کند؛ پوشه‌های `docs`، `Sources`، `Publisher.WinForms` و `.vs` وارد working tree سرور نمی‌شوند.
 - اگر سورس در `C:\PublisherJob\source` وجود داشته باشد، همان clone را با `git pull --ff-only` به‌روزرسانی می‌کند؛ در غیر این صورت clone جدید می‌گیرد.
 - `config.json` و state/history ارسال‌ها را قبل از publish در `C:\PublisherJob\backup` نگه می‌دارد و پس از آن برمی‌گرداند. این backup در هر اجرا جایگزین می‌شود.
 - اگر سرویس از قبل وجود نداشته باشد، آن را ایجاد و در پایان اجرا می‌کند. خروجی فعلی برنامه به صورت native Windows Service اجرا می‌شود.
@@ -22,18 +23,44 @@ $serviceName = 'Publisher.Job'
 $repositoryUrl = 'https://github.com/khoshkesht/AIDeveloperNotes'
 $projectPath = Join-Path $sourcePath 'Publisher\Publisher.Job\Publisher.Job.csproj'
 $backupPath = Join-Path $rootPath 'backup'
+$gitSafeSourcePath = $sourcePath.Replace('\', '/')
+$sparsePaths = @(
+    'Publisher/Publisher.Job',
+    'Publisher/Posts',
+    'Publisher/Pics',
+    'Publisher/Promp'
+)
 
 function Invoke-NativeCommand {
     param([scriptblock]$Command, [string]$Description)
 
     # Git writes ordinary progress messages to stderr. Merge both streams so
     # PowerShell does not treat successful progress output as an exception.
-    $output = & $Command 2>&1
-    $exitCode = $LASTEXITCODE
+    $previousErrorActionPreference = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = 'Continue'
+        $output = & $Command 2>&1
+        $exitCode = $LASTEXITCODE
+    }
+    finally {
+        $ErrorActionPreference = $previousErrorActionPreference
+    }
+
     $output | ForEach-Object { Write-Host $_ }
 
     if ($exitCode -ne 0) {
-        throw "$Description failed with exit code $exitCode."
+        $outputText = ($output | Out-String).Trim()
+        throw "$Description failed with exit code $exitCode.`n$outputText"
+    }
+}
+
+function Set-PublisherSparseCheckout {
+    Invoke-NativeCommand { git -c "safe.directory=$gitSafeSourcePath" -C $sourcePath sparse-checkout init --cone } 'git sparse-checkout init'
+    Invoke-NativeCommand { git -c "safe.directory=$gitSafeSourcePath" -C $sourcePath sparse-checkout set --cone $sparsePaths } 'git sparse-checkout set'
+    Invoke-NativeCommand { git -c "safe.directory=$gitSafeSourcePath" -C $sourcePath sparse-checkout reapply } 'git sparse-checkout reapply'
+
+    if (-not (Test-Path (Join-Path $sourcePath 'Publisher'))) {
+        throw "Sparse checkout did not populate '$sourcePath\Publisher'."
     }
 }
 
@@ -47,14 +74,16 @@ if ($null -ne $service -and $service.Status -ne 'Stopped') {
 # 2. Clone once; on later releases update the same working copy.
 New-Item -ItemType Directory -Force -Path $rootPath | Out-Null
 if (Test-Path (Join-Path $sourcePath '.git')) {
-    Invoke-NativeCommand { git -C $sourcePath fetch --prune origin } 'git fetch'
-    Invoke-NativeCommand { git -C $sourcePath pull --ff-only } 'git pull'
+    Invoke-NativeCommand { git -c "safe.directory=$gitSafeSourcePath" -C $sourcePath fetch --prune origin } 'git fetch'
+    Invoke-NativeCommand { git -c "safe.directory=$gitSafeSourcePath" -C $sourcePath pull --ff-only } 'git pull'
+    Set-PublisherSparseCheckout
 }
 elseif (Test-Path $sourcePath) {
     throw "'$sourcePath' exists but is not a Git clone. Rename or remove it after checking its contents."
 }
 else {
-    Invoke-NativeCommand { git clone $repositoryUrl $sourcePath } 'git clone'
+    Invoke-NativeCommand { git clone --filter=blob:none --sparse $repositoryUrl $sourcePath } 'git clone'
+    Set-PublisherSparseCheckout
 }
 
 # 3. Save runtime-only configuration and delivery history before publish.

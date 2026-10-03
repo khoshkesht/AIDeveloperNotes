@@ -3,6 +3,8 @@ using System.Text.Json;
 
 internal sealed class ZohoCliqDataProviderJob
 {
+    private const string ChannelLink = "[AIDeveloperNotes](https://t.me/AIDeveloperNotes)";
+
     private readonly ZohoCliqDataProviderConfig _config;
     private readonly string _postsPath;
     private readonly string _postedFilePath;
@@ -53,7 +55,7 @@ internal sealed class ZohoCliqDataProviderJob
                 break;
             }
 
-            var message = DailyPostsJob.ReadPostContent(post.Path).Trim();
+            var message = FormatMessage(DailyPostsJob.ReadPostContent(post.Path));
             if (string.IsNullOrWhiteSpace(message))
             {
                 Console.WriteLine($"Skipped {post.Name}: post text is empty.");
@@ -91,6 +93,22 @@ internal sealed class ZohoCliqDataProviderJob
         }
 
         stateStore.EnsureWritable();
+    }
+
+    private static string FormatMessage(string value)
+    {
+        var separatorIndex = value.IndexOf("-------", StringComparison.Ordinal);
+        var content = separatorIndex >= 0 ? value[..separatorIndex] : value;
+        content = content
+            .Replace("\\<b>", "*", StringComparison.OrdinalIgnoreCase)
+            .Replace("\\</b>", "*", StringComparison.OrdinalIgnoreCase)
+            .Replace("<b>", "*", StringComparison.OrdinalIgnoreCase)
+            .Replace("</b>", "*", StringComparison.OrdinalIgnoreCase)
+            .Trim();
+
+        return string.IsNullOrWhiteSpace(content)
+            ? string.Empty
+            : $"{content}{Environment.NewLine}{Environment.NewLine}{ChannelLink}";
     }
 
     private Uri BuildEndpoint()

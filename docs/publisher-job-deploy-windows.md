@@ -1,6 +1,6 @@
 # راهنمای استقرار Publisher.Job روی Windows Server
 
-این راهنما سرویس زمان‌بندی‌شدهٔ `Publisher.Job` را روی Windows Server اجرا می‌کند. سرویس، بدون آرگومان، worker مربوط به Hangfire را اجرا و Jobهای فعال در `config.json` را زمان‌بندی می‌کند.
+این راهنما سرویس زمان‌بندی‌شدهٔ `Publisher.Job` را روی Windows Server اجرا می‌کند. سرویس، بدون آرگومان، worker مربوط به Hangfire را اجرا و Jobهای فعال در `config.json` را زمان‌بندی می‌کند. برنامه با Windows Service lifetime اجرا می‌شود و مستقیماً با Service Control Manager سازگار است.
 
 ## 1. پیش‌نیازها
 

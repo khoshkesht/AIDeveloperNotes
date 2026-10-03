@@ -1,5 +1,7 @@
 using Hangfire;
 using Hangfire.InMemory;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -52,7 +54,11 @@ if (args.Any(arg =>
     return;
 }
 
-await runner.RunAsync();
+await Host.CreateDefaultBuilder(args)
+    .UseWindowsService(options => options.ServiceName = "Publisher Job Worker")
+    .ConfigureServices(services => services.AddHostedService<PublisherJobWorker>())
+    .Build()
+    .RunAsync();
 
 public sealed class PublisherJobRunner
 {
@@ -93,7 +99,7 @@ public sealed class PublisherJobRunner
             Path.Combine(_basePath, "zoho-cliq-data-provider-job.lock"));
     }
 
-    public async Task RunAsync()
+    public async Task RunAsync(CancellationToken stoppingToken = default)
     {
         EnsureDefaultFiles();
         var config = LoadConfig();
@@ -108,7 +114,13 @@ public sealed class PublisherJobRunner
 
         Console.WriteLine("Publisher Hangfire worker started.");
         PrintStatus();
-        await Task.Delay(Timeout.InfiniteTimeSpan);
+        try
+        {
+            await Task.Delay(Timeout.InfiniteTimeSpan, stoppingToken);
+        }
+        catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+        {
+        }
     }
 
     public async Task RunPostsManualAsync()
@@ -505,4 +517,10 @@ public sealed class PublisherJobRunner
 
         return cron.Trim();
     }
+}
+
+internal sealed class PublisherJobWorker : BackgroundService
+{
+    protected override Task ExecuteAsync(CancellationToken stoppingToken) =>
+        new PublisherJobRunner(AppContext.BaseDirectory).RunAsync(stoppingToken);
 }

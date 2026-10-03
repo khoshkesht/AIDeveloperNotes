@@ -97,11 +97,11 @@
   },
   "zohoCliqDataProvider": {
     "enabled": false,
-    "cron": "*/30 15-23 * * *",
+    "cron": "0 10 * * *",
     "endpoint": "https://im.agah.com/company/767068114/api/v2/channelsbyname/aidevelopernotesa/message",
     "apiKeyEnvironmentVariable": "ZOHO_CLIQ_API_KEY",
     "useProxy": false,
-    "postCount": 2,
+    "postCount": 1,
     "startPostNumber": 150
   },
   "groq": {

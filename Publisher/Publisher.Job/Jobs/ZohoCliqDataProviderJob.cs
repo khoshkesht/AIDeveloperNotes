@@ -3,129 +3,95 @@ using System.Text.Json;
 
 internal sealed class ZohoCliqDataProviderJob
 {
-    private readonly AppConfig _appConfig;
     private readonly ZohoCliqDataProviderConfig _config;
-    private readonly string _basePath;
+    private readonly string _postsPath;
+    private readonly string _postedFilePath;
+    private readonly JobStateStore _stateStore;
+    private readonly ProxyConfig _proxyConfig;
 
-    public ZohoCliqDataProviderJob(AppConfig appConfig, string basePath)
+    public ZohoCliqDataProviderJob(AppConfig appConfig, string postsPath, string postedFilePath, JobStateStore stateStore)
     {
-        _appConfig = appConfig;
         _config = appConfig.ZohoCliqDataProvider;
-        _basePath = basePath;
+        _postsPath = postsPath;
+        _postedFilePath = postedFilePath;
+        _stateStore = stateStore;
+        _proxyConfig = appConfig.Proxy;
     }
 
-    public async Task RunAsync()
+    public async Task RunAsync(bool updateState)
     {
-        Console.WriteLine("Zoho Cliq data provider job started.");
-
-        if (_config.Channels.Count == 0)
+        using var runLock = _stateStore.TryAcquireLock();
+        if (runLock is null)
         {
-            Console.WriteLine("zohoCliqDataProvider.channels is empty. Add at least one Telegram channel URL.");
+            Console.WriteLine("Another Zoho Cliq data provider job instance is already running. Skipping this attempt.");
             return;
         }
 
+        EnsurePersistenceFilesWritable(_postedFilePath, _stateStore);
+        if (updateState)
+        {
+            _stateStore.SaveStarted();
+        }
+
         var endpoint = BuildEndpoint();
-        var reader = new TelegramChannelReader(_appConfig.Proxy);
-        var postService = new TelegramPostService(_appConfig.Groq, _appConfig.Proxy);
-        using var httpClient = HttpClientFactory.Create(_appConfig.Proxy, _config.UseProxy);
+        using var httpClient = HttpClientFactory.Create(_proxyConfig, _config.UseProxy);
         httpClient.Timeout = TimeSpan.FromSeconds(60);
         httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("AIDeveloperNotesPublisher/1.0");
 
+        var postedFiles = DailyPostsJob.LoadPostedFiles(_postedFilePath);
+        var targetCount = Math.Max(1, _config.PostCount);
+        var startPostNumber = Math.Max(1, _config.StartPostNumber);
         var sentCount = 0;
-        foreach (var channel in _config.Channels)
+
+        Console.WriteLine($"[{DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss zzz}] Running Zoho Cliq data provider job from Post_{startPostNumber}.");
+
+        foreach (var post in DailyPostsJob.GetUnpostedPostFiles(_postsPath, postedFiles)
+                     .Where(post => DailyPostsJob.GetPostNumber(post.Name) >= startPostNumber))
         {
-            var channelUrl = channel.Url.Trim();
-            if (string.IsNullOrWhiteSpace(channelUrl))
+            if (sentCount >= targetCount)
             {
-                Console.WriteLine("Skipped empty Telegram channel URL.");
-                continue;
+                break;
             }
 
-            var promptPath = ResolvePromptPath(channel.PromptPath);
-            if (string.IsNullOrWhiteSpace(promptPath) || !File.Exists(promptPath))
-            {
-                Console.WriteLine($"Skipped {channelUrl}: channel promptPath is empty or does not exist.");
-                continue;
-            }
-
-            var postLimit = Math.Max(1, channel.PostLimit);
-            IReadOnlyList<TelegramChannelPost> posts;
-            try
-            {
-                posts = await reader.GetLatestPostsAsync(channelUrl, postLimit, _config.UseProxy);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Failed to read Telegram channel {channelUrl}: {ex.Message}");
-                continue;
-            }
-
-            var textPosts = posts
-                .Select(post => new { Post = post, Text = post.Text.Trim() })
-                .Where(item => !string.IsNullOrWhiteSpace(item.Text) && !item.Text.Equals("(no text)", StringComparison.OrdinalIgnoreCase));
-
-            if (channel.MaxAgeMinutes > 0)
-            {
-                var newestAllowedPublishedAt = DateTimeOffset.UtcNow.AddMinutes(-channel.MaxAgeMinutes);
-                textPosts = textPosts.Where(item =>
-                    item.Post.PublishedAt is not null &&
-                    item.Post.PublishedAt.Value.ToUniversalTime() >= newestAllowedPublishedAt);
-            }
-
-            var texts = textPosts.Select(item => item.Text).ToList();
-            if (texts.Count == 0)
-            {
-                Console.WriteLine($"No eligible text posts found for {channelUrl}.");
-                continue;
-            }
-
-            IReadOnlyList<string> generatedPosts;
-            try
-            {
-                generatedPosts = await postService.GenerateTelegramPostsAsync(
-                    new TelegramTextPostRequest(promptPath, texts), _config.UseProxy);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Failed to generate Zoho Cliq message for {channelUrl}: {ex.Message}");
-                continue;
-            }
-
-            if (generatedPosts.Count != 1)
-            {
-                Console.WriteLine($"Skipped {channelUrl}: Groq returned {generatedPosts.Count} post(s); exactly one is required.");
-                continue;
-            }
-
-            var message = TelegramDataProviderJob.CleanGeneratedPost(generatedPosts[0]);
+            var message = DailyPostsJob.ReadPostContent(post.Path).Trim();
             if (string.IsNullOrWhiteSpace(message))
             {
-                Console.WriteLine($"Skipped {channelUrl}: generated message is empty.");
+                Console.WriteLine($"Skipped {post.Name}: post text is empty.");
                 continue;
             }
 
-            message = TelegramDataProviderJob.AppendSourceChannelName(message, channelUrl);
-            if (sentCount > 0)
+            try
             {
-                var delaySeconds = Math.Max(0, _config.SendDelayBetweenChannelsSeconds);
-                if (delaySeconds > 0)
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(delaySeconds));
-                }
+                await SendMessageAsync(httpClient, endpoint, message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed {post.Name}: {ex.Message}");
+                continue;
             }
 
-            await SendMessageAsync(httpClient, endpoint, message);
+            DailyPostsJob.MarkAsPosted(_postedFilePath, post.Path);
+            postedFiles.Add(post.Name);
             sentCount++;
-            Console.WriteLine($"Sent summarized post from {channelUrl} to Zoho Cliq.");
+            Console.WriteLine($"Sent {post.Name} to Zoho Cliq.");
+        }
+
+        if (updateState)
+        {
+            _stateStore.SaveFinished(sentCount);
         }
 
         Console.WriteLine($"Zoho Cliq data provider job finished. Sent {sentCount} message(s).");
     }
 
-    private string ResolvePromptPath(string channelPromptPath) =>
-        Path.IsPathRooted(channelPromptPath)
-            ? channelPromptPath
-            : Path.Combine(_basePath, channelPromptPath);
+    private static void EnsurePersistenceFilesWritable(string postedFilePath, JobStateStore stateStore)
+    {
+        using (File.Open(postedFilePath, FileMode.Append, FileAccess.Write, FileShare.Read))
+        {
+        }
+
+        stateStore.EnsureWritable();
+    }
 
     private Uri BuildEndpoint()
     {
@@ -144,8 +110,7 @@ internal sealed class ZohoCliqDataProviderJob
             : _config.ApiKey.Trim();
         if (string.IsNullOrWhiteSpace(apiKey))
         {
-            throw new InvalidOperationException(
-                $"Set zohoCliqDataProvider.apiKey or environment variable '{_config.ApiKeyEnvironmentVariable}'.");
+            throw new InvalidOperationException($"Set zohoCliqDataProvider.apiKey or environment variable '{_config.ApiKeyEnvironmentVariable}'.");
         }
 
         var separator = string.IsNullOrEmpty(endpoint.Query) ? "?" : "&";
@@ -163,7 +128,6 @@ internal sealed class ZohoCliqDataProviderJob
         }
 
         var responseBody = await response.Content.ReadAsStringAsync();
-        throw new InvalidOperationException(
-            $"Zoho Cliq send failed with {(int)response.StatusCode} ({response.ReasonPhrase}): {responseBody}");
+        throw new InvalidOperationException($"Zoho Cliq send failed with {(int)response.StatusCode} ({response.ReasonPhrase}): {responseBody}");
     }
 }

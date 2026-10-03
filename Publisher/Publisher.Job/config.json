@@ -101,39 +101,8 @@
     "endpoint": "https://im.agah.com/company/767068114/api/v2/channelsbyname/aidevelopernotesa/message",
     "apiKeyEnvironmentVariable": "ZOHO_CLIQ_API_KEY",
     "useProxy": false,
-    "sendDelayBetweenChannelsSeconds": 60,
-    "channels": [
-      {
-        "url": "https://telegram.me/varzesh3",
-        "promptPath": "Promp/TelegramNews/Telegram-news.md",
-        "postLimit": 10,
-        "maxAgeMinutes": 30
-      },
-      {
-        "url": "https://telegram.me/khabarfouri",
-        "promptPath": "Promp/TelegramNews/Telegram-news.md",
-        "postLimit": 10,
-        "maxAgeMinutes": 30
-      },
-      {
-        "url": "https://telegram.me/CinemaDaily",
-        "promptPath": "Promp/TelegramNews/Telegram-news.md",
-        "postLimit": 10,
-        "maxAgeMinutes": 30
-      },
-      {
-        "url": "https://telegram.me/thezoomit",
-        "promptPath": "Promp/TelegramNews/Telegram-news.md",
-        "postLimit": 10,
-        "maxAgeMinutes": 30
-      },
-      {
-        "url": "https://telegram.me/isna94",
-        "promptPath": "Promp/TelegramNews/Telegram-news.md",
-        "postLimit": 10,
-        "maxAgeMinutes": 30
-      }
-    ]
+    "postCount": 2,
+    "startPostNumber": 150
   },
   "groq": {
     "baseUrl": "https://api.groq.com/openai/v1",

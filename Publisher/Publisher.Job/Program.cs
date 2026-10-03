@@ -63,6 +63,7 @@ public sealed class PublisherJobRunner
     private readonly string _newsPicsPath;
     private readonly string _promptPath;
     private readonly string _postedFilePath;
+    private readonly string _zohoCliqPostedFilePath;
     private readonly JobStateStore _postsState;
     private readonly JobStateStore _groqState;
     private readonly JobStateStore _telegramDataProviderState;
@@ -77,6 +78,7 @@ public sealed class PublisherJobRunner
         _newsPicsPath = Path.Combine(_picsPath, "news");
         _promptPath = Path.Combine(_basePath, "Promp", "Groq-MakeArticle.md");
         _postedFilePath = Path.Combine(_basePath, "posted.txt");
+        _zohoCliqPostedFilePath = Path.Combine(_basePath, "zoho-cliq-posted.txt");
         _postsState = new JobStateStore(
             Path.Combine(_basePath, "daily-job-state.json"),
             Path.Combine(_basePath, "daily-job.lock"));
@@ -147,7 +149,7 @@ public sealed class PublisherJobRunner
     {
         EnsureDefaultFiles();
         var config = LoadConfig();
-        await new ZohoCliqDataProviderJob(config, _basePath).RunAsync();
+        await CreateZohoCliqDataProviderJob(config).RunAsync(updateState: false);
     }
 
     public void PrintStatus()
@@ -168,6 +170,8 @@ public sealed class PublisherJobRunner
         Console.WriteLine($"  Groq prompt exists: {File.Exists(_promptPath)}");
         PrintGroqKeyStatus(config.Groq);
         Console.WriteLine($"  Unposted posts: {DailyPostsJob.GetUnpostedPostFiles(_postsPath, postedFiles).Count()}");
+        var zohoCliqPostedFiles = DailyPostsJob.LoadPostedFiles(_zohoCliqPostedFilePath);
+        Console.WriteLine($"  Zoho Cliq unposted posts: {DailyPostsJob.GetUnpostedPostFiles(_postsPath, zohoCliqPostedFiles).Count()}");
         PrintJobStatus("daily posts", config.DailyJob, _postsState);
         PrintJobStatus("groq article", config.GroqArticleJob, _groqState);
         PrintTelegramDataProviderStatus(config.TelegramDataProvider, _telegramDataProviderState);
@@ -243,16 +247,7 @@ public sealed class PublisherJobRunner
                 return;
             }
 
-            using var runLock = runner._zohoCliqDataProviderState.TryAcquireLock();
-            if (runLock is null)
-            {
-                Console.WriteLine("Another Zoho Cliq data provider job instance is already running. Skipping this attempt.");
-                return;
-            }
-
-            runner._zohoCliqDataProviderState.SaveStarted();
-            await new ZohoCliqDataProviderJob(config, basePath).RunAsync();
-            runner._zohoCliqDataProviderState.SaveFinished(0);
+            await runner.CreateZohoCliqDataProviderJob(config).RunAsync(updateState: true);
         }, basePath);
     }
 
@@ -337,6 +332,9 @@ public sealed class PublisherJobRunner
     private ArticleJob CreateGroqArticleJob(AppConfig config) =>
         new(config, _basePath, _promptPath, _newsPicsPath, _postedFilePath, _groqState);
 
+    private ZohoCliqDataProviderJob CreateZohoCliqDataProviderJob(AppConfig config) =>
+        new(config, _postsPath, _zohoCliqPostedFilePath, _zohoCliqDataProviderState);
+
     private void PrintJobStatus(string jobName, ScheduledJobConfig scheduledJob, JobStateStore stateStore)
     {
         var state = stateStore.Load();
@@ -367,6 +365,8 @@ public sealed class PublisherJobRunner
         Console.WriteLine($"  Hangfire cron: {NormalizeCron(jobConfig.Cron, "zohoCliqDataProvider.cron")}");
         Console.WriteLine($"  Endpoint configured: {!string.IsNullOrWhiteSpace(jobConfig.Endpoint)}");
         Console.WriteLine($"  API key configured: {!string.IsNullOrWhiteSpace(jobConfig.ApiKey) || !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(jobConfig.ApiKeyEnvironmentVariable))}");
+        Console.WriteLine($"  Start post number: {Math.Max(1, jobConfig.StartPostNumber)}");
+        Console.WriteLine($"  Posts per run: {Math.Max(1, jobConfig.PostCount)}");
         Console.WriteLine($"  Last attempt started at: {state.LastAttemptStartedAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "(never)"}");
         Console.WriteLine($"  Last attempt finished at: {state.LastAttemptFinishedAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "(never)"}");
     }
@@ -457,6 +457,11 @@ public sealed class PublisherJobRunner
         if (!File.Exists(_postedFilePath))
         {
             File.WriteAllText(_postedFilePath, string.Empty, Encoding.UTF8);
+        }
+
+        if (!File.Exists(_zohoCliqPostedFilePath))
+        {
+            File.WriteAllText(_zohoCliqPostedFilePath, string.Empty, Encoding.UTF8);
         }
     }
 

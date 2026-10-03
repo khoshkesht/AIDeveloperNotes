@@ -110,7 +110,7 @@ internal sealed class DailyPostsJob
             .Select(path => new FileInfo(path))
             .Where(file => IsPostFileName(file.Name))
             .Where(file => !postedFiles.Contains(file.Name))
-            .OrderBy(file => GetPostSortKey(file.Name))
+            .OrderBy(file => GetPostNumber(file.Name))
             .ThenBy(file => file.Name, StringComparer.OrdinalIgnoreCase)
             .Select(file => new PostFileItem(file.FullName, file.Name));
     }
@@ -129,7 +129,7 @@ internal sealed class DailyPostsJob
         return Regex.IsMatch(fileName, @"(?i)^Post_\d+\.txt$", RegexOptions.CultureInvariant);
     }
 
-    private static int GetPostSortKey(string fileName)
+    internal static int GetPostNumber(string fileName)
     {
         var match = Regex.Match(fileName, @"(?i)^Post_(\d+)");
         return match.Success && int.TryParse(match.Groups[1].Value, out var number)
@@ -137,7 +137,7 @@ internal sealed class DailyPostsJob
             : int.MaxValue;
     }
 
-    private static string ReadPostContent(string path)
+    internal static string ReadPostContent(string path)
     {
         var lines = File.ReadAllLines(path, Encoding.UTF8);
         if (lines.Length > 0 && Regex.IsMatch(lines[0].Trim(), "^#Post_\\d+$", RegexOptions.CultureInvariant))
@@ -179,7 +179,7 @@ internal sealed class DailyPostsJob
         return null;
     }
 
-    private static void MarkAsPosted(string postedFilePath, string filePath)
+    internal static void MarkAsPosted(string postedFilePath, string filePath)
     {
         var line = $"{DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss zzz}\t{Path.GetFileName(filePath)}{Environment.NewLine}";
         File.AppendAllText(postedFilePath, line, Encoding.UTF8);

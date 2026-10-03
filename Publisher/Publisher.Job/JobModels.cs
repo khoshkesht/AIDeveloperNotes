@@ -64,8 +64,8 @@ internal sealed class ZohoCliqDataProviderConfig
     public string ApiKey { get; set; } = string.Empty;
     public string ApiKeyEnvironmentVariable { get; set; } = "ZOHO_CLIQ_API_KEY";
     public bool UseProxy { get; set; }
-    public int SendDelayBetweenChannelsSeconds { get; set; } = 1;
-    public List<TelegramSourceChannelConfig> Channels { get; set; } = [];
+    public int PostCount { get; set; } = 2;
+    public int StartPostNumber { get; set; } = 1;
 }
 
 internal sealed class TelegramSourceChannelConfig : TelegramTargetConfig

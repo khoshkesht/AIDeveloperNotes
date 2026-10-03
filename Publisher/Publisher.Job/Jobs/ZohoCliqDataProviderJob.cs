@@ -110,8 +110,8 @@ internal sealed class ZohoCliqDataProviderJob
 
         content = Regex.Replace(
             content,
-            @"(?<!\\)#(?=[\p{L}\p{N}_-]+\s*\(\d+/\d+\))",
-            @"\#");
+            @"(?<!\\)#(?<tag>[\p{L}\p{N}_-]+\s*\(\d+/\d+\))",
+            @"!${tag}");
 
         return string.IsNullOrWhiteSpace(content)
             ? string.Empty

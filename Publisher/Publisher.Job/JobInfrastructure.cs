@@ -77,6 +77,39 @@ internal sealed class JobStateStore
     }
 }
 
+internal static class JobFileLog
+{
+    public static void Information(string basePath, string fileName, string message) =>
+        Write(basePath, fileName, "INFO", message);
+
+    public static void Error(string basePath, string fileName, string message, Exception? exception = null)
+    {
+        var details = exception is null
+            ? message
+            : $"{message}{Environment.NewLine}{RedactSecrets(exception.ToString())}";
+        Write(basePath, fileName, "ERROR", details);
+    }
+
+    private static void Write(string basePath, string fileName, string level, string message)
+    {
+        try
+        {
+            var logDirectory = Path.Combine(basePath, "logs");
+            Directory.CreateDirectory(logDirectory);
+
+            var entry = $"[{DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss zzz}] [{level}] {message}{Environment.NewLine}";
+            File.AppendAllText(Path.Combine(logDirectory, fileName), entry, Encoding.UTF8);
+        }
+        catch (Exception logException)
+        {
+            Console.Error.WriteLine($"Could not write job log: {logException.Message}");
+        }
+    }
+
+    private static string RedactSecrets(string value) =>
+        Regex.Replace(value, @"([?&]zapikey=)[^&\s]+", "$1[REDACTED]", RegexOptions.IgnoreCase);
+}
+
 internal static class ConfigResolver
 {
     public static BotConfig? ResolveBot(AppConfig config, TelegramTargetConfig target)

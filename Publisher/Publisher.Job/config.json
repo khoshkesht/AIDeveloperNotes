@@ -96,7 +96,7 @@
     ]
   },
   "zohoCliqDataProvider": {
-    "enabled": false,
+    "enabled": true,
     "cron": "0 10 * * *",
     "endpoint": "https://im.agah.com/company/767068114/api/v2/channelsbyname/aidevelopernotesa/message",
     "apiKeyEnvironmentVariable": "ZOHO_CLIQ_API_KEY",

@@ -161,7 +161,15 @@ public sealed class PublisherJobRunner
     {
         EnsureDefaultFiles();
         var config = LoadConfig();
-        await CreateZohoCliqDataProviderJob(config).RunAsync(updateState: false);
+        try
+        {
+            await CreateZohoCliqDataProviderJob(config).RunAsync(updateState: false);
+        }
+        catch (Exception ex)
+        {
+            JobFileLog.Error(_basePath, "zoho-cliq-data-provider.log", "Manual Zoho Cliq data provider job failed.", ex);
+            throw;
+        }
     }
 
     public void PrintStatus()
@@ -256,6 +264,7 @@ public sealed class PublisherJobRunner
             if (!config.ZohoCliqDataProvider.Enabled)
             {
                 Console.WriteLine("Skipped Zoho Cliq data provider job because zohoCliqDataProvider.enabled=false.");
+                JobFileLog.Information(basePath, "zoho-cliq-data-provider.log", "Skipped scheduled run because zohoCliqDataProvider.enabled=false.");
                 return;
             }
 
@@ -276,6 +285,7 @@ public sealed class PublisherJobRunner
         catch (Exception ex)
         {
             Console.WriteLine($"Scheduled {jobName} job failed: {ex.Message}");
+            JobFileLog.Error(basePath, "scheduled-job-errors.log", $"Scheduled {jobName} job failed.", ex);
             if (ex.InnerException is not null)
             {
                 Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
@@ -335,6 +345,7 @@ public sealed class PublisherJobRunner
         else
         {
             RecurringJob.RemoveIfExists("zoho-cliq-data-provider");
+            JobFileLog.Information(_basePath, "zoho-cliq-data-provider.log", "Recurring job was not registered because zohoCliqDataProvider.enabled=false.");
         }
     }
 

@@ -27,65 +27,78 @@ internal sealed class ZohoCliqDataProviderJob
         if (runLock is null)
         {
             Console.WriteLine("Another Zoho Cliq data provider job instance is already running. Skipping this attempt.");
+            JobFileLog.Information(GetBasePath(), "zoho-cliq-data-provider.log", "Skipped: another Zoho Cliq data provider job instance is already running.");
             return;
         }
 
-        EnsurePersistenceFilesWritable(_postedFilePath, _stateStore);
-        if (updateState)
+        try
         {
-            _stateStore.SaveStarted();
+            EnsurePersistenceFilesWritable(_postedFilePath, _stateStore);
+            if (updateState)
+            {
+                _stateStore.SaveStarted();
+            }
+
+            var endpoint = BuildEndpoint();
+            using var httpClient = HttpClientFactory.Create(_proxyConfig, _config.UseProxy);
+            httpClient.Timeout = TimeSpan.FromSeconds(60);
+            httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("AIDeveloperNotesPublisher/1.0");
+
+            var postedFiles = DailyPostsJob.LoadPostedFiles(_postedFilePath);
+            var targetCount = Math.Max(1, _config.PostCount);
+            var startPostNumber = Math.Max(1, _config.StartPostNumber);
+            var sentCount = 0;
+
+            Console.WriteLine($"[{DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss zzz}] Running Zoho Cliq data provider job from Post_{startPostNumber}.");
+
+            foreach (var post in DailyPostsJob.GetUnpostedPostFiles(_postsPath, postedFiles)
+                         .Where(post => DailyPostsJob.GetPostNumber(post.Name) >= startPostNumber))
+            {
+                if (sentCount >= targetCount)
+                {
+                    break;
+                }
+
+                var message = FormatMessage(DailyPostsJob.ReadPostContent(post.Path));
+                if (string.IsNullOrWhiteSpace(message))
+                {
+                    Console.WriteLine($"Skipped {post.Name}: post text is empty.");
+                    JobFileLog.Information(GetBasePath(), "zoho-cliq-data-provider.log", $"Skipped {post.Name}: post text is empty.");
+                    continue;
+                }
+
+                try
+                {
+                    await SendMessageAsync(httpClient, endpoint, message);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed {post.Name}: {ex.Message}");
+                    JobFileLog.Error(GetBasePath(), "zoho-cliq-data-provider.log", $"Failed to send {post.Name} to Zoho Cliq.", ex);
+                    continue;
+                }
+
+                DailyPostsJob.MarkAsPosted(_postedFilePath, post.Path);
+                postedFiles.Add(post.Name);
+                sentCount++;
+                Console.WriteLine($"Sent {post.Name} to Zoho Cliq.");
+            }
+
+            if (updateState)
+            {
+                _stateStore.SaveFinished(sentCount);
+            }
+
+            Console.WriteLine($"Zoho Cliq data provider job finished. Sent {sentCount} message(s).");
         }
-
-        var endpoint = BuildEndpoint();
-        using var httpClient = HttpClientFactory.Create(_proxyConfig, _config.UseProxy);
-        httpClient.Timeout = TimeSpan.FromSeconds(60);
-        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("AIDeveloperNotesPublisher/1.0");
-
-        var postedFiles = DailyPostsJob.LoadPostedFiles(_postedFilePath);
-        var targetCount = Math.Max(1, _config.PostCount);
-        var startPostNumber = Math.Max(1, _config.StartPostNumber);
-        var sentCount = 0;
-
-        Console.WriteLine($"[{DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss zzz}] Running Zoho Cliq data provider job from Post_{startPostNumber}.");
-
-        foreach (var post in DailyPostsJob.GetUnpostedPostFiles(_postsPath, postedFiles)
-                     .Where(post => DailyPostsJob.GetPostNumber(post.Name) >= startPostNumber))
+        catch (Exception ex)
         {
-            if (sentCount >= targetCount)
-            {
-                break;
-            }
-
-            var message = FormatMessage(DailyPostsJob.ReadPostContent(post.Path));
-            if (string.IsNullOrWhiteSpace(message))
-            {
-                Console.WriteLine($"Skipped {post.Name}: post text is empty.");
-                continue;
-            }
-
-            try
-            {
-                await SendMessageAsync(httpClient, endpoint, message);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Failed {post.Name}: {ex.Message}");
-                continue;
-            }
-
-            DailyPostsJob.MarkAsPosted(_postedFilePath, post.Path);
-            postedFiles.Add(post.Name);
-            sentCount++;
-            Console.WriteLine($"Sent {post.Name} to Zoho Cliq.");
+            JobFileLog.Error(GetBasePath(), "zoho-cliq-data-provider.log", "Zoho Cliq data provider job failed.", ex);
+            throw;
         }
-
-        if (updateState)
-        {
-            _stateStore.SaveFinished(sentCount);
-        }
-
-        Console.WriteLine($"Zoho Cliq data provider job finished. Sent {sentCount} message(s).");
     }
+
+    private string GetBasePath() => Path.GetDirectoryName(_postedFilePath) ?? AppContext.BaseDirectory;
 
     private static void EnsurePersistenceFilesWritable(string postedFilePath, JobStateStore stateStore)
     {

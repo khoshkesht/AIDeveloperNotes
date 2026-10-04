@@ -87,6 +87,8 @@ Set-Location C:\PublisherJob\app
 
 ارسال‌های موفق Zoho در `C:\PublisherJob\app\zoho-cliq-posted.txt` ثبت می‌شوند؛ پست‌های تلگرام همچنان از `posted.txt` مستقل هستند.
 
+خطاها و علت اجرا نشدن Zoho (مانند `enabled: false`، قفل بودن اجرای قبلی، یا پاسخ ناموفق API) در `C:\PublisherJob\app\logs\zoho-cliq-data-provider.log` ثبت می‌شوند. خطاهای سطح scheduler نیز در `C:\PublisherJob\app\logs\scheduled-job-errors.log` هستند. برای فعال‌بودن زمان‌بندی باید `zohoCliqDataProvider.enabled` مقدار `true` داشته باشد؛ اجرای `--run-zoho-cliq-data-provider-once` این گزینه را نادیده می‌گیرد.
+
 ## 5. ساخت Windows Service
 
 پس از اینکه تست دستی موفق بود، سرویس را با PowerShell Administrator بسازید:

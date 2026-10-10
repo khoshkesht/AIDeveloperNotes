@@ -1,6 +1,6 @@
 #Post_175
 <b>برنامه‌ریزی با Meta-Agent</b>
-#Task_Decomposition(6/18)
+#Task_Decomposition(6/14)
 
 در Dynamic Decomposition می‌توان مسئولیت طراحی workflow را به یک Meta-Agent Planner سپرد. این Agent قرار نیست مسئله اصلی را حل کند؛ وظیفه‌اش تحلیل درخواست و ساخت یک Execution Plan است. Planner مشخص می‌کند چه Subtaskهایی لازم‌اند، هر Task باید به کدام Agent متخصص داده شود، چه وابستگی‌هایی وجود دارد و خروجی موردانتظار هر مرحله چیست.
 

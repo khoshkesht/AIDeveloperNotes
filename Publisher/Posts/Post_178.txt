@@ -1,6 +1,6 @@
 #Post_178
 <b>پرهیز از Over-Decomposition</b>
-#Task_Decomposition(9/18)
+#Task_Decomposition(9/14)
 
 هر عملیات کوچکی نباید به یک Agent مستقل تبدیل شود. Taskهایی مانند یک retrieval ساده، calculation مشخص یا تغییر فرمت داده معمولاً reasoning قابل‌توجهی ندارند و می‌توانند توسط Tool یا Utility Function انجام شوند. عبور چنین Nano-Taskهایی از لایه Orchestration فقط API Call، Token و Latency بیشتری ایجاد می‌کند.
 

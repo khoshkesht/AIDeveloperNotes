@@ -1,0 +1,9 @@
+<b>از Prompt بزرگ تا Taskهای قابل‌کنترل</b>
+#Task_Decomposition
+
+وقتی با Coding Agentها روی یک Feature واقعی کار می‌کنیم، کیفیت خروجی فقط به قدرت Model یا خوب‌بودن Prompt بستگی ندارد. یکی از مهارت‌های مهم این است که بدانیم یک مسئله را چطور به Taskهای درست تقسیم کنیم؛ نه آن‌قدر بزرگ که Agent چند مسئولیت را هم‌زمان گم کند و نه آن‌قدر ریز که Workflow پر از Handoff، Context Fragmentation و هزینه اضافی شود.
+
+این سری پست‌ها درباره Task Decomposition در Agentic Development است؛ از Prompt Chaining و Static/Dynamic Decomposition تا Meta-Agent Planner، Handoff، Context Preservation، Granularity، Over-Decomposition و معماری پروژه‌های Long-running. هدف این است که بتوانیم برای Agentها Workflowهایی بسازیم که قابل‌کنترل‌تر، قابل‌بررسی‌تر و مناسب‌تر برای پروژه‌های واقعی باشند.
+
+محتوای این مجموعه از ترکیب و سه منبع آموزشی تهیه شده است: DeepLearning.AI، Microsoft Learn و Anthropic Engineering.
+➡️@AIDeveloperNotes

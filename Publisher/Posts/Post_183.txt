@@ -1,0 +1,12 @@
+#Post_183
+<b>هماهنگ‌کردن Decomposition با توان Model</b>
+#Task_Decomposition(14/18)
+
+ساختار Decomposition نباید ثابت و مستقل از Model در نظر گرفته شود. بعضی اجزای Harness برای جبران محدودیت Model ایجاد می‌شوند و با بهبود Model ممکن است دیگر همان ارزش قبلی را نداشته باشند. در یک Harness طولانی، Sprintها ابتدا برای حفظ coherence و تقسیم کار استفاده شدند، اما با Model توانمندتر امکان حذف Sprint Decomposition و اجرای Build طولانی‌تر به‌صورت پیوسته فراهم شد.
+
+این تغییر به معنی حذف Planning یا Evaluation نبود. Planner همچنان از underscope شدن Build جلوگیری می‌کرد و Evaluator برای Taskهایی که در مرز توانایی Model قرار داشتند ارزش داشت. روش مناسب، بررسی عملی Harness روی workload واقعی و حذف مرحله‌ای اجزایی است که دیگر load-bearing نیستند؛ زیرا Coordination، Token و Latency هر جزء باید در مقابل اثری که بر کیفیت ایجاد می‌کند سنجیده شود.
+
+------------------
+#️⃣#Task_Decomposition
+➡️@AIDeveloperNotes
+

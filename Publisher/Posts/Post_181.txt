@@ -1,0 +1,12 @@
+#Post_181
+<b>تقسیم پروژه‌های Long-running به واحدهای قابل اجرا</b>
+#Task_Decomposition(12/18)
+
+در Long-running Agentic Coding، اجرای یک پروژه بزرگ به‌صورت یک کار پیوسته می‌تواند با طولانی‌شدن Context باعث از دست رفتن coherence شود. یکی از رویکردهای استفاده‌شده برای کنترل این وضعیت، تقسیم Build به بخش‌های قابل‌مدیریت و انتقال State میان مراحل با Structured Artifacts است. در یک معماری اولیه، Agent مسئول initialization ابتدا Product Spec را به Task List تبدیل می‌کرد و Coding Agent هر بار یک Feature را پیاده‌سازی می‌کرد.
+
+برای Modelهایی که در Taskهای طولانی دچار مشکل می‌شدند، Context Reset نیز استفاده شد. در این روش Agent جدید با Context تمیز شروع می‌کرد و State و Next Steps از طریق Handoff Artifact منتقل می‌شد. این روش با Compaction متفاوت است؛ Compaction همان session را با History فشرده ادامه می‌دهد، اما Reset یک شروع تازه ایجاد می‌کند.
+
+------------------
+#️⃣#Task_Decomposition
+➡️@AIDeveloperNotes
+

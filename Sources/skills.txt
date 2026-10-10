@@ -1,0 +1,22 @@
+1. Prompting برای Coding Agents — تعریف دقیق مسئله، محدودیت‌ها و خروجی مورد انتظار
+2. Context Engineering — دادن Context درست، نه زیاد و نه ناقص
+3. Task Decomposition — شکستن کار بزرگ به Taskهای کوچک و قابل کنترل
+4. Repository Navigation — توانایی هدایت Agent داخل Codebase بزرگ
+5. Spec Writing — نوشتن Requirement و Acceptance Criteria واضح
+6. Code Review — بررسی خروجی Agent به‌جای اعتماد مستقیم
+7. Testing & Verification — Unit Test، Integration Test و Regression Test
+8. Debugging with Agents — استفاده از Agent برای پیدا کردن Root Cause، نه فقط Fix سطحی
+9. Tool & Permission Design — تعیین اینکه Agent به چه فایل‌ها، Shell، DB یا APIهایی دسترسی داشته باشد
+10. Git Workflow with Agents — Branch، Diff، Commit، PR و Rollback
+11. Agent Planning & Execution — فهم Plan Mode، Execute Mode و Iterative Development
+12. Parallel Agent Workflows — تقسیم کار بین چند Agent بدون Conflict
+13. Memory & Context Management — مدیریت Session، خلاصه‌سازی و جلوگیری از Context Pollution
+14. MCP / Tool Integration — اتصال Agent به ابزارها، Documentation، DB و سرویس‌ها
+15. Security Awareness — Prompt Injection، Secret Leakage، Dangerous Commands و Supply Chain Risk
+16. Observability & Tracing — فهم اینکه Agent چه تصمیماتی گرفته و کجا خطا کرده
+17. Cost & Token Optimization — کنترل Context، Model Selection و تعداد Agent Calls
+18. Model Selection — انتخاب مدل مناسب برای Planning، Coding، Review یا Research
+19. Human-in-the-Loop Design — تشخیص اینکه کجا Agent مستقل عمل کند و کجا Approval بگیرد
+20. Agent Evaluation — سنجش کیفیت Agent با معیار مشخص، نه صرفاً «به نظر درست میاد».
+اگر بخوام این‌ها را به مهارت‌های ضروری واقعی برای یک Developer در ۲۰۲۶ محدود کنم، ۷ مورد اصلی می‌شوند:
+Context Engineering → Task Decomposition → Spec Writing → Agent Workflow → Code Review → Testing/Evals → Security.

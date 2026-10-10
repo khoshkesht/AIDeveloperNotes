@@ -1,0 +1,12 @@
+#Post_178
+<b>پرهیز از Over-Decomposition</b>
+#Task_Decomposition(9/18)
+
+هر عملیات کوچکی نباید به یک Agent مستقل تبدیل شود. Taskهایی مانند یک retrieval ساده، calculation مشخص یا تغییر فرمت داده معمولاً reasoning قابل‌توجهی ندارند و می‌توانند توسط Tool یا Utility Function انجام شوند. عبور چنین Nano-Taskهایی از لایه Orchestration فقط API Call، Token و Latency بیشتری ایجاد می‌کند.
+
+تقسیم کار همچنین زمانی نامناسب است که چند Task به Context مشترک و درهم‌تنیده وابسته باشند. جداکردن مصنوعی این بخش‌ها باعث می‌شود Agentها دوباره اطلاعات یکدیگر را بازسازی کنند و مرحله‌ای اضافی برای Aggregation لازم شود. اگر یک Single Agent با Prompt و Tool مناسب یک Task را قابل اعتماد انجام می‌دهد، Multi-Agent کردن آن صرفاً به دلیل پیچیده‌ترکردن معماری، Moving Partهای بیشتری برای Debug ایجاد می‌کند.
+
+------------------
+#️⃣#Task_Decomposition
+➡️@AIDeveloperNotes
+

@@ -1,0 +1,12 @@
+#Post_180
+<b>جلوگیری از Context Collapse</b>
+#Task_Decomposition(11/18)
+
+یکی از مشکلات زنجیره‌های طولانی Handoff، Context Collapse است. اگر Agent اول Context را خلاصه کند، Agent دوم همان خلاصه را دوباره فشرده کند و نتیجه به Agent سوم برسد، بخشی از اطلاعات در هر انتقال از دست می‌رود. پس از چند مرحله ممکن است Agent آخر فقط نسخه‌ای ناقص از اطلاعات اولیه را در اختیار داشته باشد.
+
+برای جلوگیری از این وضعیت، Context کامل workflow باید حفظ شود و هر Agent به‌جای بازخلاصه‌سازی مداوم، Structured Output خودش را اضافه کند. در Partial Handoff نیز باید Completed Work از Remaining Work جدا باشد تا Agent بعدی بداند چه بخش‌هایی قطعی شده و چه کاری هنوز باقی مانده است. حتی با حفظ History کامل، طول زنجیره باید کنترل شود؛ افزایش Handoffها Context Token، هزینه و فشار روی Model را بیشتر می‌کند.
+
+------------------
+#️⃣#Task_Decomposition
+➡️@AIDeveloperNotes
+

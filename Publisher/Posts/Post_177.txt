@@ -1,0 +1,12 @@
+#Post_177
+<b>تعادل میان Granularity و Coordination</b>
+#Task_Decomposition(8/18)
+
+ریزتر کردن Taskها می‌تواند specialization را افزایش دهد، اما همیشه کیفیت بهتری تولید نمی‌کند. اگر Taskها بیش از حد بزرگ باشند، یک Agent باید چند مسئولیت متفاوت را هم‌زمان مدیریت کند. اگر بیش از حد کوچک باشند، تعداد Handoffها، Token مصرفی، Latency و احتمال Context Fragmentation افزایش پیدا می‌کند. بنابراین Granularity باید با توجه به کیفیت موردنیاز و هزینه Coordination تعیین شود.
+
+بهترین سطح Decomposition را نمی‌توان فقط از روی معماری حدس زد. می‌توان یک workload مشابه را با Single Agent، تعداد متوسط Agent و ساختار ریزتر اجرا کرد و Latency، Token Consumption و Quality را مقایسه کرد. افزایش تعداد Agentها ممکن است ابتدا جهش محسوسی در کیفیت ایجاد کند اما پس از نقطه‌ای، هزینه Coordination سریع‌تر از Quality رشد کند.
+
+------------------
+#️⃣#Task_Decomposition
+➡️@AIDeveloperNotes
+

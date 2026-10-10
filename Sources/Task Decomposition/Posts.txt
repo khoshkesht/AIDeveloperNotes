@@ -1,0 +1,152 @@
+#Post_131  
+<b>تقسیم کار؛ پایه اجرای قابل‌کنترل Agentها</b> 
+ 
+تقسیم یک مسئله پیچیده به مجموعه‌ای از مراحل کوچک‌تر، باعث می‌شود هر مرحله محدوده روشن‌تری داشته باشد و Agent روی یک هدف مشخص تمرکز کند. در یک workflow، خروجی هر مرحله می‌تواند ورودی مرحله بعد باشد و به‌جای یک Prompt بزرگ که چند کار متفاوت را هم‌زمان درخواست می‌کند، مسئله به بخش‌های قابل مدیریت تبدیل شود. Planning در Agentic AI نیز بر همین اصل استوار است: یک مسئله ابتدا به مراحل اجرایی شکسته می‌شود و سپس هر مرحله اجرا یا در صورت نیاز تطبیق داده می‌شود. [DeepLearning.ai](https://www.deeplearning.ai/courses/agentic-ai?utm_source=chatgpt.com)
+
+مزیت این ساختار فقط ساده‌شدن Prompt نیست. هر مرحله می‌تواند Context موردنیاز خودش را دریافت کند و نتیجه مشخصی تولید کند. در نتیجه، پیچیدگی هر Prompt کمتر و consistency خروجی بیشتر می‌شود. چنین ساختاری همچنین امکان بررسی جداگانه مراحل و شناسایی دقیق‌تر خطا را فراهم می‌کند. [Microsoft Learn](https://learn.microsoft.com/en-us/training/modules/aaai-apply-task-decomposition-multi-agent-azure/2-design-prompt-chain-workflows)
+
+---------------------------------------------------------  
+➡️@AIDeveloperNotes  
+
+
+#Post_132  
+<b>زنجیره‌سازی برای اجرای مرحله‌ای</b> 
+ 
+یکی از ساده‌ترین شکل‌های Task Decomposition، استفاده از Prompt Chaining است. در این الگو، خروجی یک Prompt مستقیماً به ورودی Prompt بعدی تبدیل می‌شود. به‌جای اینکه یک Agent همه تحلیل را در یک مرحله انجام دهد، workflow می‌تواند ابتدا داده را استخراج کند، سپس نتیجه را تحلیل کند و در نهایت از خروجی تحلیل برای تولید پاسخ نهایی استفاده کند. این ساختار برای کارهایی مناسب است که مراحل آن وابستگی طبیعی و مشخصی دارند. [Microsoft Learn](https://learn.microsoft.com/en-us/training/modules/aaai-apply-task-decomposition-multi-agent-azure/2-design-prompt-chain-workflows)
+
+نکته مهم این است که هر مرحله باید یک وظیفه مشخص داشته باشد. اگر مرحله دوم بدون خروجی مرحله اول قابل اجرا نیست، یک Linear Chain طبیعی شکل می‌گیرد. در مقابل، اگر نتیجه یک مرحله تعیین کند مرحله بعدی کدام مسیر باشد، workflow می‌تواند به Branching Chain تبدیل شود و مسیر اجرای بعدی را در runtime انتخاب کند. [Microsoft Learn](https://learn.microsoft.com/en-us/training/modules/aaai-apply-task-decomposition-multi-agent-azure/2-design-prompt-chain-workflows)
+
+---------------------------------------------------------  
+➡️@AIDeveloperNotes  
+
+
+#Post_133  
+<b>قرارداد مشخص بین مراحل Agent</b> 
+ 
+وقتی یک کار به چند مرحله تقسیم می‌شود، مرز بین مراحل باید مانند یک قرارداد مشخص باشد. هر مرحله باید بداند چه Inputی دریافت می‌کند و چه Outputی تحویل می‌دهد. استفاده از Structured Data مانند JSON باعث می‌شود مرحله بعد به فیلدهای مشخص دسترسی داشته باشد و مجبور نباشد نتیجه‌ای متنی و مبهم را دوباره تفسیر کند. [Microsoft Learn](https://learn.microsoft.com/en-us/training/modules/aaai-apply-task-decomposition-multi-agent-azure/2-design-prompt-chain-workflows)
+
+اهمیت این قرارداد در workflowهای طولانی بیشتر می‌شود. هر مرحله فقط باید Context موردنیاز خودش را دریافت کند؛ Context کمتر می‌تواند اطلاعات ضروری را حذف کند و Context بیش از حد نیز Prompt را با داده‌های غیرمرتبط پر می‌کند. بنابراین اطلاعات بین مراحل باید انتخابی منتقل شوند. بعضی مراحل فقط به خروجی مرحله قبلی نیاز دارند، در حالی که مرحله نهایی ممکن است به بخش بزرگ‌تری از نتایج قبلی احتیاج داشته باشد. [Microsoft Learn](https://learn.microsoft.com/en-us/training/modules/aaai-apply-task-decomposition-multi-agent-azure/2-design-prompt-chain-workflows)
+
+---------------------------------------------------------  
+➡️@AIDeveloperNotes  
+
+
+#Post_134  
+<b>اعتبارسنجی در مرز Taskها</b> 
+ 
+تقسیم یک workflow به چند Task زمانی قابل اعتماد است که خروجی هر مرحله قبل از ورود به مرحله بعد بررسی شود. Validation می‌تواند هم ساختار داده را کنترل کند و هم معنی آن را. بررسی وجود فیلدهای ضروری، Data Typeها و Schema مانع از عبور خروجی ناقص می‌شود؛ Semantic Validation نیز بررسی می‌کند که مقدار تولیدشده با محدودیت‌های منطقی مسئله سازگار باشد. [Microsoft Learn](https://learn.microsoft.com/en-us/training/modules/aaai-apply-task-decomposition-multi-agent-azure/2-design-prompt-chain-workflows)
+
+هدف این است که خطا در همان جایی متوقف شود که ایجاد شده است. اگر داده خراب وارد مراحل بعد شود، پیدا کردن منشأ مشکل دشوارتر خواهد شد. برای workflowهای پرهزینه می‌توان خروجی مراحل موفق را نیز Cache کرد. در این حالت اگر مرحله بعد شکست بخورد، اجرای workflow از ابتدا تکرار نمی‌شود و آخرین نتیجه معتبر برای Retry مرحله شکست‌خورده استفاده خواهد شد. [Microsoft Learn](https://learn.microsoft.com/en-us/training/modules/aaai-apply-task-decomposition-multi-agent-azure/2-design-prompt-chain-workflows)
+
+---------------------------------------------------------  
+➡️@AIDeveloperNotes  
+
+
+#Post_135  
+<b>انتخاب میان Static و Dynamic Decomposition</b> 
+ 
+در Static Decomposition، ساختار Taskها هنگام طراحی سیستم مشخص می‌شود. این رویکرد برای درخواست‌هایی مناسب است که الگوی ثابت و قابل پیش‌بینی دارند؛ توسعه‌دهنده از قبل می‌داند چه مراحلی باید اجرا شوند و ترتیب آن‌ها چیست. مزیت اصلی آن predictability و Debug ساده‌تر است، اما نمی‌تواند خود را با تفاوت زیاد میان درخواست‌ها تطبیق دهد. [Microsoft Learn](https://learn.microsoft.com/en-us/training/modules/aaai-apply-task-decomposition-multi-agent-azure/3-implement-dynamic-adaptive-task-decomposition)
+
+در Dynamic Decomposition، یک LLM ابتدا خود درخواست را تحلیل می‌کند و در runtime تصمیم می‌گیرد چه Taskهایی لازم‌اند. یک درخواست ساده ممکن است فقط یک عملیات نیاز داشته باشد، در حالی که درخواست پیچیده به چند مرحله تحلیل نیاز دارد. این انعطاف هزینه دارد: Meta-Agent اولیه باعث افزایش Token، Latency و Coordination می‌شود. بنابراین Dynamic Decomposition زمانی ارزش دارد که پیچیدگی و ساختار درخواست‌ها واقعاً متغیر باشد. [Microsoft Learn](https://learn.microsoft.com/en-us/training/modules/aaai-apply-task-decomposition-multi-agent-azure/3-implement-dynamic-adaptive-task-decomposition)
+
+---------------------------------------------------------  
+➡️@AIDeveloperNotes  
+
+
+#Post_136  
+<b>برنامه‌ریزی با Meta-Agent</b> 
+ 
+در Dynamic Decomposition می‌توان مسئولیت طراحی workflow را به یک Meta-Agent Planner سپرد. این Agent قرار نیست مسئله اصلی را حل کند؛ وظیفه‌اش تحلیل درخواست و ساخت یک Execution Plan است. Planner مشخص می‌کند چه Subtaskهایی لازم‌اند، هر Task باید به کدام Agent متخصص داده شود، چه وابستگی‌هایی وجود دارد و خروجی موردانتظار هر مرحله چیست. [Microsoft Learn](https://learn.microsoft.com/en-us/training/modules/aaai-apply-task-decomposition-multi-agent-azure/3-implement-dynamic-adaptive-task-decomposition)
+
+برای این کار، Planner می‌تواند به یک Agent Registry دسترسی داشته باشد که capabilities هر Agent را توصیف می‌کند. نتیجه Planning نیز می‌تواند به‌شکل Structured JSON تولید شود که برای هر Task یک ID، Agent مسئول، Dependencies و Output Format مشخص دارد. Taskهایی که وابستگی ندارند قابلیت اجرای Parallel دارند و Taskهای وابسته فقط پس از آماده‌شدن نتایج موردنیازشان اجرا می‌شوند. [Microsoft Learn](https://learn.microsoft.com/en-us/training/modules/aaai-apply-task-decomposition-multi-agent-azure/3-implement-dynamic-adaptive-task-decomposition)
+
+---------------------------------------------------------  
+➡️@AIDeveloperNotes  
+
+
+#Post_137  
+<b>مرزبندی درست بین Taskها</b> 
+ 
+Task Decomposition فقط به معنی بیشترکردن تعداد Taskها نیست. مرز مناسب جایی است که خروجی یک Agent یک artifact کامل و مستقل باشد و Agent بعدی بتواند بدون دانستن جزئیات داخلی مرحله قبل، کار خودش را انجام دهد. اگر Agent بعدی برای ادامه کار مجبور باشد بداند Agent قبلی چگونه به نتیجه رسیده، مرز ایجادشده احتمالاً مناسب نیست. [Microsoft Learn](https://learn.microsoft.com/en-us/training/modules/aaai-apply-task-decomposition-multi-agent-azure/6-optimize-decomposition-granularity)
+
+برای نمونه، استخراج مجموعه‌ای کامل از داده‌ها و تحویل آن به یک Agent تحلیل‌گر یک interface طبیعی ایجاد می‌کند. در مقابل، تقسیم یک پردازش واحد به دو نیمه‌ای که نتایجشان هم‌پوشانی دارند، Context بیشتری برای هماهنگی ایجاد می‌کند. Task Boundary مناسب باید implementation details مرحله قبلی را پنهان کند و یک Deliverable مشخص در اختیار مرحله بعد قرار دهد. [Microsoft Learn](https://learn.microsoft.com/en-us/training/modules/aaai-apply-task-decomposition-multi-agent-azure/6-optimize-decomposition-granularity)
+
+---------------------------------------------------------  
+➡️@AIDeveloperNotes  
+
+
+#Post_138  
+<b>تعادل میان Granularity و Coordination</b> 
+ 
+ریزتر کردن Taskها می‌تواند specialization را افزایش دهد، اما همیشه کیفیت بهتری تولید نمی‌کند. اگر Taskها بیش از حد بزرگ باشند، یک Agent باید چند مسئولیت متفاوت را هم‌زمان مدیریت کند. اگر بیش از حد کوچک باشند، تعداد Handoffها، Token مصرفی، Latency و احتمال Context Fragmentation افزایش پیدا می‌کند. بنابراین Granularity باید با توجه به کیفیت موردنیاز و هزینه Coordination تعیین شود. [Microsoft Learn](https://learn.microsoft.com/en-us/training/modules/aaai-apply-task-decomposition-multi-agent-azure/6-optimize-decomposition-granularity)
+
+بهترین سطح Decomposition را نمی‌توان فقط از روی معماری حدس زد. می‌توان یک workload مشابه را با Single Agent، تعداد متوسط Agent و ساختار ریزتر اجرا کرد و Latency، Token Consumption و Quality را مقایسه کرد. افزایش تعداد Agentها ممکن است ابتدا جهش محسوسی در کیفیت ایجاد کند اما پس از نقطه‌ای، هزینه Coordination سریع‌تر از Quality رشد کند. [Microsoft Learn](https://learn.microsoft.com/en-us/training/modules/aaai-apply-task-decomposition-multi-agent-azure/6-optimize-decomposition-granularity)
+
+---------------------------------------------------------  
+➡️@AIDeveloperNotes  
+
+
+#Post_139  
+<b>پرهیز از Over-Decomposition</b> 
+ 
+هر عملیات کوچکی نباید به یک Agent مستقل تبدیل شود. Taskهایی مانند یک retrieval ساده، calculation مشخص یا تغییر فرمت داده معمولاً reasoning قابل‌توجهی ندارند و می‌توانند توسط Tool یا Utility Function انجام شوند. عبور چنین Nano-Taskهایی از لایه Orchestration فقط API Call، Token و Latency بیشتری ایجاد می‌کند. [Microsoft Learn](https://learn.microsoft.com/en-us/training/modules/aaai-apply-task-decomposition-multi-agent-azure/6-optimize-decomposition-granularity)
+
+تقسیم کار همچنین زمانی نامناسب است که چند Task به Context مشترک و درهم‌تنیده وابسته باشند. جداکردن مصنوعی این بخش‌ها باعث می‌شود Agentها دوباره اطلاعات یکدیگر را بازسازی کنند و مرحله‌ای اضافی برای Aggregation لازم شود. اگر یک Single Agent با Prompt و Tool مناسب یک Task را قابل اعتماد انجام می‌دهد، Multi-Agent کردن آن صرفاً به دلیل پیچیده‌ترکردن معماری، Moving Partهای بیشتری برای Debug ایجاد می‌کند. [Microsoft Learn](https://learn.microsoft.com/en-us/training/modules/aaai-apply-task-decomposition-multi-agent-azure/6-optimize-decomposition-granularity)
+
+---------------------------------------------------------  
+➡️@AIDeveloperNotes  
+
+
+#Post_140  
+<b>تحویل ساختاریافته میان Agentها</b> 
+ 
+در workflowهای Multi-Agent، پایان یک Task معمولاً آغاز Task دیگری است. Handoff باید به‌شکل یک انتقال ساختاریافته انجام شود تا Agent دریافت‌کننده دقیقاً بداند چه کاری باقی مانده است. اطلاعاتی مانند Task Description، Context مرتبط، دلیل Handoff، Agent مبدأ، Expected Output و محدودیت زمانی می‌توانند بخشی از قرارداد انتقال باشند. [Microsoft Learn](https://learn.microsoft.com/en-us/training/modules/aaai-apply-task-decomposition-multi-agent-azure/4-configure-agent-handoff-collaboration-protocols)
+
+Handoff مستقیم میان Agentهای متخصص می‌تواند نیاز به بازگشت هر نتیجه به یک Hub مرکزی را کاهش دهد، اما استقلال بیشتر بدون Protocol مشخص خطر Context Loss را افزایش می‌دهد. Agent دریافت‌کننده نیز باید بتواند بر اساس capability خودش Task را قبول یا رد کند. اگر Task خارج از domain آن باشد، انتقال باید به Agent مناسب دیگری انجام شود، نه اینکه Agent کاری را انجام دهد که برای آن طراحی نشده است. [Microsoft Learn](https://learn.microsoft.com/en-us/training/modules/aaai-apply-task-decomposition-multi-agent-azure/4-configure-agent-handoff-collaboration-protocols)
+
+---------------------------------------------------------  
+➡️@AIDeveloperNotes  
+
+
+#Post_141  
+<b>جلوگیری از Context Collapse</b> 
+ 
+یکی از مشکلات زنجیره‌های طولانی Handoff، Context Collapse است. اگر Agent اول Context را خلاصه کند، Agent دوم همان خلاصه را دوباره فشرده کند و نتیجه به Agent سوم برسد، بخشی از اطلاعات در هر انتقال از دست می‌رود. پس از چند مرحله ممکن است Agent آخر فقط نسخه‌ای ناقص از اطلاعات اولیه را در اختیار داشته باشد. [Microsoft Learn](https://learn.microsoft.com/en-us/training/modules/aaai-apply-task-decomposition-multi-agent-azure/5-ensure-handoff-reliability-context-preservation)
+
+برای جلوگیری از این وضعیت، Context کامل workflow باید حفظ شود و هر Agent به‌جای بازخلاصه‌سازی مداوم، Structured Output خودش را اضافه کند. در Partial Handoff نیز باید Completed Work از Remaining Work جدا باشد تا Agent بعدی بداند چه بخش‌هایی قطعی شده و چه کاری هنوز باقی مانده است. حتی با حفظ History کامل، طول زنجیره باید کنترل شود؛ افزایش Handoffها Context Token، هزینه و فشار روی Model را بیشتر می‌کند. [Microsoft Learn](https://learn.microsoft.com/en-us/training/modules/aaai-apply-task-decomposition-multi-agent-azure/5-ensure-handoff-reliability-context-preservation)
+
+---------------------------------------------------------  
+➡️@AIDeveloperNotes  
+
+
+#Post_142  
+<b>تقسیم پروژه‌های Long-running به واحدهای قابل اجرا</b> 
+ 
+در Long-running Agentic Coding، اجرای یک پروژه بزرگ به‌صورت یک کار پیوسته می‌تواند با طولانی‌شدن Context باعث از دست رفتن coherence شود. یکی از رویکردهای استفاده‌شده برای کنترل این وضعیت، تقسیم Build به بخش‌های قابل‌مدیریت و انتقال State میان مراحل با Structured Artifacts است. در یک معماری اولیه، Agent مسئول initialization ابتدا Product Spec را به Task List تبدیل می‌کرد و Coding Agent هر بار یک Feature را پیاده‌سازی می‌کرد. [Anthropic](https://www.anthropic.com/engineering/harness-design-long-running-apps)
+
+برای Modelهایی که در Taskهای طولانی دچار مشکل می‌شدند، Context Reset نیز استفاده شد. در این روش Agent جدید با Context تمیز شروع می‌کرد و State و Next Steps از طریق Handoff Artifact منتقل می‌شد. این روش با Compaction متفاوت است؛ Compaction همان session را با History فشرده ادامه می‌دهد، اما Reset یک شروع تازه ایجاد می‌کند. [Anthropic](https://www.anthropic.com/engineering/harness-design-long-running-apps)
+
+---------------------------------------------------------  
+➡️@AIDeveloperNotes  
+
+
+#Post_143  
+<b>جداسازی Planning، Implementation و Evaluation</b> 
+ 
+برای ساخت applicationهای طولانی می‌توان مسئولیت‌ها را میان Planner، Generator و Evaluator تقسیم کرد. Planner یک درخواست کوتاه را به Product Spec تبدیل می‌کند و بیشتر روی Product Context و High-level Technical Design متمرکز می‌ماند. واردشدن بیش از حد Planner به جزئیات implementation می‌تواند خطاهای اولیه را به مراحل بعد منتقل کند، بنابراین تمرکز آن بر Deliverableها باقی می‌ماند. [Anthropic](https://www.anthropic.com/engineering/harness-design-long-running-apps)
+
+Generator سپس Featureها را پیاده‌سازی می‌کند و Evaluator نتیجه را جداگانه بررسی می‌کند. پیش از شروع یک Sprint نیز Generator و Evaluator می‌توانند روی یک Sprint Contract توافق کنند که مشخص می‌کند چه چیزی باید ساخته شود و Completion چگونه Verification خواهد شد. به این ترتیب فاصله میان User Story سطح بالا و implementation قابل تست با یک قرارداد مشخص پر می‌شود. [Anthropic](https://www.anthropic.com/engineering/harness-design-long-running-apps)
+
+---------------------------------------------------------  
+➡️@AIDeveloperNotes  
+
+
+#Post_144  
+<b>هماهنگ‌کردن Decomposition با توان Model</b> 
+ 
+ساختار Decomposition نباید ثابت و مستقل از Model در نظر گرفته شود. بعضی اجزای Harness برای جبران محدودیت Model ایجاد می‌شوند و با بهبود Model ممکن است دیگر همان ارزش قبلی را نداشته باشند. در یک Harness طولانی، Sprintها ابتدا برای حفظ coherence و تقسیم کار استفاده شدند، اما با Model توانمندتر امکان حذف Sprint Decomposition و اجرای Build طولانی‌تر به‌صورت پیوسته فراهم شد. [Anthropic](https://www.anthropic.com/engineering/harness-design-long-running-apps)
+
+این تغییر به معنی حذف Planning یا Evaluation نبود. Planner همچنان از underscope شدن Build جلوگیری می‌کرد و Evaluator برای Taskهایی که در مرز توانایی Model قرار داشتند ارزش داشت. روش مناسب، بررسی عملی Harness روی workload واقعی و حذف مرحله‌ای اجزایی است که دیگر load-bearing نیستند؛ زیرا Coordination، Token و Latency هر جزء باید در مقابل اثری که بر کیفیت ایجاد می‌کند سنجیده شود. [Anthropic](https://www.anthropic.com/engineering/harness-design-long-running-apps)
+
+---------------------------------------------------------  
+➡️@AIDeveloperNotes

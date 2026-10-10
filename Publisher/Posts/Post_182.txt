@@ -1,0 +1,12 @@
+#Post_182
+<b>جداسازی Planning، Implementation و Evaluation</b>
+#Task_Decomposition(13/18)
+
+برای ساخت applicationهای طولانی می‌توان مسئولیت‌ها را میان Planner، Generator و Evaluator تقسیم کرد. Planner یک درخواست کوتاه را به Product Spec تبدیل می‌کند و بیشتر روی Product Context و High-level Technical Design متمرکز می‌ماند. واردشدن بیش از حد Planner به جزئیات implementation می‌تواند خطاهای اولیه را به مراحل بعد منتقل کند، بنابراین تمرکز آن بر Deliverableها باقی می‌ماند.
+
+Generator سپس Featureها را پیاده‌سازی می‌کند و Evaluator نتیجه را جداگانه بررسی می‌کند. پیش از شروع یک Sprint نیز Generator و Evaluator می‌توانند روی یک Sprint Contract توافق کنند که مشخص می‌کند چه چیزی باید ساخته شود و Completion چگونه Verification خواهد شد. به این ترتیب فاصله میان User Story سطح بالا و implementation قابل تست با یک قرارداد مشخص پر می‌شود.
+
+------------------
+#️⃣#Task_Decomposition
+➡️@AIDeveloperNotes
+

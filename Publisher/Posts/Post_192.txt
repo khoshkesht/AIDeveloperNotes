@@ -1,0 +1,12 @@
+#Post_192
+<b>انتخاب Model با توجه به نقش Agent</b>
+#AI_Software_Factory(9/10)
+
+انتخاب Model در یک Software Factory می‌تواند برای نقش‌های مختلف متفاوت باشد. می‌توان نوشتن Spec و Approval را به Opus سپرد و برای برخی Agentهای دیگر از Sonnet استفاده کرد. انتخاب Model مربوط به Orchestrator نیز مستقل از Modelهای Sub-agentهاست؛ تغییر Session اصلی به Sonnet به معنای تغییر خودکار همه Agentهای زیرمجموعه نیست. تنظیم Effort هم در کنار Model، بخشی از پیکربندی اجرای کار است.
+
+سرعت Orchestrator به‌تنهایی زمان پایان Feature را تعیین نمی‌کند، چون پیشرفت کار به سرعت Sub-agentهای مرحله جاری نیز وابسته است. از سوی دیگر، استفاده از Sub-agentها می‌تواند مصرف Token را افزایش دهد، زیرا Context میان Agentها جابه‌جا می‌شود. ارزیابی چنین ساختاری باید هزینه مصرف را در کنار کیفیت خروجی و Observability قرار دهد. اجرای آن نیز می‌تواند در چارچوب Subscription انجام شود و الزاماً به پرداخت مستقیم API متکی نیست.
+
+------------------
+#️⃣#AI_Software_Factory
+➡️@AIDeveloperNotes
+

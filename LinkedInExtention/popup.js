@@ -5,15 +5,13 @@ let busy = false;
 
 async function initialize() {
   try {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     const { posts = [], lastPosted = 0, activePost: active = null } = await chrome.storage.local.get([
       "posts", "lastPosted", "activePost"
     ]);
     activePost = active;
-    const isLinkedIn = tab?.url && new URL(tab.url).hostname === "www.linkedin.com";
     const next = Posts.nextPost(posts, lastPosted);
     document.getElementById("summary").textContent = `آخرین انتشار ثبت‌شده: ${lastPosted} | پست بعدی: ${next?.number ?? "موجود نیست"}`;
-    sendButton.disabled = busy || !isLinkedIn || !next || Boolean(active);
+    sendButton.disabled = busy || !next || Boolean(active);
     document.getElementById("active-post").hidden = !active;
     const stalePublish = active?.state === "publishing" && Date.now() - active.publishStartedAt > 60_000;
     document.getElementById("mark-published").hidden = !["ready", "attention"].includes(active?.state) && !stalePublish;
@@ -31,8 +29,7 @@ async function initialize() {
       document.getElementById("active-summary").textContent = labels[active.state] || "وضعیت پست را بررسی کنید.";
     }
     status.textContent = !posts.length ? "ابتدا پوشهٔ پست‌ها را از تنظیمات انتخاب کنید."
-      : !isLinkedIn ? "برای آماده‌سازی پست، یک صفحه از سایت لینکدین را باز کنید."
-      : "پس از آماده شدن متن، شمارش معکوس ۵ ثانیه‌ای آغاز و پست خودکار منتشر می‌شود.";
+      : "صفحهٔ لینکدین خودکار باز می‌شود؛ پس از آماده شدن متن، شمارش معکوس ۵ ثانیه‌ای آغاز و پست منتشر می‌شود.";
   } catch {
     status.textContent = "امکان بررسی تنظیمات وجود ندارد. دوباره تلاش کنید.";
   }

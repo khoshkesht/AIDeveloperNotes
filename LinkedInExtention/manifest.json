@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "ارسال پست لینکدین",
+  "version": "1.2.4",
+  "description": "ارسال پست‌های شماره‌دار از پوشه، با شمارش معکوس و ذخیرهٔ شماره پس از انتشار.",
+  "permissions": ["storage", "unlimitedStorage"],
+  "options_page": "options.html",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "host_permissions": ["https://www.linkedin.com/*"],
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "ارسال پست لینکدین",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.linkedin.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+body {
+  width: 320px;
+  margin: 0;
+  padding: 20px;
+  color: #1f2937;
+  background: #f8fafc;
+  font-family: Tahoma, sans-serif;
+}
+
+h1 {
+  margin: 0 0 16px;
+  font-size: 18px;
+}
+
+button {
+  width: 100%;
+  border: 0;
+  border-radius: 8px;
+  padding: 12px;
+  background: #0a66c2;
+  color: white;
+  font: inherit;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+button:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 3px;
+}
+
+.secondary {
+  margin-top: 12px;
+  background: #e2e8f0;
+  color: #1f2937;
+}
+
+[hidden] { display: none !important; }
+
+p {
+  margin: 14px 0 0;
+  font-size: 12px;
+  line-height: 1.9;
+}

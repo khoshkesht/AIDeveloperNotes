@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>تنظیمات پست‌های لینکدین</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main>
+      <h1>تنظیمات پست‌های لینکدین</h1>
+      <section>
+        <h2>پوشهٔ پست‌ها</h2>
+        <p>با دکمهٔ زیر پوشه را انتخاب کنید. در پنجرهٔ انتخاب پوشه می‌توانید مسیر نمونه را وارد کنید:</p>
+        <code dir="ltr">D:\FROM E\Projects\AIDeveloperNotes\Publisher\Posts</code>
+        <p>کروم با تایپ مسیر در افزونه اجازهٔ خواندن فایل‌ها را نمی‌دهد؛ انتخاب پوشه و اجازهٔ شما لازم است.</p>
+        <div class="actions">
+          <button id="choose-folder" type="button">انتخاب پوشهٔ پست‌ها</button>
+          <button id="refresh-folder" type="button" class="secondary">به‌روزرسانی فایل‌های پوشه</button>
+        </div>
+        <p id="folder-summary"></p>
+        <p>فایل‌های متنی UTF-8 با نام‌هایی مثل Post_001.txt، Post_10.md یا 11.txt خوانده می‌شوند. پس از اضافه یا ویرایش کردن فایل‌ها، «به‌روزرسانی» را بزنید.</p>
+      </section>
+      <section>
+        <h2>آخرین شمارهٔ منتشرشده</h2>
+        <form id="counter-form">
+          <label for="last-posted">شمارهٔ آخرین پستی که قبلاً منتشر کرده‌اید (۰ یعنی هنوز هیچ‌کدام)</label>
+          <div class="actions">
+            <input id="last-posted" type="number" min="0" step="1" value="0" required />
+            <button type="submit">ذخیرهٔ شماره</button>
+          </div>
+        </form>
+        <p>هر بار کوچک‌ترین شمارهٔ موجود بعد از این عدد انتخاب می‌شود. قرار گرفتن متن در ویرایشگر، این شماره را تغییر نمی‌دهد.</p>
+      </section>
+      <section>
+        <h2 id="next-title">پیش‌نمایش پست بعدی</h2>
+        <pre id="preview"></pre>
+        <p>خط اول #Post_… و تگ‌های &lt;b&gt; حذف و ➡️@AIDeveloperNotes به ➤ @AIDeveloperNotes تبدیل می‌شود. پس از ورود متن، انتشار با شمارش معکوس ۵ ثانیه‌ای انجام می‌شود.</p>
+      </section>
+      <p id="status" role="status" aria-live="polite"></p>
+    </main>
+    <script src="posts.js"></script>
+    <script src="options.js"></script>
+  </body>
+</html>

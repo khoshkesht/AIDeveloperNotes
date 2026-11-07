@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ارسال پست لینکدین</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <h1>پست‌های لینکدین</h1>
+    <p id="summary"></p>
+    <button id="send-post" type="button" disabled>ارسال پست</button>
+    <section id="active-post" hidden>
+      <p id="active-summary"></p>
+      <button id="mark-published" type="button" class="secondary" hidden>خودم منتشر کردم؛ ثبت انتشار</button>
+      <button id="cancel-draft" type="button" class="secondary">لغو پیگیری این پست</button>
+    </section>
+    <button id="settings" type="button" class="secondary">تنظیم پوشه و شمارهٔ آخرین پست</button>
+    <p id="status" role="status" aria-live="polite">در حال بررسی صفحه…</p>
+    <script src="posts.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

@@ -1,0 +1,1276 @@
+Title: How I Review AI Code - (Meta Senior Staff Engineer)
+
+(0:00) Well, hello there.
+
+(0:01) So are you even reading your code these
+
+(0:03) days?
+
+(0:04) Or do you just send it off and just let
+
+(0:06) your vibe code it, AI slop code, just into
+
+(0:09) the wild without any review?
+
+(0:10) Or are you still on the camp of reading
+
+(0:12) all your code?
+
+(0:13) In my opinion, this topic of code review
+
+(0:16) is very split right now.
+
+(0:17) The community is very split.
+
+(0:20) There's a group of people who said, if
+
+(0:22) you're reviewing your code still, then
+
+(0:23) you're not moving fast enough.
+
+(0:25) The agents are probably already better at
+
+(0:27) reviewing code than you are.
+
+(0:29) So why are you reading your code?
+
+(0:31) Those are the that camp.
+
+(0:32) The other camp is people who are saying,
+
+(0:34) no, the AI agents are still not great yet.
+
+(0:36) It's not perfect, it makes dumb mistakes
+
+(0:38) and you're creating a lot of AI slop and
+
+(0:40) you really need to tone it down and review
+
+(0:43) the stuff that you're writing.
+
+(0:44) So there's these two camps.
+
+(0:46) And in this video, we're gonna talk about
+
+(0:48) what I think of this topic.
+
+(0:50) And I'm also going to give you my
+
+(0:51) strategies on how I navigate and review my
+
+(0:55) own code and land high quality code into
+
+(0:57) the production.
+
+(0:58) So yeah, that's what we'll cover in this
+
+(1:00) video today.
+
+(1:01) So if you're new to this channel, my name
+
+(1:02) is John.
+
+(1:03) I'm a senior staff software engineer at
+
+(1:05) Meta.
+
+(1:05) And on this channel, I talk about AI tech
+
+(1:08) news, AI tech tutorials, anything to do
+
+(1:11) with AI.
+
+(1:12) It's my fun side hobby to dig into all of
+
+(1:14) this.
+
+(1:15) But yeah, a lot of you guys are not
+
+(1:16) subscribed.
+
+(1:16) You guys watch a lot of my videos, but for
+
+(1:18) some reason, don't subscribe.
+
+(1:20) So do a brother a favor and subscribe.
+
+(1:23) I get a ton of tokens if people subscribe.
+
+(1:26) I don't actually, but please subscribe.
+
+(1:29) So let's get right into this video.
+
+(1:30) So as usual, I made some slides, just some
+
+(1:32) simple slides to have some talking points
+
+(1:35) over all of this.
+
+(1:36) And for this video, I also created just a
+
+(1:39) simple website that like you can swipe
+
+(1:41) essentially to vote whether something is
+
+(1:44) AI or Not.
+
+(1:45) And they will tell you like if it's AI or
+
+(1:47) not.
+
+(1:48) It's just a simple demo app and it's
+
+(1:50) really there so I could showcase some of
+
+(1:52) the tools and like things that I'm
+
+(1:54) thinking about for the video.
+
+(1:56) So let's start off with the obvious.
+
+(1:58) I think we can all safely say with the
+
+(2:01) advent of AI coding, the amount of code
+
+(2:03) that people are generating is going
+
+(2:05) through the roof.
+
+(2:06) It's like so much more code.
+
+(2:09) People are writing a lot more features.
+
+(2:11) They're writing more tests.
+
+(2:12) They're just doing a lot more because one
+
+(2:15) person can split up multiple agents and
+
+(2:17) generate a ton of code.
+
+(2:18) And to be honest, it's almost impossible
+
+(2:22) of a task for a single engineer to review
+
+(2:24) even their own code, let alone do code
+
+(2:27) reviews for other people.
+
+(2:28) So where do I stand right now personally
+
+(2:31) for code reviews?
+
+(2:32) And the answer is, it depends.
+
+(2:35) I think like any good answer to any hard
+
+(2:38) problem, answer is really, it depends
+
+(2:41) because the reality of code reviews is a
+
+(2:43) gradient.
+
+(2:44) It really depends on the code that you're
+
+(2:46) reviewing.
+
+(2:47) So when you're writing code and when
+
+(2:49) you're building a feature, the AI agents
+
+(2:51) should be part of the entire code's
+
+(2:54) journey to production from planning,
+
+(2:57) building, reviewing, and launching.
+
+(2:59) Every single part of this, you should
+
+(3:01) actually include your AI agents throughout
+
+(3:04) the whole process, right?
+
+(3:05) Whether it's planning out a spec to build
+
+(3:08) out, making sure things are feature
+
+(3:09) complete and making sure you have like
+
+(3:11) evaluations and like validation criterias
+
+(3:13) that you're thinking about ahead of time.
+
+(3:15) And when you're building the code, you
+
+(3:17) wanna have agentic validation so that the
+
+(3:19) AI can self validate and self fix itself
+
+(3:22) and then get the code right a lot more
+
+(3:25) often.
+
+(3:25) And then we have the review, which is like
+
+(3:27) what we're talking about today.
+
+(3:29) And we're gonna talk about some strategies
+
+(3:31) on how you should do this.
+
+(3:32) And then when you're launching, I think
+
+(3:34) this also should be part of it.
+
+(3:36) You wanna feature gate and run experiments
+
+(3:38) on your code.
+
+(3:39) And all of these things I think tie
+
+(3:41) together to answer the question, when and
+
+(3:44) how much should you review a code?
+
+(3:46) So it really depends, right?
+
+(3:48) Now, the big concept that I wanna let you
+
+(3:50) guys know about today is that I think of
+
+(3:52) the code base like a tree.
+
+(3:55) And like a tree, there are different parts
+
+(3:58) of the tree that is more important.
+
+(3:59) So think of like kind of the trunk, the
+
+(4:02) root, the main part of the code, that's
+
+(4:05) like your main entry points, like your
+
+(4:07) App.js that has all of the different
+
+(4:09) helpers that are like added to it.
+
+(4:11) And then your infrastructure code, like
+
+(4:13) image processing, networking, and all
+
+(4:15) these things that if something goes wrong
+
+(4:18) in that code base, it can affect the
+
+(4:20) entire app.
+
+(4:20) I think of that as like a trunk piece of
+
+(4:22) code.
+
+(4:22) And then there's like leaf nodes.
+
+(4:24) And we're gonna get into more of this
+
+(4:25) topic throughout this video, but start
+
+(4:27) thinking about your code base as a trunk.
+
+(4:29) And as soon as you start thinking about
+
+(4:31) this, then the obvious next thing that you
+
+(4:33) naturally think about is that the review
+
+(4:35) depth, the depth that your own effort
+
+(4:38) level on reviewing a certain code, it
+
+(4:40) should really be based on like the blast
+
+(4:43) radius of that code change.
+
+(4:45) As an example, if you're touching
+
+(4:46) something that's like core image rendering
+
+(4:48) infrastructure that touches all the
+
+(4:50) different image renderings, and there's a
+
+(4:52) lot of downstream dependencies, then I
+
+(4:54) would spend a lot of time reading that
+
+(4:55) piece of code, for example.
+
+(4:57) And then for any like one off leaf node
+
+(5:00) code, you could probably just have agents
+
+(5:02) do simple validations like component
+
+(5:04) testing or snapshot testing and just
+
+(5:07) visually validate the PR as long as they
+
+(5:10) have proof in the PR.
+
+(5:11) So this concept of like changing your
+
+(5:13) effort level, depending on the importance
+
+(5:16) of the code, I think really matters a lot.
+
+(5:18) And you should actually do this planning
+
+(5:19) from the beginning.
+
+(5:20) So when you're planning the entire
+
+(5:22) feature, you actually want to feature gate
+
+(5:24) it.
+
+(5:25) Now, if you don't know what feature gating
+
+(5:26) is, it's essentially adding a branching
+
+(5:29) logic in your code base where you can say,
+
+(5:32) hey, this feature is on or off.
+
+(5:34) So there's a concept called feature
+
+(5:36) toggling, a really popular option is
+
+(5:38) called LaunchDarkly, and you could have
+
+(5:40) feature gating.
+
+(5:41) There's a lot of actually infrastructure
+
+(5:42) that you need to do feature gating
+
+(5:44) properly, but you can start out really
+
+(5:46) simple by just adding a Boolean flag in
+
+(5:48) your code base.
+
+(5:49) It's a gating code and you just turn
+
+(5:51) things on and off.
+
+(5:52) So from the beginning, if you're planning
+
+(5:54) a new feature, think in broad strokes and
+
+(5:57) gate all of the things out, and then think
+
+(5:59) a lot about the integration pieces.
+
+(6:01) So you want to separate out leaf nodes,
+
+(6:04) things that doesn't touch any of the
+
+(6:06) existing code bases, and then you want to
+
+(6:08) think about integration separately.
+
+(6:09) You really want to like gate those
+
+(6:11) integration layers.
+
+(6:12) So once you have like a good solid plan
+
+(6:14) and a good like roadmap, and you have like
+
+(6:16) good feature gating, like ready to go,
+
+(6:18) then you can start coding.
+
+(6:19) And then this coding part is like, you
+
+(6:21) know, just use agents to build a code out,
+
+(6:24) and then you can just use the agents to
+
+(6:25) like, you know, make atomic changes.
+
+(6:27) I have a ton of videos around using agents
+
+(6:30) to code, but you know, we're not covering
+
+(6:32) that particular topic, but once you're
+
+(6:34) ready for a PR, what should go in that PR?
+
+(6:37) So let's think about that.
+
+(6:38) So in my opinion, for your diffs to be
+
+(6:40) really like solid, your PRs to be like
+
+(6:42) rock solid, you really want to anchor and
+
+(6:45) push your agents to give you proof.
+
+(6:47) And there's many different types of proof
+
+(6:49) that the agents could give you.
+
+(6:50) There can be just straight up unit tests.
+
+(6:53) So as an example, something like this,
+
+(6:55) it's just a straight up unit test, very
+
+(6:57) simple, a lot of tests.
+
+(6:59) And this is like just reading the test
+
+(7:01) names and just skimming the tests and the
+
+(7:03) asserts.
+
+(7:04) You could quickly get some like good sense
+
+(7:06) of, oh, there's like good logic testing
+
+(7:08) that's happening.
+
+(7:09) One side note is you want to be careful
+
+(7:11) here when the agents are writing tests.
+
+(7:13) You should probably make your own skill
+
+(7:14) around not writing useless tests.
+
+(7:18) That's like a little side tip.
+
+(7:19) And then you also want runtime evidence.
+
+(7:21) So let's say that you have a lot of like
+
+(7:24) runtime logs.
+
+(7:25) And I talk about this in my agentic
+
+(7:26) engineering video, where you want to
+
+(7:28) really anchor on giving more visibility
+
+(7:31) and more eyes for the agents.
+
+(7:33) So you can have runtime evidence and then
+
+(7:35) you could have visual evidence where maybe
+
+(7:37) it's a screenshot.
+
+(7:38) And then I also ask the agents to give a
+
+(7:41) confidence level on their code and their
+
+(7:44) gating and like different parts of the
+
+(7:46) code.
+
+(7:46) So you really want to push your agents
+
+(7:48) when you're ready to like push out a PR on
+
+(7:50) these kinds of things.
+
+(7:51) It's like, do you have evidence?
+
+(7:52) Obviously you want to build these into
+
+(7:54) your skills.
+
+(7:54) So let's take a look at like UI proof,
+
+(7:57) right?
+
+(7:57) So one of the things I like to do every
+
+(7:59) time I make changes with the AI, I always
+
+(8:02) ask it to have a video or a UI screenshot,
+
+(8:05) right?
+
+(8:06) So for this one, this lets the player save
+
+(8:09) a card, right?
+
+(8:10) So you can see right here, there is a save
+
+(8:13) button.
+
+(8:14) So I can see that, oh, okay, this was
+
+(8:15) saved.
+
+(8:15) And here's some like simple code changes.
+
+(8:17) And then it looks roughly right.
+
+(8:19) But the point is I see a visual proof.
+
+(8:22) So immediately I'm a lot more believing of
+
+(8:25) this AI's code output, right?
+
+(8:27) So if you have the visual proof and if you
+
+(8:29) know that it's safe, then it's a lot safe
+
+(8:31) to land.
+
+(8:32) So having proof and having more proof lets
+
+(8:35) you move faster because you don't have to
+
+(8:37) manually check these proofs.
+
+(8:38) And this is really around agentic
+
+(8:40) validation.
+
+(8:41) And I talk about that in my agentic
+
+(8:43) engineering video, but agentic validation
+
+(8:46) is a core concept of being able to read
+
+(8:49) less code.
+
+(8:49) Because if you have a lot of these proof
+
+(8:52) upfront on the PR, then you don't have to
+
+(8:54) read as much code.
+
+(8:55) Now the next big concept, and this is kind
+
+(8:58) of in the tree concept is leaf code.
+
+(9:00) A leaf code is really code that is written
+
+(9:03) in isolation or it's completely gated off
+
+(9:06) in a feature gate.
+
+(9:07) So this can be like one off components
+
+(9:10) that you can just validate with like a
+
+(9:12) component test or a snapshot test, right?
+
+(9:15) Or maybe it's new infrastructure, new
+
+(9:18) logic, maybe a new endpoint that you're
+
+(9:20) integrating with.
+
+(9:21) And you could just validate that with unit
+
+(9:23) tests or integration tests.
+
+(9:25) And as long as they're not integrated to
+
+(9:27) the main production code base, you can
+
+(9:29) move really quickly.
+
+(9:30) And then I'll cover later what you should
+
+(9:32) be doing.
+
+(9:33) So for me, when I'm reviewing leaf like
+
+(9:36) code, I spend a lot less time.
+
+(9:37) I'm almost just mainly skimming the code
+
+(9:40) and making sure things are not like very
+
+(9:42) off or like something is just obviously
+
+(9:44) wrong.
+
+(9:45) And for example, what can be a trunk is
+
+(9:47) like, you know, in the reducer.
+
+(9:48) Reducer has a lot of shared state.
+
+(9:50) So let's say you change some behavior here
+
+(9:53) in this like game action advanced cards.
+
+(9:55) Maybe there's like a new card type or
+
+(9:56) something like that.
+
+(9:57) And you're changing existing behavior.
+
+(9:59) And if that behavior is not gated out,
+
+(10:02) then I will spend a lot more time
+
+(10:03) reviewing it because that changes
+
+(10:04) production, right?
+
+(10:05) And then this has trickle down effects and
+
+(10:07) side effects and all these things can
+
+(10:09) really matter and affect production code,
+
+(10:11) right?
+
+(10:11) So you're really anchoring on safety.
+
+(10:13) So we kind of covered like thinking about
+
+(10:15) code as like this gradient and how you
+
+(10:18) should anchor on changing your effort
+
+(10:21) level, right?
+
+(10:22) And in my opinion, everything should be
+
+(10:25) anchored on safety.
+
+(10:26) What is the control experience that should
+
+(10:28) not change?
+
+(10:29) And if this change went wrong, how bad can
+
+(10:32) it be?
+
+(10:33) And then can I roll this change back?
+
+(10:36) And then that really just depends on
+
+(10:37) feature gating, right?
+
+(10:38) So if you can answer these questions,
+
+(10:40) especially the last one, then you can
+
+(10:43) spend a lot less time reviewing each
+
+(10:45) individual code.
+
+(10:46) Now, one other thing that is like not that
+
+(10:48) important in my opinion these days that is
+
+(10:50) part of like usually reviews is like nits
+
+(10:54) and like little like different ways of
+
+(10:56) writing.
+
+(10:57) And I would just leverage like static
+
+(10:58) checking here to be able to do a lot of
+
+(11:00) that work.
+
+(11:01) So like type checking, linting, and all
+
+(11:04) those kinds of things.
+
+(11:05) And agents are really good at doing stuff
+
+(11:07) like this.
+
+(11:08) So we have a Codex reviewer here and it's
+
+(11:10) like seeing some linting issues.
+
+(11:12) So it's like saying we should fix it as an
+
+(11:14) example.
+
+(11:15) And here's some like stylistic changes,
+
+(11:17) right?
+
+(11:18) So one big thing about code review is that
+
+(11:20) I think the old days of like having your
+
+(11:23) nits and then like, oh, the code should
+
+(11:25) look this way.
+
+(11:26) This is my favorite way of writing code.
+
+(11:29) I think that's kind of dead.
+
+(11:30) I think we write so much code and code is
+
+(11:32) being a lot more fluid and refactors are
+
+(11:35) happening a lot more often.
+
+(11:36) And it's a lot easier to do, especially
+
+(11:39) once like there's good validations for the
+
+(11:40) code that you wanna refactor.
+
+(11:42) I think these kinds of nits don't really
+
+(11:44) belong in the conversation of code reviews
+
+(11:46) anymore.
+
+(11:47) So going back to the original question is,
+
+(11:50) do I read the code?
+
+(11:51) The simple answer is yes, I still read a
+
+(11:53) lot of code.
+
+(11:54) I think I read more code than I did
+
+(11:57) before, but I definitely have this like
+
+(12:00) knob where I first asked myself, is this a
+
+(12:03) core change, like a trunk change?
+
+(12:05) And is it like an infra?
+
+(12:07) Does it have a lot of like dependencies?
+
+(12:09) If so, I increase it.
+
+(12:11) And then I say, is this safe?
+
+(12:12) Is there gating?
+
+(12:13) If something went wrong, like what can
+
+(12:15) happen?
+
+(12:15) So all of these things really change how
+
+(12:17) much I review the code, right?
+
+(12:19) And then the more dangerous it is, the
+
+(12:21) more I spend time.
+
+(12:22) More of that changes a one-way door, I
+
+(12:24) spend more time reviewing, right?
+
+(12:26) Now let's get kind of to the fun parts of
+
+(12:28) like looking at how you can use agents to
+
+(12:30) kind of help you review your code.
+
+(12:32) Now, in my opinion, AI is really good at
+
+(12:34) reviewing code already.
+
+(12:36) I actually do think it's better than most
+
+(12:39) humans.
+
+(12:39) The issue is a lot of people are doing it
+
+(12:42) wrong.
+
+(12:42) And in my opinion, there's a few things
+
+(12:45) that you should really anchor on doing.
+
+(12:46) One, you should have a really good review
+
+(12:48) skill.
+
+(12:49) I think both Claude Code and Codex have
+
+(12:51) really good built reviews.
+
+(12:53) And then here is the review agent right
+
+(12:56) here.
+
+(12:56) And then for Claude Code, it's slash code
+
+(13:00) review.
+
+(13:01) So these are all both really good review
+
+(13:03) agents in my opinion.
+
+(13:05) But one thing that's kind of important to
+
+(13:06) do is to use a new sub-agent or a
+
+(13:09) different agent, an agent that doesn't
+
+(13:11) have the context of the code that it was
+
+(13:13) used to create the code.
+
+(13:15) Because the agents will cheat.
+
+(13:17) You know, all the context that you gave
+
+(13:18) it, it will cheat.
+
+(13:20) And they will really try to anchor on like
+
+(13:22) a lot of the previous conversation.
+
+(13:24) So you really want to review the code with
+
+(13:27) like a different sub-agent or like a
+
+(13:29) separate agent that is called an
+
+(13:31) adversarial review agent.
+
+(13:33) And when you have an agent write a diff or
+
+(13:35) thing, just have like a good template that
+
+(13:37) the agent can pull from.
+
+(13:38) So your PRs look the same, they feel the
+
+(13:41) same.
+
+(13:42) They have the important bits.
+
+(13:43) If you don't give any guidance on what the
+
+(13:46) agent should really have, it'll write you
+
+(13:48) like a giant paragraph, like a story.
+
+(13:51) And honestly, that's my biggest pet peeve
+
+(13:53) right now is when people submit PRs or
+
+(13:56) diffs to review where the summary and test
+
+(13:58) plan is longer than the code changes
+
+(14:01) itself.
+
+(14:01) So don't be that guy.
+
+(14:02) Now I showed this off a little bit, but
+
+(14:04) all the agent stuff that I've been talking
+
+(14:06) about was during runtime, during the
+
+(14:07) generation of the code.
+
+(14:08) And that's what you're running.
+
+(14:10) But then Codex actually offers this
+
+(14:12) integration right here where you can add a
+
+(14:14) Codex reviewer onto GitHub and it could
+
+(14:16) run on new GitHub, like, you know, PR
+
+(14:18) opens, or you could also like just add
+
+(14:21) Codex here like that.
+
+(14:22) And essentially it's this chat to be the
+
+(14:24) Codex connector.
+
+(14:25) And I think there's a separate model
+
+(14:26) slightly that is custom trained just for
+
+(14:28) like reviewing.
+
+(14:29) Now all of this costs money, right?
+
+(14:32) But yeah, that's an example.
+
+(14:33) Another thing you can do is actually use
+
+(14:36) goals as an example.
+
+(14:38) So one of the common issues that people
+
+(14:40) will run into when they start having these
+
+(14:42) agentic systems that are reviewing their
+
+(14:44) code on GitHub is that after you submit a
+
+(14:47) PR, the agent will go do stuff.
+
+(14:48) And then it'll give you a bunch of
+
+(14:50) comments that you need to fix.
+
+(14:51) And sometimes there'll be a lot of back
+
+(14:53) and forth.
+
+(14:53) You fix it and then like you resubmit and
+
+(14:55) then it'll be like back and forth.
+
+(14:57) So a thing you can do is like just use
+
+(15:00) goals to babysit a PR.
+
+(15:01) So let's say we had this like random PR.
+
+(15:04) This is a draft, but you could just say
+
+(15:06) for this PR, can you babysit it every
+
+(15:09) hour, check it every hour and make sure
+
+(15:11) that you address any changes requests from
+
+(15:15) the Codex agent.
+
+(15:16) It misspelled it, but you get the point.
+
+(15:18) So what this will do is every hour it will
+
+(15:20) check that PR and then it will fix any
+
+(15:22) issues, rerun your local validations,
+
+(15:25) agentic validations, update the PR notes
+
+(15:27) and then resend it.
+
+(15:28) So these are the kinds of things that you
+
+(15:30) should build into your own skill if you
+
+(15:32) haven't done so.
+
+(15:34) But yeah, so those are kind of like the
+
+(15:35) high level like useful tools in my
+
+(15:37) opinion.
+
+(15:38) It's just really important to use
+
+(15:40) adversarial agent in my opinion, have good
+
+(15:43) review skills, actually just like the
+
+(15:45) default like skill reviewers, have a
+
+(15:48) template for your PRs and you could use my
+
+(15:50) template if you want, but just have a
+
+(15:52) template so it conforms your PRs to that
+
+(15:54) template and then it adds like validation
+
+(15:57) proof.
+
+(15:57) We talked about the different types of
+
+(15:59) validation.
+
+(15:59) You really want to anchor on the agents
+
+(16:01) giving you proof that will actually help
+
+(16:04) your AI coding by the way.
+
+(16:05) And then you just submit all of that.
+
+(16:07) And then you make sure you anchor on
+
+(16:08) safety and gating.
+
+(16:09) So these are kind of the high level things
+
+(16:11) that I think about.
+
+(16:12) Before we end this video, I also wanna
+
+(16:13) talk about what it means if you're coding
+
+(16:16) like this, where you're reading some of
+
+(16:18) the code deeply and you're reading like
+
+(16:20) leaf nodes kind of like skimming it as
+
+(16:22) you're going.
+
+(16:23) The end product of that entire feature at
+
+(16:27) the end of your coding session, like
+
+(16:29) you're like, oh, I'm done.
+
+(16:30) If you actually code in this way, you'll
+
+(16:33) be only actually like 80% done.
+
+(16:36) So here I'm saying, even if it's merge
+
+(16:38) ready, I don't think it's launch ready.
+
+(16:40) So what I like to do is I call this
+
+(16:43) initial step of like getting everything
+
+(16:45) gated and landed.
+
+(16:46) I call that like broad strokes.
+
+(16:48) I'm doing like broad strokes of the code
+
+(16:51) changes.
+
+(16:51) And then this last like 20% or so is
+
+(16:54) really getting something launch ready.
+
+(16:56) And this is where a lot of my human like
+
+(16:59) effort comes in.
+
+(17:00) And then I do a lot of refactoring here
+
+(17:02) and kind of like cleaning up of the code
+
+(17:04) base, right?
+
+(17:05) So I actually have a bunch of agents
+
+(17:07) before I do any launch, I like audit the
+
+(17:10) entire code that it was written.
+
+(17:12) And I think about it from high level.
+
+(17:14) And I think about like important things
+
+(17:16) like performance, bugs, security, you
+
+(17:19) know, and then whether the feature
+
+(17:21) actually works to spec.
+
+(17:22) And then I'm really like detailing the
+
+(17:24) animations or anything like that.
+
+(17:25) And so this last 20% actually takes as
+
+(17:28) long as the first 80%, but it's actually
+
+(17:31) the thing that is the most important.
+
+(17:33) And in my opinion, you're able to move so
+
+(17:35) quickly in the beginning, but this last
+
+(17:37) 20% still requires a lot of like, like
+
+(17:41) human taste factor.
+
+(17:43) So you still need to look at it.
+
+(17:44) And this is where my code kind of becomes
+
+(17:46) a lot more clean and production ready.
+
+(17:48) Now, finally, when you're ready to launch
+
+(17:51) the feature, I highly encourage you to try
+
+(17:53) to run experiments.
+
+(17:54) So you could like validate that the code
+
+(17:56) is actually working.
+
+(17:58) Now, if you have a small user group, then
+
+(18:00) you can't really run a sizable experiment.
+
+(18:02) You don't have statistical like power to
+
+(18:04) even like run legitimate A/B testing, but
+
+(18:08) I still recommend running A/B tests or
+
+(18:11) doing like canary deployments, because
+
+(18:13) what that helps you is if you trickle your
+
+(18:16) traffic for your new feature through like
+
+(18:18) feature gating, then you're able to very
+
+(18:21) quickly see bugs or crashes or alerts that
+
+(18:24) fire.
+
+(18:25) And that's the whole point.
+
+(18:26) You wanna anchor always on safety when
+
+(18:28) you're using agents to code, because
+
+(18:30) physically you won't be able to physically
+
+(18:32) read everything in detail.
+
+(18:34) It's just impossible now.
+
+(18:35) So the idea of high level is you wanna
+
+(18:37) create like an agentic safeguard, like an
+
+(18:40) agentic garden, where you have a lot of
+
+(18:42) tests, you have a lot of validation, and
+
+(18:44) you have a lot of agents doing a lot of
+
+(18:46) work to make sure your code is good.
+
+(18:48) But at the same time, you wanna anchor on
+
+(18:50) safety and make sure you can take back bad
+
+(18:53) decisions with gating.
+
+(18:54) So do I review code?
+
+(18:56) I think the simple answer is yes, but it
+
+(18:58) really depends.
+
+(19:00) And it's a gradient, right?
+
+(19:02) But in my opinion, the models are getting
+
+(19:04) better and better.
+
+(19:05) So you will probably review less code, but
+
+(19:07) you should really anchor on validation,
+
+(19:09) agentic validation.
+
+(19:11) And then the agent should like have a lot
+
+(19:13) of validation and proof and evidence of
+
+(19:15) the proof, like whether it's video
+
+(19:17) recording or logs or like just
+
+(19:20) screenshots, whatever it is.
+
+(19:22) And then you gate, and then you like start
+
+(19:24) trusting the agents more.
+
+(19:25) And as long as you have like control to
+
+(19:27) take things back with gating, then it
+
+(19:29) should be safe to go.
+
+(19:30) So yeah, I hope you guys enjoyed this
+
+(19:32) video on agentic code reviewing and like
+
+(19:34) my thoughts on code reviewing.
+
+(19:36) The thing is this topic keeps changing for
+
+(19:39) me.
+
+(19:40) Right now, I'm comfortable with the
+
+(19:43) skimming of some code, depending on like
+
+(19:45) where it is and the like tree concept that
+
+(19:48) I talked about.
+
+(19:49) But maybe after another few generations of
+
+(19:52) the model, I might say, you know what?
+
+(19:54) You don't need to read any of the code.
+
+(19:56) So who knows?
+
+(19:57) But right now I think you still need to
+
+(19:59) like read some of the code and have like a
+
+(20:01) fine tuned opinion of it.
+
+(20:03) Now, one last thing that I forgot to
+
+(20:05) mention is that if you understand your
+
+(20:07) code base, it's actually easier to review
+
+(20:10) the code because you can very quickly spot
+
+(20:13) what's touching like the dangerous zones
+
+(20:15) of your code base and what's like really
+
+(20:17) simple and leaf nodes, right?
+
+(20:19) So yeah, that wraps up this video.
+
+(20:20) I hope you guys enjoyed it.
+
+(20:22) I do a ton of these videos.
+
+(20:23) I did a video on like Codex and Claude
+
+(20:25) Code, which I think would be very relevant
+
+(20:27) for this video.
+
+(20:28) So feel free to check that out.
+
+(20:30) But until I see you on the next one, bye.
+
+
+https://www.youtube.com/watch?v=b2QkhmQ0sT0
